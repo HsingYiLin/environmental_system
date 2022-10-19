@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>整潔系統</title>
+    <head>
+        <link rel="stylesheet" href="onduty.css">
+        <script
+            src="https://code.jquery.com/jquery-3.6.1.js"
+            integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+            crossorigin="anonymous">
+        </script>
+        
+        <script src="employee.js"></script>
+        <script src="punish.js"></script>
+    </head>
+<body onload = employ_init()>
+    <div id="">
+        <select name="" id="em_chgpage">
+            <option id="em_employee" value="employee" >員工職稱表</option>
+            <option id="em_punish" value="punish" >懲罰項目表</option>
+        </select><br><br>
+    </div>
+    <div>
+        <span>到職日:</span>&nbsp&nbsp&nbsp&nbsp
+        <input type="date" id="em_start" value="" min="01-01" max="12-31"><br>
+        <span>值日期:</span>&nbsp&nbsp&nbsp&nbsp
+        <input type="date" id="em_calender" value="" min="01-01" max="12-31"><br>
+        <span>值日生:</span>
+        <input type="text" id="em_name"><br>
+        <span>職稱:</span>&nbsp&nbsp&nbsp&nbsp
+        <select name="" id="em_title">
+            <option value="director">主管</option>
+            <option value="engineer">工程師</option>
+            <option value="special">特殊</option>
+            <option value="clip ">剪輯組</option>
+            <option value="other">其他</option>
+        </select><br>
+        <span>狀態:</span>&nbsp&nbsp&nbsp
+        <input type="checkbox" id="em_status" value=""><label>在職</label><br>
+        <span>候補:</span><br>
+        <input type="submit" id="em_confirm">
+    </div>
+    <!-- <label for="start">Start date:</label> -->
+
+   
+    <table id="tbody1">
+        <tr id="first_tr">
+            <td>日期</td>
+            <td>值日生</td>
+            <td>職稱</td>
+            <td>狀態</td>
+            <td>候補</td>
+        </tr>
+    </table>
+</body>
+</html>
