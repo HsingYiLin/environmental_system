@@ -8,7 +8,7 @@
 	$dbpassword = 'a12345678';
 	$dbname = 'mydb';
 	$link = mysqli_connect($host,$dbuser,$dbpassword,$dbname);
-	
+
 	if(!$link){
 		echo "DB unconnect!";
 	}
@@ -21,7 +21,6 @@
 	echo $object["name"];
 	echo $object["title"];
 	echo $object["status"];
-
 
 	// $param = @$_POST["param"];
 	// if(isset($param)){

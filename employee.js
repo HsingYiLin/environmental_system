@@ -27,7 +27,6 @@ var employ_init = function(){
     em_confirm = document.getElementById("em_confirm");
     em_status = document.getElementById("em_status");
 
-
     em_employee.setAttribute("selected", true);
     em_chgpage.addEventListener("change", em_changePage, false);
     em_confirm.addEventListener("click", req_val)
