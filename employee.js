@@ -54,7 +54,6 @@ var dynamicTable = function (){
 }
 
 var em_changePage = function (e) {
-    console.log("em_changePage");
     if(this.value == "punish"){
         window.location.replace("C:/xampp/htdocs/CleanSystem/"+this.value+".html")
     }

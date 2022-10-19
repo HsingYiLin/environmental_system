@@ -15,7 +15,6 @@
 	
 	$requestPayload = file_get_contents("php://input");
 	$object = json_decode($requestPayload, true);
-	// var_dump($object);
 	echo $object["start"];
 	echo $object["calender"];
 	echo $object["name"];

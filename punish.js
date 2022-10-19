@@ -10,7 +10,6 @@ var pun_init = function(){
 }
 
 var pun_changePage = function (e) {
-    // console.log("pun_changePage");
     if(this.value == "employee"){
         window.location.replace("C:/xampp/htdocs/CleanSystem/"+this.value+".html")
     }
