@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>整潔系統</title>
+    <head>
+        <link rel="stylesheet" href="onduty.css">
+        <script
+            src="https://code.jquery.com/jquery-3.6.1.js"
+            integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+            crossorigin="anonymous">
+        </script>
+        <script src="add_del_employee.js"></script>
+        <!-- <script src="employee.js"></script> -->
+        <!-- <script src="punish.js"></script> -->
+    </head>
+<body onload = add_del_init()>
+    <div id="">
+        <select name="" id="ad_chgpage">
+            <option id="ad_employee" value="employee" >值日生表</option>
+            <option id="ad_punish" value="punish" >懲罰項目表</option>
+            <option id="ad_add_del" value="ad_del" >員工增減表</option>
+        </select><br><br>
+    </div>
+    <span>到職日:</span>
+    <input type="date" id="ad_startDate" value="" min="01-01" max="12-31"><br>
+    <span>員工:</span>
+    <input type="text" id="ad_name"><br>
+    <span>職稱:</span>&nbsp&nbsp&nbsp&nbsp
+    <select name="" id="ad_title">
+        <option value="director">主管</option>
+        <option value="engineer">工程師</option>
+        <option value="special">特殊</option>
+        <option value="clip ">剪輯組</option>
+        <option value="other">其他</option>
+    </select><br>
+    <span>狀態:</span>&nbsp&nbsp&nbsp
+    <input type="checkbox" id="ad_state" value=""><label>在職</label><br>
+    <input type="submit" id="ad_confirm">
+
+    <!-- <label for="start">Start date:</label> -->
+ 
+    <table id="" class="sys_tb">
+        <tr id="" class="first_tr">
+            <td>到職日</td>
+            <td>員工</td>
+            <td>職稱</td>
+            <td>狀態</td>
+        </tr>
+    </table>
+</body>
+</html>

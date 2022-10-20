@@ -14,13 +14,16 @@
         </script>
         
         <script src="employee.js"></script>
-        <script src="punish.js"></script>
+        <!-- <script src="punish.js"></script> -->
+        <!-- <script src="add_del_employee.js"></script> -->
+
     </head>
 <body onload = employ_init()>
     <div id="">
         <select name="" id="em_chgpage">
-            <option id="em_employee" value="employee" >員工職稱表</option>
+            <option id="em_employee" value="employee" >值日生表</option>
             <option id="em_punish" value="punish" >懲罰項目表</option>
+            <option id="em__add_del" value="add_del" >員工增減表</option>
         </select><br><br>
     </div>
     <div>
@@ -34,32 +37,31 @@
         <span>值日生:</span>
         <input type="text" id="em_name"><br>
 
-        <div id="holi_hide">
+        <!-- <div id="holi_hide">
             <span>到職日:</span>
-            <input type="date" id="em_start" value="" min="01-01" max="12-31"><br>
+            <input type="date" id="em_startDate" value="" min="01-01" max="12-31"><br>
             <span>職稱:</span>&nbsp&nbsp&nbsp&nbsp
             <select name="" id="em_title">
-            <option value="director">主管</option>
-            <option value="engineer">工程師</option>
-            <option value="special">特殊</option>
-            <option value="clip ">剪輯組</option>
-            <option value="other">其他</option>
+                <option value="director">主管</option>
+                <option value="engineer">工程師</option>
+                <option value="special">特殊</option>
+                <option value="clip ">剪輯組</option>
+                <option value="other">其他</option>
             </select><br>
             <span>狀態:</span>&nbsp&nbsp&nbsp
-            <input type="checkbox" id="em_status" value=""><label>在職</label><br>
+            <input type="checkbox" id="em_state" value=""><label>在職</label><br>
             <span>候補:</span><br>
-            <input type="submit" id="em_confirm">
-        </div>
+        </div> -->
+        <input type="submit" id="em_confirm">
+
         
     </div>
     <!-- <label for="start">Start date:</label> -->
  
-    <table id="tbody1">
-        <tr id="first_tr">
+    <table id="tbody1" class="sys_tb">
+        <tr id="" class="first_tr">
             <td>日期</td>
             <td>值日生</td>
-            <td>職稱</td>
-            <td>狀態</td>
             <td>候補</td>
         </tr>
     </table>

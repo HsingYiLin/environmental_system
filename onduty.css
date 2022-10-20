@@ -1,17 +1,17 @@
-table{
+.sys_tb{
     width: 80%;
-    height: 200px;
+    /* height: 200px; */
     border: 3px;
     /* color: #7cc0b5; */
     border-style: groove;
     border-collapse: collapse;
 }
 
-#first_tr{
+.first_tr{
     background-color: cadetblue;
 }
 
-tr, td{
+.sys_tb > tr, td{
     border: 1;
     border-style: groove;
     color: #1b1717;

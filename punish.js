@@ -10,7 +10,7 @@ var pun_init = function(){
 }
 
 var pun_changePage = function (e) {
-    if(this.value == "employee"){
+    // if(this.value == "employee"){
         window.location.replace("C:/xampp/htdocs/CleanSystem/"+this.value+".html")
-    }
+    // }
 }

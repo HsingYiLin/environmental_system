@@ -8,19 +8,22 @@
     <head>
         <link rel="stylesheet" href="onduty.css">
         <script src="punish.js"></script>
-        <script src="employee.js"></script>
+        <!-- <script src="employee.js"></script> -->
+        <!-- <script src="add_del_employee.js"></script> -->
+
     </head>
 </head>
 <body onload = pun_init()>
     <div id="">
         <select name="" id="pun_chgpage">
-            <option id="pun_employee" value="employee">員工職稱表</option>
+            <option id="pun_employee" value="employee">值日生表</option>
             <option id="pun_punish" value="punish">懲罰項目表</option>
+            <option id="pun__add_del" value="add_del" >員工增減表</option>
         </select>
     </div>
 
-    <table id=""  style= "border:3px #cccccc solid;" cellpadding = "10" border = '1'>
-        <tr style= "background-color: cadetblue;">
+    <table id="" class="sys_tb">
+        <tr class="first_tr">
             <td>日期</td>
             <td>值日生</td>
             <td>原因</td>

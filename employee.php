@@ -7,19 +7,48 @@
 	$dbuser ='root';
 	$dbpassword = 'a12345678';
 	$dbname = 'mydb';
-	$link = mysqli_connect($host,$dbuser,$dbpassword,$dbname);
+	$conn = mysqli_connect($host,$dbuser,$dbpassword,$dbname);
 
-	if(!$link){
-		echo "DB unconnect!";
+	if(!$conn){
+		die('Could not connect: '.mysql_error());
 	}
-	
+
 	$requestPayload = file_get_contents("php://input");
 	$object = json_decode($requestPayload, true);
-	echo $object["start"];
-	echo $object["calender"];
-	echo $object["name"];
-	echo $object["title"];
-	echo $object["status"];
+
+	$tb_name = "employee";
+
+	if($object["pload"] == "add_del"){
+		$startDate = $object["startDate"];
+    	$name = $object["name"];
+    	$title = $object["title"];
+   	 	$state = $object["state"];
+		// $sql = "INSERT INTO".$tb_name."(`name`, `title`, `state`, `startDate`) VALUES (".$name.",".$title.",".$state.",".$startDate.")";
+		
+
+		echo $object["startDate"];
+		echo $object["name"];
+		echo $object["title"];
+		echo $object["state"];
+	}else{
+		$calender = $object["calender"];
+   	 	$name = $object["name"];
+		echo $object["calender"];
+		echo $object["name"];
+	}
+
+// 	$con = mysql_connect("localhost", "hello", "321"); 
+// if (!$con) 
+// { 
+// die('Could not connect: ' . mysql_error()); 
+// }$db_selected = mysql_select_db("test_db", $con);if (!$db_selected) 
+// { 
+// die ("Can't use test_db : " . mysql_error()); 
+// }mysql_close($con); 
+	
+	// $sql = "INSERT INTO".$tb_name."(".$name.",".$title2.",".$state.",".$startDate) VALUES (value1, value2, value3...)";
+
+	
 
 	// $param = @$_POST["param"];
 	// if(isset($param)){
