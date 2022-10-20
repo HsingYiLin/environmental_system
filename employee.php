@@ -7,79 +7,69 @@
 	$dbuser ='root';
 	$dbpassword = 'a12345678';
 	$dbname = 'mydb';
-	$conn = mysqli_connect($host,$dbuser,$dbpassword,$dbname);
-
-	if(!$conn){
-		die('Could not connect: '.mysql_error());
+	$mydb_link = mysqli_connect($host,$dbuser,$dbpassword,$dbname);
+	if($mydb_link->connect_error){
+		die('Connection failed: '.$mydb_link->connect_error);
 	}
 
 	$requestPayload = file_get_contents("php://input");
 	$object = json_decode($requestPayload, true);
+  	$arr_res =Array();
 
-	$tb_name = "employee";
-
-	if($object["pload"] == "add_del"){
+	if($object["pload"] == "add"){
 		$startDate = $object["startDate"];
     	$name = $object["name"];
     	$title = $object["title"];
    	 	$state = $object["state"];
-		// $sql = "INSERT INTO".$tb_name."(`name`, `title`, `state`, `startDate`) VALUES (".$name.",".$title.",".$state.",".$startDate.")";
+
+		$sql_sel = "SELECT `name` FROM employee WHERE `name` =" ."'$name'";
+		$result = mysqli_query($mydb_link, $sql_sel);
+		if (mysqli_num_rows($result) > 0) {
+			$arr_res["status"] = "duplicate";
+			echo json_encode($arr_res);
+			die();
+		} 
 		
+		$sql_add = "INSERT INTO employee (`name`, `title`, `state`, `startDate`) VALUES (" ."'$name'". "," ."'$title'". "," ."'$state'". "," ."'$startDate'". ")";
+		if($mydb_link->query($sql_add) === TRUE){
+			$arr_res["status"] = "add success";
+			echo json_encode($arr_res);
+		} else {
+  			echo "Error: " . $sql_add . "<br>" . $mydb_link->error;
+		}
 
-		echo $object["startDate"];
-		echo $object["name"];
-		echo $object["title"];
-		echo $object["state"];
-	}else{
-		$calender = $object["calender"];
-   	 	$name = $object["name"];
-		echo $object["calender"];
-		echo $object["name"];
+	}else if($object["pload"] == "init"){
+		$sql_init = "SELECT * FROM employee";
+		$result = mysqli_query($mydb_link, $sql_init);
+		$i=1;
+		if ($result->num_rows > 0) {
+			while($row=mysqli_fetch_array($result)){
+				$arr_res["name"][$i]=$row['name'];
+				$arr_res["title"][$i]=$row['title'];
+				$arr_res["state"][$i]=$row['state'];
+				$arr_res["startdate"][$i]=$row['startdate'];
+				$i++;
+			}
+			$arr_res["status"] = "init success";
+			echo json_encode($arr_res);
+		}else{
+			$arr_res["status"] = "no data";
+			echo json_encode($arr_res);
+		}
+
+
+		// $cnt = mysqli_num_rows($row)
+		// // for($i=0; $i<count($cnt); $i++){
+		// // 	$arr_res[$i]["name"] = 
+		// // }
+		// echo mysqli_num_rows($row)
+		// if(mysqli_num_rows($row) > 0){
+		// 	while($rowData = mysqli_fetch_array($row)){
+		// 		echo $rowData["name"];
+		//   }
+		// }
+		// $num = $conn->mysql_num_rows($row);
+		// $arr_res["num"] = $num;
+		// echo $row ;
 	}
-
-// 	$con = mysql_connect("localhost", "hello", "321"); 
-// if (!$con) 
-// { 
-// die('Could not connect: ' . mysql_error()); 
-// }$db_selected = mysql_select_db("test_db", $con);if (!$db_selected) 
-// { 
-// die ("Can't use test_db : " . mysql_error()); 
-// }mysql_close($con); 
-	
-	// $sql = "INSERT INTO".$tb_name."(".$name.",".$title2.",".$state.",".$startDate) VALUES (value1, value2, value3...)";
-
-	
-
-	// $param = @$_POST["param"];
-	// if(isset($param)){
-	// 	echo $param;
-	// }else{
-	// 	echo "找不到"
-	// }
-
-	// if ($result) {
-	// 	// mysqli_num_rows方法可以回傳我們結果總共有幾筆資料
-	// 	if (mysqli_num_rows($result)>0) {
-	// 		// 取得大於0代表有資料
-	// 		// while迴圈會根據資料數量，決定跑的次數
-	// 		// mysqli_fetch_assoc方法可取得一筆值
-	// 		while ($row = mysqli_fetch_assoc($result)) {
-	// 			// 每跑一次迴圈就抓一筆值，最後放進data陣列中
-	// 			$datas[] = $row;
-	// 		}
-	// 	}
-	// }
-	// else {
-	// 	echo "{$sql} 語法執行失敗，錯誤訊息: " . mysqli_error($link);
-	// }
-
-	// if(!empty($result)){
-	// 	print_r($datas);
-	// }
-	// else {
-	// 	echo "查無資料";
-	// }
-
-
-
 ?>

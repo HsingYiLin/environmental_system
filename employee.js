@@ -9,8 +9,8 @@ var em_name;
 var em_name_val;
 var em_title;
 var em_title_val;
-// var em_state;
-// var em_state_val;
+// var em_status;
+// var em_status_val;
 var em_confirm;
 var on_off;
 var holi_hide;
@@ -27,7 +27,7 @@ var employ_init = function(){
     em_startDate = document.getElementById("em_startDate")
     em_title = document.getElementById("em_title");
     em_confirm = document.getElementById("em_confirm");
-    em_state = document.getElementById("em_state");
+    // em_status = document.getElementById("em_status");
     on_off = document.getElementById("on_off");
     holi_hide = document.getElementById("holi_hide");
     tbody1 = document.getElementById("tbody1");
@@ -54,7 +54,7 @@ var dynamicTable = function (){
     for(var i =1; i<=tableLen; i++){
         dateObj.setDate(i);
         dateSort = monObj+1+"/"+dateObj.getDate()
-        tableHTML +="<tr><td>"+dateSort+"</td><td></td><td>"
+        tableHTML +="<tr><td>"+dateSort+"</td><td></td><td></td></tr>"
     }
     tbody1.innerHTML += tableHTML;
     // tbody1.rows[1].cells[1].innerHTML = "六";
