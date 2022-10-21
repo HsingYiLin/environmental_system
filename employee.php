@@ -50,26 +50,11 @@
 				$arr_res["startdate"][$i]=$row['startdate'];
 				$i++;
 			}
-			$arr_res["status"] = "init success";
+			$arr_res["status"] = "success!";
 			echo json_encode($arr_res);
 		}else{
 			$arr_res["status"] = "no data";
 			echo json_encode($arr_res);
 		}
-
-
-		// $cnt = mysqli_num_rows($row)
-		// // for($i=0; $i<count($cnt); $i++){
-		// // 	$arr_res[$i]["name"] = 
-		// // }
-		// echo mysqli_num_rows($row)
-		// if(mysqli_num_rows($row) > 0){
-		// 	while($rowData = mysqli_fetch_array($row)){
-		// 		echo $rowData["name"];
-		//   }
-		// }
-		// $num = $conn->mysql_num_rows($row);
-		// $arr_res["num"] = $num;
-		// echo $row ;
 	}
 ?>
