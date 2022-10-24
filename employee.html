@@ -15,7 +15,7 @@
         
         <script src="employee.js"></script>
         <!-- <script src="punish.js"></script> -->
-        <!-- <script src="add_del_employee.js"></script> -->
+        <!-- <script src="add_del.js"></script> -->
 
     </head>
 <body onload = employ_init()>
@@ -36,32 +36,25 @@
         </select><br>
         <span>值日生:</span>
         <input type="text" id="em_name"><br>
-
-        <!-- <div id="holi_hide">
-            <span>到職日:</span>
-            <input type="date" id="em_startDate" value="" min="01-01" max="12-31"><br>
-            <span>職稱:</span>&nbsp&nbsp&nbsp&nbsp
-            <select name="" id="em_title">
-                <option value="director">主管</option>
-                <option value="engineer">工程師</option>
-                <option value="special">特殊</option>
-                <option value="clip ">剪輯組</option>
-                <option value="other">其他</option>
-            </select><br>
-            <span>狀態:</span>&nbsp&nbsp&nbsp
-            <input type="checkbox" id="em_status" value=""><label>在職</label><br>
-            <span>候補:</span><br>
-        </div> -->
+        <span>懲罰:</span>&nbsp&nbsp&nbsp&nbsp
+        <select name="" id="em_txt">
+            <option value=""></option>
+            <option value="值日生未打掃">值日生未打掃</option>
+            <option value="組員離職未告知">組員離職未告知</option>
+            <option value="公共環境整潔">公共環境整潔</option>
+            <option value="個人座位整潔">個人座位整潔</option>
+        </select><br>        
+        <span>候補:</span>&nbsp&nbsp&nbsp&nbsp
+        <input type="text" id="em_replace"><br>
         <input type="submit" id="em_confirm">
-
-        
+ 
     </div>
-    <!-- <label for="start">Start date:</label> -->
  
     <table id="tbody1" class="sys_tb">
         <tr id="" class="first_tr">
             <td>日期</td>
             <td>值日生</td>
+            <td>懲罰</td>
             <td>候補</td>
         </tr>
     </table>

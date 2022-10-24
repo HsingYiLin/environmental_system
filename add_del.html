@@ -12,7 +12,7 @@
             integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
             crossorigin="anonymous">
         </script>
-        <script src="add_del_employee.js"></script>
+        <script src="add_del.js"></script>
         <!-- <script src="employee.js"></script> -->
         <!-- <script src="punish.js"></script> -->
     </head>
@@ -24,6 +24,7 @@
             <option id="ad_add_del" value="ad_del" >員工增修表</option>
         </select><br><br>
     </div>
+
     <span>到職日:</span>
     <input type="date" id="ad_startDate" value="" min="01-01" max="12-31"><br>
     <span>員工:</span>
@@ -43,7 +44,7 @@
     <input type="submit" id="up_confirm" value="修改">
     <input type="submit" id="del_confirm" value="刪除">
 
-    <span id="stateInfo"></span>
+    <span id="ad_stateInfo"></span>
  
     <table id="ad_tbody" class="sys_tb"></table>
 </body>

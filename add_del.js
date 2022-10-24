@@ -8,13 +8,12 @@ var ad_confirm;
 var up_confirm;
 var sel_confirm;
 var del_confirm;
-var stateInfo;
+var ad_stateInfo;
 var ad_tbody;
 var toSend = {};
 var em_url = "http://localhost:8080/CleanSystem/employee.php";
 var jsonString;
 var ad_tableHTML = "";
-var director;
 const xmlhttp =new XMLHttpRequest();
 
 var add_del_init = function () {
@@ -29,9 +28,8 @@ var add_del_init = function () {
     up_confirm = document.getElementById("up_confirm");
     sel_confirm = document.getElementById("sel_confirm");
     del_confirm = document.getElementById("del_confirm");
-    stateInfo = document.getElementById("stateInfo");
+    ad_stateInfo = document.getElementById("ad_stateInfo");
     ad_tbody = document.getElementById("ad_tbody");
-    director = document.getElementById("director");
     actionDB("init");
     ad_add_del.setAttribute("selected", true);
     ad_chgpage.addEventListener("change", ad_changePage, false);
@@ -63,7 +61,7 @@ var actionDB = function(params) {
                 };   
                 httpReqFun(toSend);
             }else{
-                stateInfo.innerText = "到職日或名字不得為空";
+                ad_stateInfo.innerText = "到職日或名字不得為空";
             }
             break;
 
@@ -93,20 +91,18 @@ var actionDB = function(params) {
                 };   
                 httpReqFun(toSend);
             }else{
-                stateInfo.innerText = "名字不得為空";
+                ad_stateInfo.innerText = "名字不得為空";
             }
             break;
         case "delete":
-            console.log("delete");
             if(ad_name.value != ""){
-                console.log("delete enter");
                 toSend ={
                     pload: "delete",
                     name: ad_name.value,
                 };   
                 httpReqFun(toSend);
             }else{
-                stateInfo.innerText = "名字不得為空";
+                ad_stateInfo.innerText = "名字不得為空";
             }
 
 
@@ -114,7 +110,6 @@ var actionDB = function(params) {
 }
 
 var httpReqFun = function (param){
-    // console.log("1",param);
     var arr_data;
     jsonString = JSON.stringify(param);
     xmlhttp.open("POST",em_url);
@@ -122,17 +117,15 @@ var httpReqFun = function (param){
     xmlhttp.onreadystatechange = () => {
         if(xmlhttp.readyState === 4 && xmlhttp.status == 200){
             arr_data = JSON.parse(xmlhttp.responseText);
-            // console.log(arr_data);
             setTimeout(function(){
-                stateInfo.innerText = "";
+                ad_stateInfo.innerText = "";
             },3000);
-        
             if(arr_data["status"] == "add success" || arr_data["status"] == "update success" ||arr_data["status"] == "delete success"){
                 actionDB("init");
                 clearInput();
         
             }else if(arr_data["status"] == "success!"|| arr_data["status"] == "select success" || arr_data["status"] == "no data" || arr_data["status"] == "update fail"  || arr_data["status"] == "duplicate"){
-                stateInfo.innerText = arr_data["status"];
+                ad_stateInfo.innerText = arr_data["status"];
                 parseAllData(arr_data);
             }        
         }
@@ -141,10 +134,9 @@ var httpReqFun = function (param){
 }
 
 var parseAllData = function (initData){
-    console.log("initData",initData);
     ad_tableHTML = "";
     ad_tbody.innerHTML = "<tr class=first_tr><td>到職日</td><td>員工</td><td>職稱</td><td>狀態</td></tr>";
-    if(initData["state"] != "update fail" && initData["status"] != "no data"){
+    if(initData["status"] != "update fail" && initData["status"] != "no data"){
         var data_size = Object.keys(initData["name"]).length;
         for(var j = 1; j <= data_size; j++){
             ad_tableHTML += "<tr class = datatr><td>"+initData.startdate[j]+"</td><td>"+initData.name[j]+"</td><td>"+initData.title[j]+"</td><td>"+initData.state[j]+"</td></tr>";
@@ -161,6 +153,7 @@ var ad_changePage = function (e) {
 var clearInput = function (){
     ad_startDate.value = "";
     ad_name.value = "";
+    var director = document.getElementById("director");
     director.setAttribute("selected", true);
     ad_status.checked = false;
 }
