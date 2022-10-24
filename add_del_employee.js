@@ -7,6 +7,7 @@ var ad_status;
 var ad_confirm;
 var up_confirm;
 var sel_confirm;
+var del_confirm;
 var stateInfo;
 var ad_tbody;
 var toSend = {};
@@ -27,6 +28,7 @@ var add_del_init = function () {
     ad_confirm = document.getElementById("ad_confirm");
     up_confirm = document.getElementById("up_confirm");
     sel_confirm = document.getElementById("sel_confirm");
+    del_confirm = document.getElementById("del_confirm");
     stateInfo = document.getElementById("stateInfo");
     ad_tbody = document.getElementById("ad_tbody");
     director = document.getElementById("director");
@@ -36,6 +38,8 @@ var add_del_init = function () {
     ad_confirm.addEventListener("click", function(){actionDB("add");});
     sel_confirm.addEventListener("click", function(){actionDB("select");});
     up_confirm.addEventListener("click", function(){actionDB("update")});
+    del_confirm.addEventListener("click", function(){actionDB("delete")});
+
 
 }
 
@@ -71,13 +75,15 @@ var actionDB = function(params) {
                 };
                 httpReqFun(toSend);
             }else{
-                stateInfo.innerText = "名字不得為空";
+                toSend = {pload: "init"};
+                httpReqFun(toSend);
             }
             break;
 
         case "update":
             var state = ad_status.checked?"在職":"離職";
-            if(ad_startDate.value != "" && ad_name.value != ""){
+            // if(ad_startDate.value != "" && ad_name.value != ""){
+            if(ad_name.value != ""){
                 toSend ={
                     pload: "update",
                     startDate: ad_startDate.value,
@@ -87,9 +93,22 @@ var actionDB = function(params) {
                 };   
                 httpReqFun(toSend);
             }else{
-                stateInfo.innerText = "到職日或名字不得為空";
+                stateInfo.innerText = "名字不得為空";
             }
             break;
+        case "delete":
+            console.log("delete");
+            if(ad_name.value != ""){
+                console.log("delete enter");
+                toSend ={
+                    pload: "delete",
+                    name: ad_name.value,
+                };   
+                httpReqFun(toSend);
+            }else{
+                stateInfo.innerText = "名字不得為空";
+            }
+
 
     }
 }
@@ -108,11 +127,11 @@ var httpReqFun = function (param){
                 stateInfo.innerText = "";
             },3000);
         
-            if(arr_data["status"] == "add success" || arr_data["status"] == "update success"){
+            if(arr_data["status"] == "add success" || arr_data["status"] == "update success" ||arr_data["status"] == "delete success"){
                 actionDB("init");
                 clearInput();
         
-            }else if(arr_data["status"] == "success!" || arr_data["status"] == "no data" ||arr_data["status"] == "select success" || arr_data["status"] == "duplicate" || arr_data["status"] == "update fail" ){
+            }else if(arr_data["status"] == "success!"|| arr_data["status"] == "select success" || arr_data["status"] == "no data" || arr_data["status"] == "update fail"  || arr_data["status"] == "duplicate"){
                 stateInfo.innerText = arr_data["status"];
                 parseAllData(arr_data);
             }        
@@ -122,9 +141,10 @@ var httpReqFun = function (param){
 }
 
 var parseAllData = function (initData){
+    console.log("initData",initData);
     ad_tableHTML = "";
     ad_tbody.innerHTML = "<tr class=first_tr><td>到職日</td><td>員工</td><td>職稱</td><td>狀態</td></tr>";
-    if(initData["state"] != "update fail" && initData["status"] != "no data" ){
+    if(initData["state"] != "update fail" && initData["status"] != "no data"){
         var data_size = Object.keys(initData["name"]).length;
         for(var j = 1; j <= data_size; j++){
             ad_tableHTML += "<tr class = datatr><td>"+initData.startdate[j]+"</td><td>"+initData.name[j]+"</td><td>"+initData.title[j]+"</td><td>"+initData.state[j]+"</td></tr>";

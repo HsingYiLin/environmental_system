@@ -92,5 +92,20 @@
 			$arr_res["error"] =mysqli_error($mydb_link);
 		}
 		echo json_encode($arr_res);
+	}else if($object["pload"] == "delete"){
+		$name = $object["name"];
+		$sql_sel3 = "SELECT `name` FROM employee WHERE `name` =" ."'$name'";
+		$result = mysqli_query($mydb_link, $sql_sel3);
+		if (mysqli_num_rows($result) == 0) {
+			$arr_res["status"] = "no data";
+			echo json_encode($arr_res);
+			die();
+		} 
+		$sql_del = "DELETE FROM employee WHERE `name` =" ."'$name'";
+		if(mysqli_query($mydb_link, $sql_del)){
+			$arr_res["status"] = "delete success";
+		}
+		echo json_encode($arr_res);
 	}
+
 ?>
