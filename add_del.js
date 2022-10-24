@@ -55,7 +55,7 @@ var actionDB = function(params) {
                 toSend ={
                     pload: "add",
                     startDate: ad_startDate.value,
-                    name: ad_name.value,
+                    emp_name: ad_name.value,
                     title: ad_title.value,
                     state: state
                 };   
@@ -69,7 +69,7 @@ var actionDB = function(params) {
             if(ad_name.value != ""){
                 toSend ={
                     pload: "select",
-                    name: ad_name.value
+                    emp_name: ad_name.value
                 };
                 httpReqFun(toSend);
             }else{
@@ -85,7 +85,7 @@ var actionDB = function(params) {
                 toSend ={
                     pload: "update",
                     startDate: ad_startDate.value,
-                    name: ad_name.value,
+                    emp_name: ad_name.value,
                     title: ad_title.value,
                     state: state
                 };   
@@ -98,7 +98,7 @@ var actionDB = function(params) {
             if(ad_name.value != ""){
                 toSend ={
                     pload: "delete",
-                    name: ad_name.value,
+                    emp_name: ad_name.value,
                 };   
                 httpReqFun(toSend);
             }else{
@@ -135,11 +135,12 @@ var httpReqFun = function (param){
 
 var parseAllData = function (initData){
     ad_tableHTML = "";
+    // console.log(initData["error"]);
     ad_tbody.innerHTML = "<tr class=first_tr><td>到職日</td><td>員工</td><td>職稱</td><td>狀態</td></tr>";
-    if(initData["status"] != "update fail" && initData["status"] != "no data"){
-        var data_size = Object.keys(initData["name"]).length;
+    if(initData["status"] != "update fail" && initData["status"] != "no data" && initData["status"] != "duplicate"){
+        var data_size = Object.keys(initData["emp_name"]).length;
         for(var j = 1; j <= data_size; j++){
-            ad_tableHTML += "<tr class = datatr><td>"+initData.startdate[j]+"</td><td>"+initData.name[j]+"</td><td>"+initData.title[j]+"</td><td>"+initData.state[j]+"</td></tr>";
+            ad_tableHTML += "<tr class = datatr><td>"+initData.startdate[j]+"</td><td>"+initData.emp_name[j]+"</td><td>"+initData.title[j]+"</td><td>"+initData.state[j]+"</td></tr>";
         }
         ad_tbody.innerHTML += ad_tableHTML;
         getAllElement();

@@ -63,7 +63,7 @@ var actionDB = function(params) {
                 };   
                 httpReqFun(pun_toSend);
             }else{
-                // pun_stateInfo.innerText = "表格不得為空";
+                pun_stateInfo.innerText = "表格不得為空";
             }
             break;
 
@@ -87,25 +87,24 @@ var actionDB = function(params) {
                     date: pun_calender.value,
                     name: pun_name.value,
                     punishtxt: pun_txt.value,
-                    state: state
                 };   
                 httpReqFun(pun_toSend);
             }else{
-                // pun_stateInfo.innerText = "名字不得為空";
+                pun_stateInfo.innerText = "名字不得為空";
             }
             break;
-        // case "delete":
-        //     console.log("delete");
-        //     if(ad_name.value != ""){
-        //         console.log("delete enter");
-        //         pun_toSend ={
-        //             pload: "delete",
-        //             name: ad_name.value,
-        //         };   
-        //         httpReqFun(pun_toSend);
-        //     }else{
-        //         // pun_stateInfo.innerText = "名字不得為空";
-        //     }
+        case "delete":
+            console.log("delete");
+            if(pun_name.value != ""){
+                console.log("delete enter");
+                pun_toSend ={
+                    pload: "delete",
+                    name: pun_name.value,
+                };   
+                httpReqFun(pun_toSend);
+            }else{
+                pun_stateInfo.innerText = "名字不得為空";
+            }
 
 
     }
@@ -126,7 +125,7 @@ var httpReqFun = function (param){
             if(arr_data["status"] == "add success" || arr_data["status"] == "update success" ||arr_data["status"] == "delete success"){
                 actionDB("init");
                 clearInput();
-            }else if(arr_data["status"] == "success!" || arr_data["status"] == "select success"  || arr_data["status"] == "no data" || arr_data["status"] == "duplicate"){
+            }else if(arr_data["status"] == "success!" || arr_data["status"] == "select success"  || arr_data["status"] == "no data" || arr_data["status"] == "update fail" || arr_data["status"] == "duplicate"){
                 pun_stateInfo.innerText = arr_data["status"];
                 parseAllData(arr_data);
             }        
@@ -139,7 +138,7 @@ var httpReqFun = function (param){
 var parseAllData = function (initData){
     pun_tableHTML = "";
     pun_tbody.innerHTML = "<tr class=first_tr><td>受罰日期</td><td>值日生</td><td>懲罰原因</td><td>次數</td><td>罰金</td></tr>";
-    if(initData["status"] != "update fail" && initData["status"] != "no data"){
+    if(initData["status"] != "update fail" && initData["status"] != "no data" && initData["status"] != "duplicate"){
         var data_size = Object.keys(initData["name"]).length;
         for(var j = 1; j <= data_size; j++){
             pun_tableHTML += "<tr class = datatr><td>"+initData.date[j]+"</td><td>"+initData.name[j]+"</td><td>"+initData.punishtxt[j]+"</td><td></td><td></td></tr>";

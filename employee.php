@@ -5,7 +5,7 @@
 	$host = 'localhost';
 	$dbuser ='root';
 	$dbpassword = 'a12345678';
-	$dbname = 'mydb';
+	$dbname = 'enviroment_db';
 	$mydb_link = mysqli_connect($host,$dbuser,$dbpassword,$dbname);
 
 	if($mydb_link->connect_error){
@@ -22,7 +22,7 @@
 		$i=1;
 		if ($result->num_rows > 0) {
 			while($row=mysqli_fetch_array($result)){
-				$arr_res["name"][$i]=$row['name'];
+				$arr_res["emp_name"][$i]=$row['emp_name'];
 				$arr_res["title"][$i]=$row['title'];
 				$arr_res["state"][$i]=$row['state'];
 				$arr_res["startdate"][$i]=$row['startdate'];
@@ -36,10 +36,10 @@
 
 	}else if($object["pload"] == "add"){
 		$startDate = $object["startDate"];
-    	$name = $object["name"];
+    	$emp_name = $object["emp_name"];
     	$title = $object["title"];
    	 	$state = $object["state"];
-		$sql_sel = "SELECT `name` FROM employee WHERE `name` =" ."'$name'";
+		$sql_sel = "SELECT `emp_name` FROM employee WHERE `emp_name` =" ."'$emp_name'";
 		$result = mysqli_query($mydb_link, $sql_sel);
 		if (mysqli_num_rows($result) > 0) {
 			$arr_res["status"] = "duplicate";
@@ -47,7 +47,7 @@
 			die();
 		} 
 
-		$sql_add = "INSERT INTO employee (`name`, `title`, `state`, `startDate`) VALUES (" ."'$name'". "," ."'$title'". "," ."'$state'". "," ."'$startDate'". ")";
+		$sql_add = "INSERT INTO employee (`emp_name`, `title`, `state`, `startDate`) VALUES (" ."'$emp_name'". "," ."'$title'". "," ."'$state'". "," ."'$startDate'". ")";
 		if($mydb_link->query($sql_add) === TRUE){
 			$arr_res["status"] = "add success";
 		} else {
@@ -58,13 +58,13 @@
 		echo json_encode($arr_res);
 
 	}else if($object["pload"] == "select"){
-		$name = $object["name"];
-		$sql_sel2 = "SELECT * FROM employee WHERE `name` =" ."'$name'";
+		$emp_name = $object["emp_name"];
+		$sql_sel2 = "SELECT * FROM employee WHERE `emp_name` =" ."'$emp_name'";
 		$result2 = mysqli_query($mydb_link, $sql_sel2);
 		$i=1;
 		if ($result2->num_rows > 0) {
 			while($row=mysqli_fetch_assoc($result2)){
-				$arr_res["name"][$i]=$row['name'];
+				$arr_res["emp_name"][$i]=$row['emp_name'];
 				$arr_res["title"][$i]=$row['title'];
 				$arr_res["state"][$i]=$row['state'];
 				$arr_res["startdate"][$i]=$row['startdate'];	
@@ -78,10 +78,10 @@
 
 	}else if($object["pload"] == "update"){
 		$startDate = $object["startDate"];
-    	$name = $object["name"];
+    	$emp_name = $object["emp_name"];
     	$title = $object["title"];
    	 	$state = $object["state"];
-		$sql_up = "UPDATE employee SET `title` =" ."'$title'"." ,`state` =" ."'$state'" . " ,`startDate` =" . "'$startDate'" . "WHERE `name` =" ."'$name'";
+		$sql_up = "UPDATE employee SET `title` =" ."'$title'"." ,`state` =" ."'$state'" . " ,`startDate` =" . "'$startDate'" . "WHERE `emp_name` =" ."'$emp_name'";
 
 		if(mysqli_query($mydb_link, $sql_up) && $mydb_link->affected_rows > 0){
 			$arr_res["status"] = "update success";
@@ -91,15 +91,15 @@
 		}
 		echo json_encode($arr_res);
 	}else if($object["pload"] == "delete"){
-		$name = $object["name"];
-		$sql_sel3 = "SELECT `name` FROM employee WHERE `name` =" ."'$name'";
+		$emp_name = $object["emp_name"];
+		$sql_sel3 = "SELECT `emp_name` FROM employee WHERE `emp_name` =" ."'$emp_name'";
 		$result = mysqli_query($mydb_link, $sql_sel3);
 		if (mysqli_num_rows($result) == 0) {
 			$arr_res["status"] = "no data";
 			echo json_encode($arr_res);
 			die();
 		} 
-		$sql_del = "DELETE FROM employee WHERE `name` =" ."'$name'";
+		$sql_del = "DELETE FROM employee WHERE `emp_name` =" ."'$emp_name'";
 		if(mysqli_query($mydb_link, $sql_del)){
 			$arr_res["status"] = "delete success";
 		}
