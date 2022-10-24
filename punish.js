@@ -10,9 +10,10 @@ var pun_up_confirm;
 var pun_del_confirm;
 var pun_stateInfo;
 var pun_tbody;
-var pun_toSend
+var pun_toSend ={};
 var pun_url = "http://localhost:8080/CleanSystem/punish.php";
 const xmlhttp =new XMLHttpRequest();
+// var pun_list ={};
 
 //新增/修改懲罰
 //顯示懲罰列表，可時間篩選
@@ -31,7 +32,6 @@ var pun_init = function(){
     pun_up_confirm = document.getElementById("pun_up_confirm");
     pun_del_confirm = document.getElementById("pun_del_confirm");
 
-
     pun_stateInfo = document.getElementById("pun_stateInfo");
     pun_tbody = document.getElementById("pun_tbody");
     actionDB("init");
@@ -45,15 +45,12 @@ var pun_init = function(){
 
 var actionDB = function(params) {
     switch(params){
-
         case "init":
-            console.log("init");
             pun_toSend = {pload: "init"};
             httpReqFun(pun_toSend);
             break;
 
         case "add":
-            console.log("add");
             if(pun_calender.value != "" && pun_name.value != "" && pun_txt.value !=""){
                 pun_toSend ={
                     pload: "add",
@@ -93,6 +90,7 @@ var actionDB = function(params) {
                 pun_stateInfo.innerText = "名字不得為空";
             }
             break;
+
         case "delete":
             console.log("delete");
             if(pun_name.value != ""){
@@ -105,8 +103,7 @@ var actionDB = function(params) {
             }else{
                 pun_stateInfo.innerText = "名字不得為空";
             }
-
-
+            break;
     }
 }
 
@@ -121,7 +118,6 @@ var httpReqFun = function (param){
             setTimeout(function(){
                 pun_stateInfo.innerText = "";
             },3000);
-        
             if(arr_data["status"] == "add success" || arr_data["status"] == "update success" ||arr_data["status"] == "delete success"){
                 actionDB("init");
                 clearInput();
@@ -130,7 +126,6 @@ var httpReqFun = function (param){
                 parseAllData(arr_data);
             }        
         }
-    
     }
     xmlhttp.send(jsonString);
 }
