@@ -3,12 +3,15 @@ var em_employee;
 var dateObj;
 var em_calender;
 var on_off;
+var holidaysDiv;
 var em_name;
 var em_txt;
+var workDateForm;
+var cleanComp;
 var em_confirm;
 var em_stateInfo;
 var tbody1;
-var chk_url = "http://localhost:8080/CleanSystem/check_qulify.php";
+var chk_url = "http://localhost:8080/CleanSystem/sequence.php";
 const xmlhttp =new XMLHttpRequest();
 var em_toSend = {};
 var isQualify = false;
@@ -24,25 +27,32 @@ var month = 9;
 
 var employ_init = function(){
     console.log("employ_init");
+    actionDB("init");
     em_chgpage = document.querySelector("#em_chgpage");
     em_employee = document.getElementById("em_employee");
     em_calender = document.getElementById("em_calender");
     em_name = document.getElementById("em_name");
+    holidaysDiv = document.getElementById("holidaysDiv");
+    cleanComp = document.getElementById("cleanComp");
     em_confirm = document.getElementById("em_confirm");
     em_stateInfo = document.getElementById("em_stateInfo");
     on_off = document.getElementById("on_off");
     em_txt = document.getElementById("em_txt");
+    workDateForm = document.getElementById("workDateForm");
     tbody1 = document.getElementById("tbody1");
 
     em_employee.setAttribute("selected", true);
     em_chgpage.addEventListener("change", em_changePage, false);
+    on_off.addEventListener("change", formChg);
     em_confirm.addEventListener("click", req_val);
 
     dateObj =new Date();
-    actionDB("init");
     dynamicTable();
+    var tmp = judgeDate(year,month);
+    console.log(tmp);
     dateName = document.getElementsByClassName("dateName");
-    datePunish = document.getElementsByClassName("datePunish");
+    datePunish = document.getElementsByClassName("datePunish"); 
+    parseTable();
 
 }
 
@@ -62,49 +72,46 @@ var dynamicTable = function (){
 
 }
 
-var parseTable = function (){
-    var clipdate = judgeDate(year,month);
-    console.log("clipdate",clipdate);
-    var i = clipdate["firstWeek"];
-    var weekLen = clipdate["firstWeek"]+4;
-    for(i; i <= weekLen; i++){
-        dateName[i-1].innerText = parseStr;
+var actionDB = function(params) {
+    switch(params){
+        case "init":
+            em_toSend = {
+                pload: "init"
+            }   
+            httpReqFun(em_toSend);
     }
-    var date2 = 1;
-    for(date2; date2 <= tableLen; date2++){
+}
+
+var parseTable = function (intent){    
+    for(date2=1; date2 <= tableLen; date2++){
         var dateJudgeDate2 = new Date(year,month, date2);
+        dataNameEl =dateName[date2-1];
         switch(dateJudgeDate2.getDay()){
-            case 6:
-                dateName[date2-1].innerText = "六";
-                break;
             case 0:
-                dateName[date2-1].innerText = "日";
+                dataNameEl.innerText = "日";
+                dataNameEl.style.backgroundColor = "#FFD1A4";
+                break;
+            case 6:
+                dataNameEl.innerText = "六";
+                dataNameEl.style.backgroundColor = "#FFD1A4";
                 break;
             case 4:
-                dateName[date2-1].innerText = "清潔公司";
+                dataNameEl.innerText = "清潔公司";
+                dataNameEl.style.backgroundColor = "#E0E0E0";
                 break;
         }
     }
 }
 
-//first full week date range & sat sun
+//判斷第一個完整禮拜&六日
 var judgeDate = function(y,m){
-    var date1 =1;
-    var retObj = [];
-    for(date1; date1 <= 7; date1++){
-        var dateJudgeDate1 = new Date(y, m, date1);
-        if([dateJudgeDate1.getDay()] == 1){
-            retObj["firstWeek"] = date1;
-            break;
-        }
-    }
-    date1 =1;
-    for(date1; date1 <= tableLen; date1++){
-        var dateJudgeDate2 = new Date(y, m, date1);
-        if([dateJudgeDate2.getDay()] == 6){
-            retObj["saturday"+date1] = dateJudgeDate2.getDate();
-        }else if([dateJudgeDate2.getDay()] == 0){
-            retObj["sunday"+date1] = dateJudgeDate2.getDate();
+    var retObj = Array();
+    var isFirstMon = true;
+    for(var i=1; i <= tableLen; i++){
+        var dateJudgeDate1 = new Date(y, m, i);
+        if(isFirstMon && dateJudgeDate1.getDay() == 1){
+            retObj[i] = 1;
+            isFirstMon = false;
         }
     }
     return retObj;
@@ -117,26 +124,10 @@ var judgeHoliday = function (){
 var req_val = function (){
     var tmpDate = em_calender.value.substring(8, 10);
     dateName[tmpDate-1].innerText = em_name.value;
-    datePunish[tmpDate-1].innerText = em_txt.value;}
-
-var actionDB = function(params) {
-    switch(params){
-        // case "check":
-        //     console.log("check");
-        //     em_toSend = {
-        //         pload: "check",
-        //         em_calender : em_calender.value,
-        //         emp_name : em_name.value
-        //     };
-        //     httpReqFun(em_toSend);
-        //     break;
-        case "init":
-            em_toSend = {
-                pload: "init"
-            }   
-            httpReqFun(em_toSend);
-    }
+    datePunish[tmpDate-1].innerText = em_txt.value;
 }
+
+
 
 var httpReqFun = function (param){
     var arr_data;
@@ -153,7 +144,7 @@ var httpReqFun = function (param){
             if(arr_data["status"]=="check"){
                 loadFinish(arr_data);
             }else if(arr_data["status"]=="success!"){
-                parseStr = arr_data.title[1];
+                parseStr =arr_data.title[1]
                 parseTable();
             }      
         }
@@ -161,19 +152,21 @@ var httpReqFun = function (param){
     xmlhttp.send(jsonString);
 }
 
-var loadFinish = function (initData){
-    // if(initData["status"] == "check!"){
-    //     var deltaDay = (new Date(em_calender.value) - new Date(initData.startdate[1]))/(1000*3600*24)
-    //     isQualify = (deltaDay >= 30)?true : false;
-    //     if(isQualify){
-            var tmpDate = em_calender.value.substring(8, 10);
-            console.log("loadFinish");
-            dateName[tmpDate-1].innerText = em_name.value;
-            datePunish[tmpDate-1].innerText = em_txt.value;
-        // }else{
-        //     em_stateInfo.innerHTML = em_name.value + "不符合值日生資格";
-        // }
-//     }
+var loadFinish = function (initData){ 
+    var tmpDate = em_calender.value.substring(8, 10);
+    console.log("loadFinish");
+    dateName[tmpDate-1].innerText = em_name.value;
+    datePunish[tmpDate-1].innerText = em_txt.value;
+}
+
+var formChg = function (){
+    if(on_off.value == "holiday"){
+        holidaysDiv.style.display = "";
+        workDateForm.style.display = "none";
+    }else{
+        holidaysDiv.style.display = "none";
+        workDateForm.style.display = "";
+    }
 }
 
 var em_changePage = function (e) {
