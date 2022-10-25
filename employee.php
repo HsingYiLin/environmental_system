@@ -17,7 +17,7 @@
   	$arr_res =Array();
 	
 	if($object["pload"] == "init"){
-		$sql_init = "SELECT * FROM employee";
+		$sql_init = "SELECT * FROM employee ORDER BY  `title`,`startdate` ASC";
 		$result = mysqli_query($mydb_link, $sql_init);
 		$i=1;
 		if ($result->num_rows > 0) {
