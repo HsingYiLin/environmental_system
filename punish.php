@@ -16,16 +16,17 @@
   	$arr_res =Array();
 
     if($object["pload"] == "init"){
-		$sql_init = "SELECT * FROM punish";
-		$result = mysqli_query($mydb_link, $sql_init);
+		$sql_init = "SELECT * FROM punish ORDER BY `name`,`pun_date` ASC";
+		$result_init = mysqli_query($mydb_link, $sql_init);
 		$i=1;
-		if ($result->num_rows > 0) {
-			while($row=mysqli_fetch_array($result)){
+		if ($result_init->num_rows > 0) {
+			while($row=mysqli_fetch_array($result_init)){
 				$arr_res["date"][$i]=$row['pun_date'];
 				$arr_res["name"][$i]=$row['name'];
 				$arr_res["punishtxt"][$i]=$row['punishtxt'];
 				$arr_res["times"][$i]=$row['times'];
                 $arr_res["fine"][$i]=$row['fine'];
+                $arr_res["odds"][$i]=$row['odds'];
 
 				$i++;
 			}
@@ -39,30 +40,48 @@
 		$date = $object["date"];
     	$name = $object["name"];
     	$punishtxt = $object["punishtxt"];
-		$sql_sel = "SELECT `emp_name` FROM employee WHERE `emp_name` =" ."'$name'" . "AND `state` = '在職' AND `title` = '其他' AND `startdate` <" ."'$date'";
-		$result = mysqli_query($mydb_link, $sql_sel);
-		if (mysqli_num_rows($result) == 0) {
+		$sql_pre_add = "SELECT `emp_name` FROM employee WHERE `emp_name` =" ."'$name'" . "AND `state` = '在職' AND `title` = '其他' AND `startdate` <" ."'$date'";
+		$result_add = mysqli_query($mydb_link, $sql_pre_add);
+		if (mysqli_num_rows($result_add) == 0) {
             $arr_res["status"] = "no data";
             echo json_encode($arr_res);
             die();
 		}
-
 		$sql_add = "INSERT INTO punish (`name`, `punishtxt`, `pun_date`) VALUES (" ."'$name'". "," ."'$punishtxt'". "," ."'$date'".")";
 		if($mydb_link->query($sql_add) === TRUE){
 			$arr_res["status"] = "add success";
 		} else {
 			$arr_res["status"] = "duplicate";
-            // $arr_res["error"] = $mydb_link->error;
             // $arr_res["sql"] = $sql_add;
 		}
+
+		$sql_cnt_add = "SELECT COUNT(`name`) as cnt FROM punish WHERE `name`= "."'$name'"." AND `pun_date` < DATE_SUB("."'$date'".", INTERVAL 3 MONTH)";
+		//SELECT COUNT(`name`) as cnt  FROM punish WHERE `name`= 'Cindy' AND `pun_date` < DATE_SUB('2022-10-15',INTERVAL 3 MONTH)
+		$result_cnt_add = mysqli_query($mydb_link, $sql_cnt_add);
+		//起始罰金
+		$init_fine = 10;
+		if (mysqli_num_rows($result_cnt_add) > 0) {
+			$row=mysqli_fetch_assoc($result_cnt_add);
+			$cnt_data = $row["cnt"];
+			$odds =pow(2, $cnt_data-1);
+			$fine_data = $init_fine * $odds;		
+			$sql_cnt_update = "UPDATE punish SET `times` =" . "'$cnt_data'" . " , `fine` =" . "'$fine_data'" . " , `odds` =" ."'$odds'" . "WHERE `name` =" ."'$name'" ." AND `pun_date` < DATE_SUB("."'$date'".", INTERVAL 3 MONTH)";	
+			if(mysqli_query($mydb_link, $sql_cnt_update) && $mydb_link->affected_rows > 0){
+				$arr_res["stat"] = "fine odd update success";
+			}else{
+				$arr_res["stat"] = "fine odd update fail";
+			}
+			$arr_res["sql_cnt_update"] =$sql_cnt_update;
+		}
 		echo json_encode($arr_res);
+
 	}else if($object["pload"] == "select"){
 		$name = $object["name"];
-		$sql_sel2 = "SELECT * FROM punish WHERE `name` =" ."'$name'";
-		$result2 = mysqli_query($mydb_link, $sql_sel2);
+		$sql_select = "SELECT * FROM punish WHERE `name` =" ."'$name'";
+		$result_select = mysqli_query($mydb_link, $sql_select);
 		$i=1;
-		if ($result2->num_rows > 0) {
-			while($row=mysqli_fetch_assoc($result2)){
+		if ($result_select->num_rows > 0) {
+			while($row=mysqli_fetch_assoc($result_select)){
 				$arr_res["name"][$i]=$row['name'];
 				$arr_res["punishtxt"][$i]=$row['punishtxt'];
 				$arr_res["date"][$i]=$row['pun_date'];
@@ -78,27 +97,46 @@
     	$date = $object["date"];
     	$name = $object["name"];
    	 	$punishtxt = $object["punishtxt"];
-		$sql_up = "UPDATE punish SET `pun_date` =" ."'$date'" . " , `punishtxt` =" ."'$punishtxt'" . "WHERE `name` =" ."'$name'";
-
-		if(mysqli_query($mydb_link, $sql_up) && $mydb_link->affected_rows > 0){
+		$sql_update = "UPDATE punish SET `pun_date` =" ."'$date'" . " , `punishtxt` =" ."'$punishtxt'" . "WHERE `name` =" ."'$name'"." AND `pun_date` ="."'$date' ";
+		// $mydb_link->affected_rows DELETE, INSERT , REPLACE , UPDATE语句执行完成之后判断数据表中变化的行数
+		if(mysqli_query($mydb_link, $sql_update) && $mydb_link->affected_rows > 0){
 			$arr_res["status"] = "update success";
 		}else{
 			$arr_res["status"] = "update fail";
 			$arr_res["error"] =mysqli_error($mydb_link);
 		}
 		echo json_encode($arr_res);
+
 	}else if($object["pload"] == "delete"){
 		$name = $object["name"];
-		$sql_sel3 = "SELECT `name` FROM punish WHERE `name` =" ."'$name'";
-		$result = mysqli_query($mydb_link, $sql_sel3);
-		if (mysqli_num_rows($result) == 0) {
+		$date = $object["date"];
+		$sql_pre_delete = "SELECT `name` FROM punish WHERE `name` =" ."'$name'"." AND `pun_date` ="."'$date' ";
+		$result_pre_delete = mysqli_query($mydb_link, $sql_pre_delete);
+		$arr_res["sql_pre_delete"] = $sql_pre_delete;
+		if (mysqli_num_rows($result_pre_delete) == 0) {
 			$arr_res["status"] = "no data";
 			echo json_encode($arr_res);
 			die();
 		} 
-		$sql_del = "DELETE FROM punish WHERE `name` =" ."'$name'";
-		if(mysqli_query($mydb_link, $sql_del)){
+		$sql_delete = "DELETE FROM punish WHERE `name` =" ."'$name'"." AND `pun_date` ="."'$date' ";
+		if(mysqli_query($mydb_link, $sql_delete)){
 			$arr_res["status"] = "delete success";
+		}
+		$sql_cnt_delete = "SELECT COUNT(`name`) as cnt FROM punish WHERE `name`= "."'$name'"." AND `pun_date` < DATE_SUB("."'$date'".", INTERVAL 3 MONTH)";
+		$result_cnt_delete = mysqli_query($mydb_link, $sql_cnt_delete);
+		//起始罰金
+		$init_fine = 10;
+		if (mysqli_num_rows($result_cnt_delete) > 0) {
+			$row=mysqli_fetch_assoc($result_cnt_delete);
+			$cnt_data = $row["cnt"];
+			$odds =pow(2, $cnt_data-1);
+			$fine_data = $init_fine * $odds;		
+			$sql_cnt_update1 = "UPDATE punish SET `times` =" . "'$cnt_data'" . " , `fine` =" . "'$fine_data'" . " , `odds` =" ."'$odds'" . "WHERE `name` =" ."'$name'" ." AND `pun_date` < DATE_SUB("."'$date'".", INTERVAL 3 MONTH)";	
+			if(mysqli_query($mydb_link, $sql_cnt_update1) && $mydb_link->affected_rows > 0){
+				$arr_res["stat"] = "fine odd update success";
+			}else{
+				$arr_res["stat"] = "fine odd update fail";
+			}
 		}
 		echo json_encode($arr_res);
     }

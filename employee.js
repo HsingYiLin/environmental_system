@@ -63,8 +63,8 @@ var employ_init = function(){
             em_confirm.addEventListener("click", req_val);
     
             dynamicTable();
-            var tmp = judgeDate(year,month);
-            console.log(tmp);
+            // var tmp = judgeDate(year,month);
+            // console.log(tmp);
             dateName = document.getElementsByClassName("dateName");
             datePunish = document.getElementsByClassName("datePunish"); 
             parseTable();
@@ -107,6 +107,7 @@ var actionDB = function(params) {
 }
 
 var httpReqFun = function (param){
+    console.log("httpReqFun",param);
     var arr_data;
     jsonString = JSON.stringify(param);
     xmlhttp.open("POST",seq_Url);

@@ -21,7 +21,6 @@
 		$days = $object["days"];
 
 		$sql_init = "SELECT `emp_name`, `startdate` FROM employee WHERE `title` = '其他' AND `state` = '在職' AND `startdate` <" . "'$mon" . "-1' ORDER BY `startdate` DESC";
-		$sql_init
 		$result = mysqli_query($mydb_link, $sql_init);
 		$i=1;
 		if ($result->num_rows > 0) {

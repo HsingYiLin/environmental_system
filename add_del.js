@@ -42,6 +42,8 @@ var add_del_init = function () {
 }
 
 var actionDB = function(params) {
+    var dateObj = new Date();
+    var nowDate = dateObj.getFullYear() + "-" + (dateObj.getMonth()+1) + "-" + dateObj.getDate();
     switch(params){
 
         case "init":
@@ -51,7 +53,7 @@ var actionDB = function(params) {
 
         case "add":
             var state = ad_status.checked?"在職":"離職";
-            if(ad_startDate.value != "" && ad_name.value != ""){
+            if(ad_startDate.value != "" && ad_name.value != "" && ad_startDate.value < nowDate){
                 toSend ={
                     pload: "add",
                     startDate: ad_startDate.value,
@@ -61,7 +63,7 @@ var actionDB = function(params) {
                 };   
                 httpReqFun(toSend);
             }else{
-                ad_stateInfo.innerText = "到職日或名字不得為空";
+                ad_stateInfo.innerText = "到職日或名字不得為空||日期錯誤";
             }
             break;
 

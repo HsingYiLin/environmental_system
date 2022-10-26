@@ -81,7 +81,7 @@ var actionDB = function(params) {
             break;
 
         case "update":
-            if(pun_name.value != ""){
+            if(pun_name.value != "" && pun_calender.value!=""){
                 pun_toSend ={
                     pload: "update",
                     date: pun_calender.value,
@@ -90,21 +90,22 @@ var actionDB = function(params) {
                 };   
                 httpReqFun(pun_toSend);
             }else{
-                pun_stateInfo.innerText = "名字不得為空";
+                pun_stateInfo.innerText = "名字和日期不得為空";
             }
             break;
 
         case "delete":
             console.log("delete");
-            if(pun_name.value != ""){
+            if(pun_name.value != "" && pun_calender.value!=""){
                 console.log("delete enter");
                 pun_toSend ={
                     pload: "delete",
                     name: pun_name.value,
+                    date: pun_calender.value
                 };   
                 httpReqFun(pun_toSend);
             }else{
-                pun_stateInfo.innerText = "名字不得為空";
+                pun_stateInfo.innerText = "名字和日期不得為空";
             }
             break;
     }
@@ -135,11 +136,12 @@ var httpReqFun = function (param){
 
 var parseAllData = function (initData){
     pun_tableHTML = "";
-    pun_tbody.innerHTML = "<tr class=first_tr><td>受罰日期</td><td>值日生</td><td>懲罰原因</td><td>次數</td><td>罰金</td></tr>";
+    pun_tbody.innerHTML = "<tr class=first_tr><td>受罰日期</td><td>值日生</td><td>懲罰原因</td><td>次數</td><td>罰金</td><td>倍率</td></tr>";
+    console.log("parseAllData",initData);
     if(initData["status"] != "update fail" && initData["status"] != "no data" && initData["status"] != "duplicate"){
         var data_size = Object.keys(initData["name"]).length;
         for(var j = 1; j <= data_size; j++){
-            pun_tableHTML += "<tr class = datatr><td>"+initData.date[j]+"</td><td>"+initData.name[j]+"</td><td>"+initData.punishtxt[j]+"</td><td></td><td></td></tr>";
+            pun_tableHTML += "<tr class = datatr><td>"+initData.date[j]+"</td><td>"+initData.name[j]+"</td><td>"+initData.punishtxt[j]+"</td><td>"+initData.times[j]+"</td><td>"+initData.fine[j]+"</td><td>"+initData.odds[j]+"</td></tr>";
         }
         pun_tbody.innerHTML += pun_tableHTML;
         // getAllElement();

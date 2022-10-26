@@ -93,14 +93,20 @@
 	}else if($object["pload"] == "delete"){
 		$emp_name = $object["emp_name"];
 		$sql_sel3 = "SELECT `emp_name` FROM employee WHERE `emp_name` =" ."'$emp_name'";
+		$sql_sel4 ="SELECT `name` FROM punish WHERE `name` =" ."'$emp_name'";
 		$result = mysqli_query($mydb_link, $sql_sel3);
+		$result2 = mysqli_query($mydb_link, $sql_sel3);
 		if (mysqli_num_rows($result) == 0) {
 			$arr_res["status"] = "no data";
 			echo json_encode($arr_res);
 			die();
 		} 
 		$sql_del = "DELETE FROM employee WHERE `emp_name` =" ."'$emp_name'";
+		$sql_del2 = "DELETE FROM punish WHERE `name` =" ."'$emp_name'";
 		if(mysqli_query($mydb_link, $sql_del)){
+			if (mysqli_num_rows($result2) > 0) {
+				mysqli_query($mydb_link, $sql_del2);
+			} 
 			$arr_res["status"] = "delete success";
 		}
 		echo json_encode($arr_res);
