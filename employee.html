@@ -19,13 +19,32 @@
 
     </head>
 <body onload = employ_init()>
+
     <div id="">
         <select name="" id="em_chgpage">
             <option id="em_employee" value="employee" >值日生表</option>
             <option id="em_punish" value="punish" >懲罰項目表</option>
-            <option id="em__add_del" value="add_del" >員工增修表</option>
+            <option id="em_add_del" value="add_del" >員工增修表</option>
         </select><br><br>
     </div>
+
+    <div id="pre_edit">
+        <span>值日生表月份:</span>
+        <input type="month" id="monList" min="2022-10" value=""><br>
+        <span>清潔公司:</span>
+        <select name="" id="clean_comp">
+            <option value=""></option>
+            <option value="1">禮拜一</option>
+            <option value="2">禮拜二</option>
+            <option value="3">禮拜三</option>
+            <option value="4">禮拜四</option>
+            <option value="5">禮拜五</option>
+        </select><br>
+        <input type="submit" id="pre_confirm" value="生成">
+
+    </div>
+
+    <div id="em_edit">
         <span>日期:</span>&nbsp&nbsp&nbsp&nbsp
         <input type="date" id="em_calender" value="" min="01-01" max="12-31"><br>
         <span>開關:</span>&nbsp&nbsp&nbsp&nbsp
@@ -34,53 +53,25 @@
             <option value="holiday">假日</option>
             <option value="reWork">補班日</option>
         </select><br>
-        <div id="holidaysDiv" style="display:none">
-            <span>國定假日:</span>
-        <select name="" id="holidays">
-            <option value="六">六</option>
-            <option value="日">日</option>
-            <option value="春節">春節</option>
-            <option value="228連假">228連假</option>
-            <option value="清明連假">清明連假</option>
-            <option value="勞動節">勞動節</option>
-            <option value="端午連假">端午連假</option>
-            <option value="中秋連假">中秋連假</option>
-            <option value="雙十連假">雙十連假</option>
-        </select><br>
-        </div>
-    <div id="workDateForm">
-        <span>清潔公司:</span>
-        <select name="" id="cleanComp">
-            <option value="1">禮拜一</option>
-            <option value="2">禮拜二</option>
-            <option value="3">禮拜三</option>
-            <option value="4">禮拜四</option>
-            <option value="5">禮拜五</option>
-        </select><br>
-        <span>值日生:</span>
-        <input type="text" id="em_name"><br>
-        <span>懲罰:</span>&nbsp&nbsp&nbsp&nbsp
-        <select name="" id="em_txt">
-            <option value=""></option>
-            <option value="值日生未打掃">值日生未打掃</option>
-            <option value="組員離職未告知">組員離職未告知</option>
-            <option value="公共環境整潔">公共環境整潔</option>
-            <option value="個人座位整潔">個人座位整潔</option>
-        </select><br>        
-        <span>候補:</span>&nbsp&nbsp&nbsp&nbsp
-        <input type="text" id="em_replace"><br>
-        <input type="submit" id="em_confirm">
-        <span id="em_stateInfo"></span>
-
+        
+        <div id="workDateForm">
+            <span>值日生:</span>
+            <input type="text" id="em_name"><br>
+            <span>懲罰:</span>&nbsp&nbsp&nbsp&nbsp
+            <select name="" id="em_txt">
+                <option value=""></option>
+                <option value="值日生未打掃">值日生未打掃</option>
+                <option value="組員離職未告知">組員離職未告知</option>
+                <option value="公共環境整潔">公共環境整潔</option>
+                <option value="個人座位整潔">個人座位整潔</option>
+            </select><br>        
+            <span>候補:</span>&nbsp&nbsp&nbsp&nbsp
+            <input type="text" id="em_replace"><br>
+            <input type="submit" id="em_confirm" value="修改">
+            <span id="em_stateInfo"></span>
+        </div>        
     </div>
- 
-    <table id="tbody1" class="sys_tb">
-        <tr id="" class="first_tr">
-            <td>日期</td>
-            <td>值日生</td>
-            <td>懲罰</td>
-            <td>候補</td>
-        </tr>
-    </table>
+    <table id="em_tbody" class="sys_tb"></table>
+
 </body>
 </html>

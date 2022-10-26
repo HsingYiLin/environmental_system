@@ -5,7 +5,7 @@
 	$host = 'localhost';
 	$dbuser ='root';
 	$dbpassword = 'a12345678';
-	$dbname = 'enviroment_db';
+	$dbname = 'environtal_db';
 	$mydb_link = mysqli_connect($host,$dbuser,$dbpassword,$dbname);
     if($mydb_link->connect_error){
 		die('Connection failed: '.$mydb_link->connect_error);
@@ -39,7 +39,7 @@
 		$date = $object["date"];
     	$name = $object["name"];
     	$punishtxt = $object["punishtxt"];
-		$sql_sel = "SELECT `emp_name` FROM employee WHERE `emp_name` =" ."'$name'";
+		$sql_sel = "SELECT `emp_name` FROM employee WHERE `emp_name` =" ."'$name'" . "AND `state` = '在職' AND `title` = '其他' AND `startdate` <" ."'$date'";
 		$result = mysqli_query($mydb_link, $sql_sel);
 		if (mysqli_num_rows($result) == 0) {
             $arr_res["status"] = "no data";

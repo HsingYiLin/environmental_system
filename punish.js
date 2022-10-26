@@ -44,6 +44,9 @@ var pun_init = function(){
 }
 
 var actionDB = function(params) {
+    var dateObj = new Date();
+    var nowDate = dateObj.getFullYear() + "-" + (dateObj.getMonth()+1) + "-" + dateObj.getDate();
+    console.log(pun_calender.value);
     switch(params){
         case "init":
             pun_toSend = {pload: "init"};
@@ -51,7 +54,7 @@ var actionDB = function(params) {
             break;
 
         case "add":
-            if(pun_calender.value != "" && pun_name.value != "" && pun_txt.value !=""){
+            if(pun_calender.value != "" && pun_name.value != "" && pun_txt.value !="" && pun_calender.value < nowDate){
                 pun_toSend ={
                     pload: "add",
                     date: pun_calender.value,
@@ -60,7 +63,7 @@ var actionDB = function(params) {
                 };   
                 httpReqFun(pun_toSend);
             }else{
-                pun_stateInfo.innerText = "表格不得為空";
+                pun_stateInfo.innerText = "表格不得為空||日期錯誤";
             }
             break;
 

@@ -5,7 +5,7 @@
 	$host = 'localhost';
 	$dbuser ='root';
 	$dbpassword = 'a12345678';
-	$dbname = 'enviroment_db';
+	$dbname = 'environtal_db';
 	$mydb_link = mysqli_connect($host,$dbuser,$dbpassword,$dbname);
 
 	if($mydb_link->connect_error){
