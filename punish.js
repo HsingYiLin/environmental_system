@@ -67,10 +67,11 @@ var actionDB = function(params) {
             break;
 
         case "select":
-            if(pun_name.value != ""){
+            if(pun_name.value != "" || pun_calender.value!=""){
                 pun_toSend ={
                     pload: "select",
-                    name: pun_name.value
+                    name: pun_name.value,
+                    date: pun_calender.value
                 };
                 httpReqFun(pun_toSend);
             }else{
@@ -134,12 +135,21 @@ var httpReqFun = function (param){
 var parseAllData = function (initData){
     pun_tableHTML = "";
     pun_tbody.innerHTML = "<tr class=first_tr><td>受罰日期</td><td>值日生</td><td>懲罰原因</td><td>次數</td><td>罰金</td><td>倍率</td></tr>";
-    console.log("parseAllData",initData);
     if(initData["status"] != "update fail" && initData["status"] != "no data" && initData["status"] != "duplicate"){
         var data_size = Object.keys(initData["name"]).length;
+        // console.log("initData",initData);
         for(var j = 1; j <= data_size; j++){
-            pun_tableHTML += "<tr class = datatr><td>"+initData.date[j]+"</td><td>"+initData.name[j]+"</td><td>"+initData.punishtxt[j]+"</td><td>"+initData.times[j]+"</td><td>"+initData.fine[j]+"</td><td>"+initData.odds[j]+"</td></tr>";
+            if(initData.times[j] == initData.times[j+1] || j == data_size){
+                pun_tableHTML += "<tr class = data_pun_tr  style = 'background-color :#FF7575';><td>"+initData.date[j]+"</td><td>"+initData.name[j]+"</td><td>"+initData.punishtxt[j]+"</td><td>"+initData.times[j]+"</td><td>"+initData.fine[j]+"</td><td>"+initData.odds[j]+"</td></tr>";
+            }else{
+                pun_tableHTML += "<tr class = data_pun_tr><td>"+initData.date[j]+"</td><td>"+initData.name[j]+"</td><td>"+initData.punishtxt[j]+"</td><td>"+initData.times[j]+"</td><td>"+initData.fine[j]+"</td><td>"+initData.odds[j]+"</td></tr>";
+
+            }
         }
+
+        
+        
+
         pun_tbody.innerHTML += pun_tableHTML;
         // getAllElement();
     }

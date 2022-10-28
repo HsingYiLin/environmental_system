@@ -51,12 +51,12 @@
             echo json_encode($arr_res);
             die();
 		}
-		
+
 		// //起始罰金
 		$init_fine = 10;
 		//計算此筆員工前三個月有幾筆
 		$sql_cnt_add = "SELECT COUNT(`name`) as cnt FROM punish";
-		$sql_cnt_add .= " WHERE `name`= "."'$name'"." AND `pun_date` >= DATE_SUB("."'$date'".", INTERVAL 3 MONTH) AND `pun_date` < "."'$date'";
+		$sql_cnt_add .= " WHERE `name`= "."'$name'"." AND `pun_date` > DATE_SUB("."'$date'".", INTERVAL 3 MONTH) AND `pun_date` < "."'$date'";
 		$result_cnt_add = mysqli_query($mydb_link, $sql_cnt_add);
 		
 		$row_add = mysqli_fetch_assoc($result_cnt_add);
@@ -94,7 +94,9 @@
 
 	}else if($object["pload"] == "select"){
 		$name = $object["name"];
-		$sql_select = "SELECT * FROM punish WHERE `name` =" ."'$name'";
+		$date = $object["date"];
+		$sql_select = "SELECT * FROM punish WHERE `name` =" ."'$name'"." AND `pun_date` = "."'$date'";
+		$sql_select .= " OR `name` = "."'$name'"." OR `pun_date` = "."'$date'"." ORDER BY `name`,`pun_date` ASC";
 		$result_select = mysqli_query($mydb_link, $sql_select);
 		$i=1;
 		if ($result_select->num_rows > 0) {
@@ -102,6 +104,10 @@
 				$arr_res["name"][$i]=$row['name'];
 				$arr_res["punishtxt"][$i]=$row['punishtxt'];
 				$arr_res["date"][$i]=$row['pun_date'];
+				$arr_res["fine"][$i]=$row['fine'];
+				$arr_res["times"][$i]=$row['times'];
+				$arr_res["odds"][$i]=$row['odds'];
+
 				$i++;		
 			}
 			$arr_res["status"] = "select success";
@@ -114,7 +120,7 @@
     	$date = $object["date"];
     	$name = $object["name"];
    	 	$punishtxt = $object["punishtxt"];
-		$sql_update = "UPDATE punish SET `pun_date` =" ."'$date'" . " , `punishtxt` =" ."'$punishtxt'" . "WHERE `name` =" ."'$name'"." AND `pun_date` ="."'$date' ";
+		$sql_update = "UPDATE punish SET `punishtxt` =" ."'$punishtxt'" . "WHERE `name` =" ."'$name'"." AND `pun_date` ="."'$date' ";
 		// $mydb_link->affected_rows DELETE, INSERT , REPLACE , UPDATE语句执行完成之后判断数据表中变化的行数
 		if(mysqli_query($mydb_link, $sql_update) && $mydb_link->affected_rows > 0){
 			$arr_res["status"] = "update success";
