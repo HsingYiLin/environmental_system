@@ -1,4 +1,4 @@
-var pu_chgpage;
+var pun_chgpage;
 var pun_punish;
 var pun_calender;
 var pun_name;
@@ -13,11 +13,7 @@ var pun_tbody;
 var pun_toSend ={};
 var pun_url = "http://localhost:8080/CleanSystem/punish.php";
 const xmlhttp =new XMLHttpRequest();
-// var pun_list ={};
 
-//新增/修改懲罰
-//顯示懲罰列表，可時間篩選
-//計算懲罰結果、設定繳費狀況
 var pun_init = function(){
     console.log("pun_init");
     pun_chgpage = document.querySelector("#pun_chgpage");
@@ -123,7 +119,7 @@ var httpReqFun = function (param){
             if(arr_data["status"] == "add success" || arr_data["status"] == "update success" ||arr_data["status"] == "delete success" ||arr_data["status"] == "no data update"){
                 actionDB("init");
                 clearInput();
-            }else if(arr_data["status"] == "success!" || arr_data["status"] == "select success"  || arr_data["status"] == "no data" || arr_data["status"] == "update fail" || arr_data["status"] == "duplicate"){
+            }else if(arr_data["status"] == "success!" || arr_data["status"] == "select success"  || arr_data["status"] == "no data" || arr_data["status"] == "update fail" || arr_data["status"] == "date duplicate"){
                 pun_stateInfo.innerText = arr_data["status"];
                 parseAllData(arr_data);
             }        
@@ -135,23 +131,23 @@ var httpReqFun = function (param){
 var parseAllData = function (initData){
     pun_tableHTML = "";
     pun_tbody.innerHTML = "<tr class=first_tr><td>受罰日期</td><td>值日生</td><td>懲罰原因</td><td>次數</td><td>罰金</td><td>倍率</td></tr>";
-    if(initData["status"] != "update fail" && initData["status"] != "no data" && initData["status"] != "duplicate"){
+    console.log("initData",initData);
+    if(initData["status"] != "update fail" && initData["status"] != "no data" || arr_data["status"] != "date duplicate"){
         var data_size = Object.keys(initData["name"]).length;
-        // console.log("initData",initData);
         for(var j = 1; j <= data_size; j++){
-            if(initData.times[j] == initData.times[j+1] || j == data_size){
-                pun_tableHTML += "<tr class = data_pun_tr  style = 'background-color :#FF7575';><td>"+initData.date[j]+"</td><td>"+initData.name[j]+"</td><td>"+initData.punishtxt[j]+"</td><td>"+initData.times[j]+"</td><td>"+initData.fine[j]+"</td><td>"+initData.odds[j]+"</td></tr>";
+            //以次數判斷，要付清哪一欄的錢。
+            //1.EX: a.(5/7 6/16 7/6) & b.(6/16 7/6 8/24)，a.5/7 b沒包括到，須結清。b.後面還有筆數，待清 ....等於。
+            //2.最後一筆，需結清，不確定後面還有每有筆數....最大長度。
+            //3.Ex:c.(6/16 7/7 8/24 9/8) & d.(8/24 9/8 10/7)，d為最後一筆，必須結清，d.沒包括到7/6(7/8基準日)，所以c須結清....大於。
+            if(initData.times[j] >= initData.times[j+1] || j == data_size){
+                pun_tableHTML += "<tr class = data_pun_tr  style = 'background-color :#FF7575';><td>"+initData.date[j]+"</td><td>"+initData.name[j]+"</td>";
+                pun_tableHTML += "<td>"+initData.punishtxt[j]+"</td><td>"+initData.times[j]+"</td><td>"+initData.fine[j]+"</td><td>"+initData.odds[j]+"</td></tr>";
             }else{
-                pun_tableHTML += "<tr class = data_pun_tr><td>"+initData.date[j]+"</td><td>"+initData.name[j]+"</td><td>"+initData.punishtxt[j]+"</td><td>"+initData.times[j]+"</td><td>"+initData.fine[j]+"</td><td>"+initData.odds[j]+"</td></tr>";
-
+                pun_tableHTML += "<tr class = data_pun_tr><td>"+initData.date[j]+"</td><td>"+initData.name[j]+"</td>";
+                pun_tableHTML += "<td>"+initData.punishtxt[j]+"</td><td>"+initData.times[j]+"</td><td>"+initData.fine[j]+"</td><td>"+initData.odds[j]+"</td></tr>";
             }
         }
-
-        
-        
-
         pun_tbody.innerHTML += pun_tableHTML;
-        // getAllElement();
     }
 }
 

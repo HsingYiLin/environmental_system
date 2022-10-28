@@ -27,7 +27,6 @@
 				$arr_res["times"][$i]=$row['times'];
                 $arr_res["fine"][$i]=$row['fine'];
                 $arr_res["odds"][$i]=$row['odds'];
-
 				$i++;
 			}
 			$arr_res["status"] = "success!";
@@ -35,6 +34,7 @@
 			$arr_res["status"] = "no data";
 		}
 		echo json_encode($arr_res);
+		mysqli_close($mydb_link);
 
 	}else if($object["pload"] == "add"){
 		$date = $object["date"];
@@ -50,9 +50,20 @@
             $arr_res["status"] = "no data";
             echo json_encode($arr_res);
             die();
+			mysqli_close($mydb_link);
 		}
 
-		// //起始罰金
+		//日期不能重複
+		// $sql_duplicate = "SELECT `name`, `pun_date` FROM punish WHERE `name` = "."'$name'" ." AND `pun_date` = "."'$date'";
+		// $result_duplicate = mysqli_query($mydb_link, $sql_duplicate);
+		// if (!empty($result_duplicate)) {
+        //     $arr_res["status"] = "date duplicate";
+        //     echo json_encode($arr_res);
+        //     die();
+		// 	mysqli_close($mydb_link);
+		// }
+
+		//起始罰金
 		$init_fine = 10;
 		//計算此筆員工前三個月有幾筆
 		$sql_cnt_add = "SELECT COUNT(`name`) as cnt FROM punish";
@@ -91,6 +102,7 @@
 			}
 		}
 		echo json_encode($arr_res);
+		mysqli_close($mydb_link);
 
 	}else if($object["pload"] == "select"){
 		$name = $object["name"];
@@ -115,13 +127,13 @@
 			$arr_res["status"] = "no data";
 		}
 		echo json_encode($arr_res);
+		mysqli_close($mydb_link);
 
 	}else if($object["pload"] == "update"){
     	$date = $object["date"];
     	$name = $object["name"];
    	 	$punishtxt = $object["punishtxt"];
 		$sql_update = "UPDATE punish SET `punishtxt` =" ."'$punishtxt'" . "WHERE `name` =" ."'$name'"." AND `pun_date` ="."'$date' ";
-		// $mydb_link->affected_rows DELETE, INSERT , REPLACE , UPDATE语句执行完成之后判断数据表中变化的行数
 		if(mysqli_query($mydb_link, $sql_update) && $mydb_link->affected_rows > 0){
 			$arr_res["status"] = "update success";
 		}else{
@@ -129,6 +141,7 @@
 			$arr_res["error"] =mysqli_error($mydb_link);
 		}
 		echo json_encode($arr_res);
+		mysqli_close($mydb_link);
 
 	}else if($object["pload"] == "delete"){
 		$name = $object["name"];
@@ -140,27 +153,37 @@
 			$arr_res["status"] = "no data";
 			echo json_encode($arr_res);
 			die();
+			mysqli_close($mydb_link);
 		} 
 		$sql_delete = "DELETE FROM punish WHERE `name` =" ."'$name'"." AND `pun_date` ="."'$date' ";
 		if(mysqli_query($mydb_link, $sql_delete)){
 			$arr_res["status"] = "delete success";
 		}
-		$sql_cnt_delete = "SELECT COUNT(`name`) as cnt FROM punish WHERE `name`= "."'$name'"." AND `pun_date` < DATE_SUB("."'$date'".", INTERVAL 3 MONTH)";
-		$result_cnt_delete = mysqli_query($mydb_link, $sql_cnt_delete);
+
 		//起始罰金
 		$init_fine = 10;
-		if (mysqli_num_rows($result_cnt_delete) > 0) {
-			$row=mysqli_fetch_assoc($result_cnt_delete);
-			$cnt_data = $row["cnt"];
-			$odds =pow(2, $cnt_data-1);
-			$fine_data = $init_fine * $odds;		
-			$sql_cnt_update1 = "UPDATE punish SET `times` =" . "'$cnt_data'" . " , `fine` =" . "'$fine_data'" . " , `odds` =" ."'$odds'" . "WHERE `name` =" ."'$name'" ." AND `pun_date` < DATE_SUB("."'$date'".", INTERVAL 3 MONTH)";	
-			if(mysqli_query($mydb_link, $sql_cnt_update1) && $mydb_link->affected_rows > 0){
-				$arr_res["stat"] = "fine odd update success";
-			}else{
-				$arr_res["stat"] = "fine odd update fail";
+		$sql_cnt_update = "SELECT `pun_date`, `fine`, `times`, `odds` FROM punish";
+		$sql_cnt_update .= "  WHERE `name` = "."'$name'" . " AND `pun_date` >" ."'$date'" . " AND `pun_date` < DATE_ADD("."'$date'".", INTERVAL 3 MONTH)";
+		$result_cnt_update = mysqli_query($mydb_link, $sql_cnt_update);
+		
+		if(!empty($result_cnt_update)){
+			$i = 1;
+			while($row_update = mysqli_fetch_assoc($result_cnt_update)){
+				$date_update[$i] = $row_update["pun_date"];
+				$fine_data_update[$i] = $row_update["fine"] / 2;
+				$times_update[$i]= $row_update["times"] - 1;
+				$odds_update[$i] = $row_update["odds"] / 2;
+				$sql_update_add = "UPDATE punish SET fine = "."$fine_data_update[$i]".", times = "."$times_update[$i]".", odds = "."$odds_update[$i]";
+				$sql_update_add .=" WHERE `name` = "."'$name'" . " AND `pun_date` = " ."'$date_update[$i]'";
+				if(mysqli_query($mydb_link, $sql_update_add) && $mydb_link->affected_rows > 0){
+					$arr_res["status"] = "update success";
+				}else{
+					$arr_res["status"] = "update fail";
+				}
+				$i++;
 			}
 		}
 		echo json_encode($arr_res);
+		mysqli_close($mydb_link);
     }
 ?>

@@ -68,10 +68,11 @@ var actionDB = function(params) {
             break;
 
         case "select":
-            if(ad_name.value != ""){
+            if(ad_name.value != "" || ad_startDate.value != ""){
                 toSend ={
                     pload: "select",
-                    emp_name: ad_name.value
+                    emp_name: ad_name.value,
+                    date: ad_startDate.value
                 };
                 httpReqFun(toSend);
             }else{
@@ -165,10 +166,10 @@ var getAllElement = function (){
     var datatrCls = document.getElementsByClassName("datatr");
     for(var i = 0; i < datatrCls.length; i++) {
         datatrCls[i].addEventListener("mouseover", function(){
-            this.style.backgroundColor = "gray";
+            this.style.backgroundColor = "#BEBEBE";
         })
         datatrCls[i].addEventListener("mouseout", function(){
-            this.style.backgroundColor = "white";
+            this.style.backgroundColor = "#FFFFFF";
         })
     }
 }
