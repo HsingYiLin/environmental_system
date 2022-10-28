@@ -40,38 +40,55 @@
 		$date = $object["date"];
     	$name = $object["name"];
     	$punishtxt = $object["punishtxt"];
-		$sql_pre_add = "SELECT `emp_name` FROM employee WHERE `emp_name` =" ."'$name'" . "AND `state` = '在職' AND `title` = '其他' AND `startdate` <" ."'$date'";
+
+		//是否符合值日生資格
+		$sql_pre_add = "SELECT * FROM employee ";
+		$sql_pre_add .= " WHERE `emp_name` =" ."'$name'" . " AND `state` = '在職' AND `title` = '其他' ";
+		$sql_pre_add .= "AND "."'$date'". " >= DATE_ADD(`startdate`, INTERVAL 1 MONTH)";
 		$result_add = mysqli_query($mydb_link, $sql_pre_add);
 		if (mysqli_num_rows($result_add) == 0) {
             $arr_res["status"] = "no data";
             echo json_encode($arr_res);
             die();
 		}
-		$sql_add = "INSERT INTO punish (`name`, `punishtxt`, `pun_date`) VALUES (" ."'$name'". "," ."'$punishtxt'". "," ."'$date'".")";
+		
+		// //起始罰金
+		$init_fine = 10;
+		//計算此筆員工前三個月有幾筆
+		$sql_cnt_add = "SELECT COUNT(`name`) as cnt FROM punish";
+		$sql_cnt_add .= " WHERE `name`= "."'$name'"." AND `pun_date` >= DATE_SUB("."'$date'".", INTERVAL 3 MONTH) AND `pun_date` < "."'$date'";
+		$result_cnt_add = mysqli_query($mydb_link, $sql_cnt_add);
+		
+		$row_add = mysqli_fetch_assoc($result_cnt_add);
+		$cnt_data_add = $row_add["cnt"]+1;//包括此筆新增
+		$odds_add = pow(2, $cnt_data_add-1);
+		$fine_data_add = $init_fine * $odds_add;		
+		$sql_add = "INSERT INTO punish (`name`, `punishtxt`, `pun_date`, `fine`, `times`, `odds` )";
+		$sql_add .= " VALUES (" ."'$name'". ", " ."'$punishtxt'". ", " ."'$date'".", " ."'$fine_data_add'".", " ."'$cnt_data_add'".", " ."'$odds_add'".")";
 		if($mydb_link->query($sql_add) === TRUE){
 			$arr_res["status"] = "add success";
-		} else {
-			$arr_res["status"] = "duplicate";
-            // $arr_res["sql"] = $sql_add;
 		}
 
-		$sql_cnt_add = "SELECT COUNT(`name`) as cnt FROM punish WHERE `name`= "."'$name'"." AND `pun_date` < DATE_SUB("."'$date'".", INTERVAL 3 MONTH)";
-		//SELECT COUNT(`name`) as cnt  FROM punish WHERE `name`= 'Cindy' AND `pun_date` < DATE_SUB('2022-10-15',INTERVAL 3 MONTH)
-		$result_cnt_add = mysqli_query($mydb_link, $sql_cnt_add);
-		//起始罰金
-		$init_fine = 10;
-		if (mysqli_num_rows($result_cnt_add) > 0) {
-			$row=mysqli_fetch_assoc($result_cnt_add);
-			$cnt_data = $row["cnt"];
-			$odds =pow(2, $cnt_data-1);
-			$fine_data = $init_fine * $odds;		
-			$sql_cnt_update = "UPDATE punish SET `times` =" . "'$cnt_data'" . " , `fine` =" . "'$fine_data'" . " , `odds` =" ."'$odds'" . "WHERE `name` =" ."'$name'" ." AND `pun_date` < DATE_SUB("."'$date'".", INTERVAL 3 MONTH)";	
-			if(mysqli_query($mydb_link, $sql_cnt_update) && $mydb_link->affected_rows > 0){
-				$arr_res["stat"] = "fine odd update success";
-			}else{
-				$arr_res["stat"] = "fine odd update fail";
+		//計算此筆如果是途中插入，此筆後面有幾筆要更新
+		$sql_cnt_update = "SELECT `pun_date`, `fine`, `times`, `odds` FROM punish";
+		$sql_cnt_update .= " WHERE `name` = "."'$name'" . " AND `pun_date` >" ."'$date'" . " AND `pun_date` < DATE_ADD("."'$date'".", INTERVAL 3 MONTH)";
+		$result_cnt_update = mysqli_query($mydb_link, $sql_cnt_update);
+		if(!empty($result_cnt_update)){
+			$i = 1;
+			while($row_update = mysqli_fetch_assoc($result_cnt_update)){
+				$date_update[$i] = $row_update["pun_date"];
+				$fine_data_update[$i] = $row_update["fine"] * 2;
+				$times_update[$i]= $row_update["times"] + 1;
+				$odds_update[$i] = $row_update["odds"] * 2;
+				$sql_update_add = "UPDATE punish SET fine = "."$fine_data_update[$i]".", times = "."$times_update[$i]".", odds = "."$odds_update[$i]";
+				$sql_update_add .=" WHERE `name` = "."'$name'" . " AND `pun_date` = " ."'$date_update[$i]'";
+				if(mysqli_query($mydb_link, $sql_update_add) && $mydb_link->affected_rows > 0){
+					$arr_res["status"] = "update success";
+				}else{
+					$arr_res["status"] = "update fail";
+				}
+				$i++;
 			}
-			$arr_res["sql_cnt_update"] =$sql_cnt_update;
 		}
 		echo json_encode($arr_res);
 

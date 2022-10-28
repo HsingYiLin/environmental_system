@@ -46,7 +46,6 @@ var pun_init = function(){
 var actionDB = function(params) {
     var dateObj = new Date();
     var nowDate = dateObj.getFullYear() + "-" + (dateObj.getMonth()+1) + "-" + dateObj.getDate();
-    console.log(pun_calender.value);
     switch(params){
         case "init":
             pun_toSend = {pload: "init"};
@@ -95,9 +94,7 @@ var actionDB = function(params) {
             break;
 
         case "delete":
-            console.log("delete");
             if(pun_name.value != "" && pun_calender.value!=""){
-                console.log("delete enter");
                 pun_toSend ={
                     pload: "delete",
                     name: pun_name.value,
@@ -122,7 +119,7 @@ var httpReqFun = function (param){
             setTimeout(function(){
                 pun_stateInfo.innerText = "";
             },3000);
-            if(arr_data["status"] == "add success" || arr_data["status"] == "update success" ||arr_data["status"] == "delete success"){
+            if(arr_data["status"] == "add success" || arr_data["status"] == "update success" ||arr_data["status"] == "delete success" ||arr_data["status"] == "no data update"){
                 actionDB("init");
                 clearInput();
             }else if(arr_data["status"] == "success!" || arr_data["status"] == "select success"  || arr_data["status"] == "no data" || arr_data["status"] == "update fail" || arr_data["status"] == "duplicate"){
