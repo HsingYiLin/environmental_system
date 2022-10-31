@@ -1,23 +1,23 @@
-var em_chgpage;
+var seq_chgpage;
 var pre_edit;
 var monList;
 var clean_comp;
-var em_edit;
+var seq_edit;
 var pre_confirm;
 
-var em_employee;
+var seq_sequence;
 var dateObj;
-var em_calender;
+var seq_calender;
 var on_off;
-var em_name;
-var em_txt;
+var seq_name;
+var seq_txt;
 var workDateForm;
-var em_confirm;
-var em_stateInfo;
-var em_tbody;
+var seq_confirm;
+var seq_stateInfo;
+var seq_tbody;
 var seq_Url = "http://localhost:8080/CleanSystem/sequence.php";
 const xmlhttp =new XMLHttpRequest();
-var em_toSend = {};
+var seq_toSend = {};
 var dateName;
 var datePunish;
 var parseStr = "";
@@ -30,37 +30,37 @@ var tableHTML="";
 //前端負責表格修改的部分
 //前端修改的部分整張存入資料庫
 
-var employ_init = function(){
+var sequence_init = function(){
     console.log("employ_init");
-    em_chgpage = document.querySelector("#em_chgpage");
+    seq_chgpage = document.querySelector("#seq_chgpage");
     pre_edit = document.getElementById("pre_edit");
     monList = document.getElementById("monList");
     clean_comp = document.getElementById("clean_comp");
-    em_edit = document.getElementById("em_edit");
+    seq_edit = document.getElementById("seq_edit");
     pre_confirm  = document.getElementById("pre_confirm");
-    em_tbody = document.getElementById("em_tbody");
-    em_chgpage.addEventListener("change", em_changePage, false);
-    em_edit.style.display = "none";
+    seq_tbody = document.getElementById("seq_tbody");
+    seq_chgpage.addEventListener("change", seq_changePage, false);
+    seq_edit.style.display = "none";
     dateObj =new Date();
     dynamicTable();
     pre_confirm.addEventListener("click", function(){
         isPreEdit = (monList.value != "" && clean_comp.value != "")? true:false;
         if(isPreEdit){
-            em_edit.style.display = "";
+            seq_edit.style.display = "";
             pre_edit.style.display = "none";
             actionDB("init");
             
-            em_employee = document.getElementById("em_employee");
-            em_calender = document.getElementById("em_calender");
-            em_name = document.getElementById("em_name");
-            em_confirm = document.getElementById("em_confirm");
-            em_stateInfo = document.getElementById("em_stateInfo");
+            seq_sequence = document.getElementById("seq_sequence");
+            seq_calender = document.getElementById("seq_calender");
+            seq_name = document.getElementById("seq_name");
+            seq_confirm = document.getElementById("seq_confirm");
+            seq_stateInfo = document.getElementById("seq_stateInfo");
             on_off = document.getElementById("on_off");
-            em_txt = document.getElementById("em_txt");
+            seq_txt = document.getElementById("seq_txt");
             workDateForm = document.getElementById("workDateForm");
     
-            em_employee.setAttribute("selected", true);
-            em_confirm.addEventListener("click", req_val);
+            seq_sequence.setAttribute("selected", true);
+            seq_confirm.addEventListener("click", req_val);
     
             dynamicTable();
             // var tmp = judgeDate(year,month);
@@ -75,7 +75,7 @@ var employ_init = function(){
 
 var dynamicTable = function (){
     var dateSort = "", arr_data;
-    em_tbody.innerHTML = "<tr class=first_tr><td>日期</td><td class = dateName>值日生</td><td class = datePunish>懲罰</td><td>候補</td></tr>"
+    seq_tbody.innerHTML = "<tr class=first_tr><td>日期</td><td class = dateName>值日生</td><td class = datePunish>懲罰</td><td>候補</td></tr>"
     var monObj;
     monObj = dateObj.getMonth();
     dateObj.setMonth(monList.value.substring(8, 10) + 1);
@@ -87,22 +87,22 @@ var dynamicTable = function (){
             dateSort = monObj+1+"/"+dateObj.getDate();
             tableHTML +="<tr><td>"+dateSort+"</td><td class = dateName></td><td class = datePunish></td><td></td></tr>"
         }
-        em_tbody.innerHTML += tableHTML;
+        seq_tbody.innerHTML += tableHTML;
     }
 }
 
 var actionDB = function(params) {
-    // var tmpDate = em_calender.value.substring(8, 10);
+    // var tmpDate = seq_calender.value.substring(8, 10);
 
     switch(params){
         case "init":
             console.log(monList.value);
-            em_toSend = {
+            seq_toSend = {
                 pload: "init",
                 mon: monList.value,
                 days: daysLen
             }   
-            httpReqFun(em_toSend);
+            httpReqFun(seq_toSend);
     }
 }
 
@@ -173,18 +173,18 @@ var judgeHoliday = function (){
 }
 
 var req_val = function (){
-    var tmpDate = em_calender.value.substring(8, 10);
-    dateName[tmpDate-1].innerText = em_name.value;
-    datePunish[tmpDate-1].innerText = em_txt.value;
+    var tmpDate = seq_calender.value.substring(8, 10);
+    dateName[tmpDate-1].innerText = seq_name.value;
+    datePunish[tmpDate-1].innerText = seq_txt.value;
 }
 
 var loadFinish = function (initData){ 
-    var tmpDate = em_calender.value.substring(8, 10);
+    var tmpDate = seq_calender.value.substring(8, 10);
     console.log("loadFinish");
-    dateName[tmpDate-1].innerText = em_name.value;
-    datePunish[tmpDate-1].innerText = em_txt.value;
+    dateName[tmpDate-1].innerText = seq_name.value;
+    datePunish[tmpDate-1].innerText = seq_txt.value;
 }
 
-var em_changePage = function (e) {
+var seq_changePage = function (e) {
     window.location.replace("C:/xampp/htdocs/CleanSystem/"+this.value+".html");
 }

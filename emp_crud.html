@@ -12,25 +12,23 @@
             integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
             crossorigin="anonymous">
         </script>
-        <script src="add_del.js"></script>
-        <!-- <script src="employee.js"></script> -->
-        <!-- <script src="punish.js"></script> -->
+        <script src="emp_crud.js"></script>
     </head>
-<body onload = add_del_init()>
+<body onload = emp_crud_init()>
     <div id="">
-        <select name="" id="ad_chgpage">
-            <option id="ad_employee" value="employee" >值日生表</option>
-            <option id="ad_punish" value="punish" >懲罰項目表</option>
-            <option id="ad_add_del" value="ad_del" >員工增修表</option>
+        <select name="" id="emp_chgpage">
+            <option id="emp_sequence" value="sequence" >值日生表</option>
+            <option id="emp_punish" value="punish" >懲罰項目表</option>
+            <option id="emp_crud" value="emp_del" >員工增修表</option>
         </select><br><br>
     </div>
 
     <span>到職日:</span>
-    <input type="date" id="ad_startDate" value="" min="01-01" max="12-31"><br>
+    <input type="date" id="emp_startDate" value="" min="01-01" max="12-31"><br>
     <span>員工:</span>
-    <input type="text" id="ad_name"><br>
+    <input type="text" id="emp_name"><br>
     <span>職稱:</span>&nbsp&nbsp&nbsp&nbsp
-    <select name="" id="ad_title">
+    <select name="" id="emp_title">
         <option id="director" value="主管">主管</option>
         <option value="工程師">工程師</option>
         <option value="特殊">特殊</option>
@@ -38,14 +36,14 @@
         <option value="其他">其他</option>
     </select><br>
     <span>狀態:</span>&nbsp&nbsp&nbsp
-    <input type="checkbox" id="ad_status" value=""><label>在職</label><br>
+    <input type="checkbox" id="emp_status" value=""><label>在職</label><br>
     <input type="submit" id="sel_confirm" value="查詢">
-    <input type="submit" id="ad_confirm" value="新增">
+    <input type="submit" id="add_confirm" value="新增">
     <input type="submit" id="up_confirm" value="修改">
     <input type="submit" id="del_confirm" value="刪除">
 
-    <span id="ad_stateInfo"></span>
+    <span id="emp_stateInfo"></span>
  
-    <table id="ad_tbody" class="sys_tb"></table>
+    <table id="emp_tbody" class="sys_tb"></table>
 </body>
 </html>

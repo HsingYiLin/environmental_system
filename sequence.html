@@ -13,18 +13,17 @@
             crossorigin="anonymous">
         </script>
         
-        <script src="employee.js"></script>
-        <!-- <script src="punish.js"></script> -->
-        <!-- <script src="add_del.js"></script> -->
+        <script src="sequence.js"></script>
+       
 
     </head>
-<body onload = employ_init()>
+<body onload = sequence_init()>
 
     <div id="">
-        <select name="" id="em_chgpage">
-            <option id="em_employee" value="employee" >值日生表</option>
-            <option id="em_punish" value="punish" >懲罰項目表</option>
-            <option id="em_add_del" value="add_del" >員工增修表</option>
+        <select name="" id="seq_chgpage">
+            <option id="seq_sequence" value="sequence" >值日生表</option>
+            <option id="seq_punish" value="punish" >懲罰項目表</option>
+            <option id="seq_emp_crud" value="emp_crud" >員工增修表</option>
         </select><br><br>
     </div>
 
@@ -44,9 +43,9 @@
 
     </div>
 
-    <div id="em_edit">
+    <div id="seq_edit">
         <span>日期:</span>&nbsp&nbsp&nbsp&nbsp
-        <input type="date" id="em_calender" value="" min="01-01" max="12-31"><br>
+        <input type="date" id="seq_calender" value="" min="01-01" max="12-31"><br>
         <span>開關:</span>&nbsp&nbsp&nbsp&nbsp
         <select name="" id="on_off">
             <option value="work">上班日</option>
@@ -56,9 +55,9 @@
         
         <div id="workDateForm">
             <span>值日生:</span>
-            <input type="text" id="em_name"><br>
+            <input type="text" id="seq_name"><br>
             <span>懲罰:</span>&nbsp&nbsp&nbsp&nbsp
-            <select name="" id="em_txt">
+            <select name="" id="seq_txt">
                 <option value=""></option>
                 <option value="值日生未打掃">值日生未打掃</option>
                 <option value="組員離職未告知">組員離職未告知</option>
@@ -66,12 +65,12 @@
                 <option value="個人座位整潔">個人座位整潔</option>
             </select><br>        
             <span>候補:</span>&nbsp&nbsp&nbsp&nbsp
-            <input type="text" id="em_replace"><br>
-            <input type="submit" id="em_confirm" value="修改">
-            <span id="em_stateInfo"></span>
+            <input type="text" id="seq_replace"><br>
+            <input type="submit" id="seq_confirm" value="修改">
+            <span id="seq_stateInfo"></span>
         </div>        
     </div>
-    <table id="em_tbody" class="sys_tb"></table>
+    <table id="seq_tbody" class="sys_tb"></table>
 
 </body>
 </html>
