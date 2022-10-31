@@ -100,21 +100,19 @@
 
 	}else if($object["pload"] == "delete"){
 		$emp_name = $object["emp_name"];
-		$sql_sel3 = "SELECT `emp_name` FROM employee WHERE `emp_name` =" ."'$emp_name'";
-		$sql_sel4 ="SELECT `name` FROM punish WHERE `name` =" ."'$emp_name'";
-		$result = mysqli_query($mydb_link, $sql_sel3);
-		$result2 = mysqli_query($mydb_link, $sql_sel3);
-		if (mysqli_num_rows($result) == 0) {
+		$sql_pre_delete = "SELECT `emp_name` FROM employee WHERE `emp_name` =" ."'$emp_name'";
+		$result_pre_delete = mysqli_query($mydb_link, $sql_pre_delete);
+		if (mysqli_num_rows($result_pre_delete) == 0) {
 			$arr_res["status"] = "no data";
 			echo json_encode($arr_res);
 			die();
 			mysqli_close($mydb_link);
 		} 
-		$sql_del = "DELETE FROM employee WHERE `emp_name` =" ."'$emp_name'";
-		$sql_del2 = "DELETE FROM punish WHERE `name` =" ."'$emp_name'";
-		if(mysqli_query($mydb_link, $sql_del)){
-			if (mysqli_num_rows($result2) > 0) {
-				mysqli_query($mydb_link, $sql_del2);
+		$sql_delete_emp = "DELETE FROM employee WHERE `emp_name` =" ."'$emp_name'";
+		$sql_delete_pun = "DELETE FROM punish WHERE `name` =" ."'$emp_name'";
+		if(mysqli_query($mydb_link, $sql_delete_emp)){
+			if (mysqli_num_rows($result_pre_delete) > 0) {
+				mysqli_query($mydb_link, $sql_delete_pun);
 			} 
 			$arr_res["status"] = "delete success";
 		}

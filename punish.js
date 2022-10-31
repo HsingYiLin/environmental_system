@@ -131,8 +131,7 @@ var httpReqFun = function (param){
 var parseAllData = function (initData){
     pun_tableHTML = "";
     pun_tbody.innerHTML = "<tr class=first_tr><td>受罰日期</td><td>值日生</td><td>懲罰原因</td><td>次數</td><td>罰金</td><td>倍率</td></tr>";
-    console.log("initData",initData);
-    if(initData["status"] != "update fail" && initData["status"] != "no data" || arr_data["status"] != "date duplicate"){
+    if(initData["status"] != "update fail" && initData["status"] != "no data" && initData["status"] != "date duplicate"){
         var data_size = Object.keys(initData["name"]).length;
         for(var j = 1; j <= data_size; j++){
             //以次數判斷，要付清哪一欄的錢。

@@ -54,14 +54,14 @@
 		}
 
 		//日期不能重複
-		// $sql_duplicate = "SELECT `name`, `pun_date` FROM punish WHERE `name` = "."'$name'" ." AND `pun_date` = "."'$date'";
-		// $result_duplicate = mysqli_query($mydb_link, $sql_duplicate);
-		// if (!empty($result_duplicate)) {
-        //     $arr_res["status"] = "date duplicate";
-        //     echo json_encode($arr_res);
-        //     die();
-		// 	mysqli_close($mydb_link);
-		// }
+		$sql_duplicate = "SELECT `name`, `pun_date` FROM punish WHERE `name` = "."'$name'" ." AND `pun_date` = "."'$date'";
+		$result_duplicate = mysqli_query($mydb_link, $sql_duplicate);
+		if (mysqli_num_rows($result_duplicate) > 0) {
+            $arr_res["status"] = "date duplicate";
+            echo json_encode($arr_res);
+            die();
+			mysqli_close($mydb_link);
+		}
 
 		//起始罰金
 		$init_fine = 10;

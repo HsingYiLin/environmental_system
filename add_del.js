@@ -138,7 +138,6 @@ var httpReqFun = function (param){
 
 var parseAllData = function (initData){
     ad_tableHTML = "";
-    // console.log(initData["error"]);
     ad_tbody.innerHTML = "<tr class=first_tr><td>到職日</td><td>員工</td><td>職稱</td><td>狀態</td></tr>";
     if(initData["status"] != "update fail" && initData["status"] != "no data" && initData["status"] != "duplicate"){
         var data_size = Object.keys(initData["emp_name"]).length;
