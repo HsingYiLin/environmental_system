@@ -4,9 +4,8 @@ var monList;
 var clean_comp;
 var seq_edit;
 var pre_confirm;
-
+var clean_comp;
 var seq_sequence;
-var dateObj;
 var seq_calender;
 var on_off;
 var seq_name;
@@ -21,9 +20,10 @@ var seq_toSend = {};
 var dateName;
 var datePunish;
 var parseStr = "";
-var daysLen = "";
-var year = 2022;
-var month = 9;
+var table_days = "";
+var last_emp = "";
+var pun_arr = Array();
+var mon = "";
 var isPreEdit = false;
 var tableHTML="";
 //邏輯交給後段判斷
@@ -31,7 +31,7 @@ var tableHTML="";
 //前端修改的部分整張存入資料庫
 
 var sequence_init = function(){
-    console.log("employ_init");
+    console.log("sequence_init");
     seq_chgpage = document.querySelector("#seq_chgpage");
     pre_edit = document.getElementById("pre_edit");
     monList = document.getElementById("monList");
@@ -41,14 +41,14 @@ var sequence_init = function(){
     seq_tbody = document.getElementById("seq_tbody");
     seq_chgpage.addEventListener("change", seq_changePage, false);
     seq_edit.style.display = "none";
-    dateObj =new Date();
+    clean_comp = document.getElementById("clean_comp");
+
     dynamicTable();
     pre_confirm.addEventListener("click", function(){
         isPreEdit = (monList.value != "" && clean_comp.value != "")? true:false;
         if(isPreEdit){
             seq_edit.style.display = "";
             pre_edit.style.display = "none";
-            actionDB("init");
             
             seq_sequence = document.getElementById("seq_sequence");
             seq_calender = document.getElementById("seq_calender");
@@ -62,48 +62,36 @@ var sequence_init = function(){
             seq_sequence.setAttribute("selected", true);
             seq_confirm.addEventListener("click", req_val);
     
-            dynamicTable();
+            actionDB("init");
+
             // var tmp = judgeDate(year,month);
-            // console.log(tmp);
-            dateName = document.getElementsByClassName("dateName");
-            datePunish = document.getElementsByClassName("datePunish"); 
-            parseTable();
+            
+            // parseTable();
         }
     })
     
 }
 
-var dynamicTable = function (){
-    var dateSort = "", arr_data;
-    seq_tbody.innerHTML = "<tr class=first_tr><td>日期</td><td class = dateName>值日生</td><td class = datePunish>懲罰</td><td>候補</td></tr>"
-    var monObj;
-    monObj = dateObj.getMonth();
-    dateObj.setMonth(monList.value.substring(8, 10) + 1);
-    dateObj.setDate(0);
-    daysLen = dateObj.getDate();
-    if(arr_data != undefined){
-        for(var i =1; i<=daysLen; i++){
-            dateObj.setDate(i);
-            dateSort = monObj+1+"/"+dateObj.getDate();
-            tableHTML +="<tr><td>"+dateSort+"</td><td class = dateName></td><td class = datePunish></td><td></td></tr>"
-        }
-        seq_tbody.innerHTML += tableHTML;
-    }
-}
-
 var actionDB = function(params) {
-    // var tmpDate = seq_calender.value.substring(8, 10);
-
     switch(params){
         case "init":
-            console.log(monList.value);
             seq_toSend = {
                 pload: "init",
-                mon: monList.value,
-                days: daysLen
+                mon: monList.value
+                // days: daysLen
             }   
             httpReqFun(seq_toSend);
-    }
+            break;
+        case "lastEmp":
+            seq_toSend = {
+                pload: "lastEmp",
+                lastEmp: last_emp,
+                punishList: pun_arr,
+                mon: mon
+            }  
+            httpReqFun(seq_toSend);
+            break;
+        }
 }
 
 var httpReqFun = function (param){
@@ -118,54 +106,102 @@ var httpReqFun = function (param){
             setTimeout(function(){
                 // pun_stateInfo.innerText = "";
             },3000);
-           if(arr_data["status"]=="success!"){
+            console.log("arr_data",arr_data);
+            if(arr_data["emp_status"] == "employee success!" && arr_data["pun_status"] == "punish success!" || arr_data["pun_status"] == "punish no data"){
                 sortData(arr_data);
-                
-            }      
+            }
         }
     }
     xmlhttp.send(jsonString);
 }
 
 var sortData = function(data){
-    console.log("sortData",data);
-    console.log(data["emp_name"]);
-}
+    var year = monList.value.substring(0,4);
+    mon = monList.value.substring(5,7);
+    dynamicTable(year, mon);
+    dateName = document.getElementsByClassName("dateName");
+    datePunish = document.getElementsByClassName("datePunish"); 
+    var dateJudgeDate;
+    var cnt = 1; //第一個完整周
+    var pun_data_ind = 1; //pun的第一筆
+    var emp_data_ind = 1; //emp的第一筆
+    var lastIndex = 0;//上個月第幾筆是最後一個值日生
+    var pun_data_size = 0;
+    if (data.name != undefined) {
+        pun_data_size = Object.keys(data["name"]).length;
+    }
+    var emp_data_size = Object.keys(data["emp_name"]).length;
 
-
-var parseTable = function (intent){    
-    // for(date2=1; date2 <= daysLen; date2++){
-    //     var dateJudgeDate2 = new Date(year,month, date2);
-    //     dataNameEl =dateName[date2-1];
-    //     switch(dateJudgeDate2.getDay()){
-    //         case 0:
-    //             dataNameEl.innerText = "日";
-    //             dataNameEl.style.backgroundColor = "#FFD1A4";
-    //             break;
-    //         case 6:
-    //             dataNameEl.innerText = "六";
-    //             dataNameEl.style.backgroundColor = "#FFD1A4";
-    //             break;
-    //         case 4:
-    //             dataNameEl.innerText = "清潔公司";
-    //             dataNameEl.style.backgroundColor = "#E0E0E0";
-    //             break;
+    //上個月誰排最後，從第幾筆開始
+    // for(var i = 1; i < emp_data_size; i++){
+    //     if(data.lastIndex[i] != "0"){
+    //         lastIndex = i;
+    //         emp_data_ind = lastIndex + 1;//下一筆開始
     //     }
     // }
-}
-
-//判斷第一個完整禮拜&六日
-var judgeDate = function(y,m){
-    var retObj = Array();
-    var isFirstMon = true;
-    for(var i=1; i <= daysLen; i++){
-        var dateJudgeDate1 = new Date(y, m, i);
-        if(isFirstMon && dateJudgeDate1.getDay() == 1){
-            retObj[i] = 1;
-            isFirstMon = false;
+    // emp_data_size += emp_data_size + lastIndex;//長度加上誰排最後的index
+    //六、日、清潔公司
+    for(var i=1; i <= table_days; i++){
+        dateJudgeDate = new Date(year +"-"+ mon + "-"+ i);
+        //剪輯組
+        if(mon % 2 !=0 && dateJudgeDate.getDay() == 1 && cnt == 1){
+            for(var j =i; j < i+6; j++){
+                dateName[j].innerText = "剪輯組";
+            }
+            cnt ++;
+        }
+        switch(dateJudgeDate.getDay()){
+            case 0:
+                dateName[i].innerText = "日";
+                dateName[i].style.backgroundColor = "#FFD1A4";
+                break;
+            case 6:
+                dateName[i].innerText = "六";
+                dateName[i].style.backgroundColor = "#FFD1A4";
+                break;
+            case clean_comp.value * 1:
+                dateName[i].innerText = "清潔公司";
+                dateName[i].style.backgroundColor = "#E0E0E0";
+                break;
+        }
+        if(dateName[i].innerText == "" && pun_data_size > 0 && pun_data_size >= pun_data_ind){
+            dateName[i].innerText = data.name[pun_data_ind];
+            pun_arr.push(data.name[pun_data_ind]);
+            datePunish[i].innerText = data.pun_date[pun_data_ind].substring(5,7)+"/"+ data.pun_date[pun_data_ind].substring(8,10) + data.punishtxt[pun_data_ind];
+            // console.log(data.pun_date[pun_data_ind].substring(5,7)+"/"+ data.pun_date[pun_data_ind].substring(8,10)>"08/08");
+            pun_data_ind ++;
+        }
+        // var d = data.pun_date[pun_data_ind].substring(5,10);
+        // console.log(d);
+        // console.log(d>"11-01");
+        if(dateName[i].innerText == "" && emp_data_size >= emp_data_ind){
+            dateName[i].innerText = data.emp_name[emp_data_ind];
+            emp_data_ind ++;
+            if(emp_data_ind > emp_data_size){
+                emp_data_ind = 1;
+            }
+            console.log(emp_data_ind);
         }
     }
-    return retObj;
+    last_emp = data.emp_name[emp_data_ind-1];
+    // console.log(pun_arr);
+    console.log(last_emp);
+    actionDB("lastEmp");
+   
+
+}
+
+var dynamicTable = function (year, mon){
+    seq_tbody.innerHTML = "<tr class=first_tr><td>日期</td><td class = dateName>值日生</td><td class = datePunish>懲罰</td><td>候補</td></tr>"
+    if(isPreEdit){
+        var dateObj = new Date(year,mon,0);
+        table_days = dateObj.getDate();
+        for(var i =1; i<=table_days; i++){
+            dateSort = mon+"/"+i;
+            tableHTML +="<tr><td>"+dateSort+"</td><td class = dateName></td><td class = datePunish></td><td></td></tr>"
+        }
+        seq_tbody.innerHTML += tableHTML;
+    }  
 }
 
 var judgeHoliday = function (){
@@ -174,13 +210,6 @@ var judgeHoliday = function (){
 
 var req_val = function (){
     var tmpDate = seq_calender.value.substring(8, 10);
-    dateName[tmpDate-1].innerText = seq_name.value;
-    datePunish[tmpDate-1].innerText = seq_txt.value;
-}
-
-var loadFinish = function (initData){ 
-    var tmpDate = seq_calender.value.substring(8, 10);
-    console.log("loadFinish");
     dateName[tmpDate-1].innerText = seq_name.value;
     datePunish[tmpDate-1].innerText = seq_txt.value;
 }

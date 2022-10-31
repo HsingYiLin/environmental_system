@@ -41,18 +41,22 @@
     	$name = $object["name"];
     	$punishtxt = $object["punishtxt"];
 
-		//是否符合值日生資格
-		$sql_pre_add = "SELECT * FROM employee ";
-		$sql_pre_add .= " WHERE `emp_name` =" ."'$name'" . " AND `state` = '在職' AND `title` = '其他' ";
-		$sql_pre_add .= "AND "."'$date'". " >= DATE_ADD(`startdate`, INTERVAL 1 MONTH)";
-		$result_add = mysqli_query($mydb_link, $sql_pre_add);
-		if (mysqli_num_rows($result_add) == 0) {
-            $arr_res["status"] = "no data";
-            echo json_encode($arr_res);
-            die();
-			mysqli_close($mydb_link);
+		if($name == "剪輯組"){
+			$name = "剪輯組";
+		}else{
+			//是否符合值日生資格
+			$sql_pre_add = "SELECT * FROM employee ";
+			$sql_pre_add .= " WHERE `emp_name` =" ."'$name'" . " AND `state` = '在職' AND `title` = '其他'";
+			$sql_pre_add .= "AND "."'$date'". " >= DATE_ADD(`startdate`, INTERVAL 1 MONTH)";
+			$result_add = mysqli_query($mydb_link, $sql_pre_add);
+			if (mysqli_num_rows($result_add) == 0) {
+				$arr_res["status"] = "no data";
+				echo json_encode($arr_res);
+				die();
+				mysqli_close($mydb_link);
+			}
 		}
-
+		
 		//日期不能重複
 		$sql_duplicate = "SELECT `name`, `pun_date` FROM punish WHERE `name` = "."'$name'" ." AND `pun_date` = "."'$date'";
 		$result_duplicate = mysqli_query($mydb_link, $sql_duplicate);
@@ -165,7 +169,7 @@
 		$sql_cnt_update = "SELECT `pun_date`, `fine`, `times`, `odds` FROM punish";
 		$sql_cnt_update .= "  WHERE `name` = "."'$name'" . " AND `pun_date` >" ."'$date'" . " AND `pun_date` < DATE_ADD("."'$date'".", INTERVAL 3 MONTH)";
 		$result_cnt_update = mysqli_query($mydb_link, $sql_cnt_update);
-		
+		$arr_res["sql_cnt_update"] = $sql_cnt_update;
 		if(!empty($result_cnt_update)){
 			$i = 1;
 			while($row_update = mysqli_fetch_assoc($result_cnt_update)){
