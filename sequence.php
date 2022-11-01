@@ -65,18 +65,4 @@
 		echo json_encode($arr_res);
 
 	}
-	//console.log(1%12);//1
-    //console.log(2%12);//2
-    //console.log(3%12);//3
-    //console.log(4%12);//4
-    // console.log(5%12);//5
-    // console.log(6%12);//6
-    // console.log(7%12);//7
-    // console.log(8%12);//8
-    // console.log(9%12);//9
-    // console.log(10%12);//10
-    // console.log(11%12);//11
-    // console.log(12%12);//0
-    // console.log(13%12);//1
-    // console.log(14%12);//2
 ?>

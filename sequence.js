@@ -26,6 +26,7 @@ var pun_arr = Array();
 var mon = "";
 var isPreEdit = false;
 var tableHTML="";
+var dateSort;
 //邏輯交給後段判斷
 //前端負責表格修改的部分
 //前端修改的部分整張存入資料庫
@@ -95,7 +96,7 @@ var actionDB = function(params) {
 }
 
 var httpReqFun = function (param){
-    console.log("httpReqFun",param);
+    // console.log("httpReqFun",param);
     var arr_data;
     jsonString = JSON.stringify(param);
     xmlhttp.open("POST",seq_Url);
@@ -119,32 +120,28 @@ var sortData = function(data){
     var year = monList.value.substring(0,4);
     mon = monList.value.substring(5,7);
     dynamicTable(year, mon);
+
+    dateSortCls = document.getElementsByClassName("dateSortCls");
     dateName = document.getElementsByClassName("dateName");
     datePunish = document.getElementsByClassName("datePunish"); 
+
     var dateJudgeDate;
     var cnt = 1; //第一個完整周
     var pun_data_ind = 1; //pun的第一筆
     var emp_data_ind = 1; //emp的第一筆
-    var lastIndex = 0;//上個月第幾筆是最後一個值日生
+    var tmp = 1;
     var pun_data_size = 0;
+    var dateSortTimeStamp, startText, startTimeStamp;
+
     if (data.name != undefined) {
         pun_data_size = Object.keys(data["name"]).length;
     }
     var emp_data_size = Object.keys(data["emp_name"]).length;
 
-    //上個月誰排最後，從第幾筆開始
-    // for(var i = 1; i < emp_data_size; i++){
-    //     if(data.lastIndex[i] != "0"){
-    //         lastIndex = i;
-    //         emp_data_ind = lastIndex + 1;//下一筆開始
-    //     }
-    // }
-    // emp_data_size += emp_data_size + lastIndex;//長度加上誰排最後的index
     //六、日、清潔公司
     for(var i=1; i <= table_days; i++){
         dateJudgeDate = new Date(year +"-"+ mon + "-"+ i);
-        //剪輯組
-        if(mon % 2 !=0 && dateJudgeDate.getDay() == 1 && cnt == 1){
+        if(mon % 2 !=0 && dateJudgeDate.getDay() == 1 && cnt == 1){//剪輯組
             for(var j =i; j < i+6; j++){
                 dateName[j].innerText = "剪輯組";
             }
@@ -167,25 +164,27 @@ var sortData = function(data){
         if(dateName[i].innerText == "" && pun_data_size > 0 && pun_data_size >= pun_data_ind){
             dateName[i].innerText = data.name[pun_data_ind];
             pun_arr.push(data.name[pun_data_ind]);
-            datePunish[i].innerText = data.pun_date[pun_data_ind].substring(5,7)+"/"+ data.pun_date[pun_data_ind].substring(8,10) + data.punishtxt[pun_data_ind];
-            // console.log(data.pun_date[pun_data_ind].substring(5,7)+"/"+ data.pun_date[pun_data_ind].substring(8,10)>"08/08");
+            datePunish[i].innerText = data.pun_date[pun_data_ind].substring(5,7) + "/" + data.pun_date[pun_data_ind].substring(8,10) + data.punishtxt[pun_data_ind];
             pun_data_ind ++;
         }
-        // var d = data.pun_date[pun_data_ind].substring(5,10);
-        // console.log(d);
-        // console.log(d>"11-01");
-        if(dateName[i].innerText == "" && emp_data_size >= emp_data_ind){
-            dateName[i].innerText = data.emp_name[emp_data_ind];
-            emp_data_ind ++;
-            if(emp_data_ind > emp_data_size){
-                emp_data_ind = 1;
+       
+        dateSortTimeStamp = new Date(dateSortCls[i-1].innerText.split('/').join('-')).getTime();//表格日期時間戳
+        if(dateName[i].innerText == ""){
+            for( emp_data_ind = tmp ; emp_data_ind <= emp_data_size; emp_data_ind++){
+                startText = new Date(data.startdate[emp_data_ind].substring(5, 10)); 
+                startTimeStamp = startText.setMonth(startText.getMonth() + 1);//員工報到時間戳
+                if(dateSortTimeStamp > startTimeStamp){
+                    dateName[i].innerText = data.emp_name[emp_data_ind];
+                    tmp = emp_data_ind + 1;
+                    if(tmp > emp_data_size){
+                        tmp = 1;
+                    }
+                    break;
+                }
             }
-            console.log(emp_data_ind);
-        }
+        }    
+        
     }
-    last_emp = data.emp_name[emp_data_ind-1];
-    // console.log(pun_arr);
-    console.log(last_emp);
     actionDB("lastEmp");
    
 
@@ -198,7 +197,7 @@ var dynamicTable = function (year, mon){
         table_days = dateObj.getDate();
         for(var i =1; i<=table_days; i++){
             dateSort = mon+"/"+i;
-            tableHTML +="<tr><td>"+dateSort+"</td><td class = dateName></td><td class = datePunish></td><td></td></tr>"
+            tableHTML +="<tr><td class = dateSortCls>"+dateSort+"</td><td class = dateName></td><td class = datePunish></td><td></td></tr>"
         }
         seq_tbody.innerHTML += tableHTML;
     }  
