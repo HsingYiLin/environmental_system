@@ -16,7 +16,7 @@
   	$arr_res =Array();
 
     if($object["pload"] == "init"){
-		$sql_init = "SELECT * FROM punish ORDER BY `name`,`pun_date` ASC";
+		$sql_init = "SELECT * FROM punish ORDER BY `pun_date` ASC";
 		$result_init = mysqli_query($mydb_link, $sql_init);
 		$i=1;
 		if ($result_init->num_rows > 0) {
@@ -27,6 +27,7 @@
 				$arr_res["times"][$i]=$row['times'];
                 $arr_res["fine"][$i]=$row['fine'];
                 $arr_res["odds"][$i]=$row['odds'];
+				$arr_res["done"][$i]=$row['done'];
 				$i++;
 			}
 			$arr_res["status"] = "success!";

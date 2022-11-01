@@ -116,6 +116,7 @@ var httpReqFun = function (param){
             setTimeout(function(){
                 pun_stateInfo.innerText = "";
             },3000);
+            console.log("arr_data",arr_data);
             if(arr_data["status"] == "add success" || arr_data["status"] == "update success" ||arr_data["status"] == "delete success" ||arr_data["status"] == "no data update"){
                 actionDB("init");
                 clearInput();
@@ -130,7 +131,7 @@ var httpReqFun = function (param){
 
 var parseAllData = function (initData){
     pun_tableHTML = "";
-    pun_tbody.innerHTML = "<tr class=first_tr><td>受罰日期</td><td>值日生</td><td>懲罰原因</td><td>次數</td><td>罰金</td><td>倍率</td></tr>";
+    pun_tbody.innerHTML = "<tr class=first_tr><td>受罰日期</td><td>值日生</td><td>懲罰原因</td><td>次數</td><td>罰金</td><td>倍率</td><td>進度</td></tr>";
     if(initData["status"] != "update fail" && initData["status"] != "no data" && initData["status"] != "date duplicate"){
         var data_size = Object.keys(initData["name"]).length;
         for(var j = 1; j <= data_size; j++){
@@ -140,10 +141,10 @@ var parseAllData = function (initData){
             //3.Ex:c.(6/16 7/7 8/24 9/8) & d.(8/24 9/8 10/7)，d為最後一筆，必須結清，d.沒包括到7/6(7/8基準日)，所以c須結清....大於。
             if(initData.times[j] >= initData.times[j+1] || j == data_size){
                 pun_tableHTML += "<tr class = data_pun_tr  style = 'background-color :#FF7575';><td>"+initData.date[j]+"</td><td>"+initData.name[j]+"</td>";
-                pun_tableHTML += "<td>"+initData.punishtxt[j]+"</td><td>"+initData.times[j]+"</td><td>"+initData.fine[j]+"</td><td>"+initData.odds[j]+"</td></tr>";
+                pun_tableHTML += "<td>"+initData.punishtxt[j]+"</td><td>"+initData.times[j]+"</td><td>"+initData.fine[j]+"</td><td>"+initData.odds[j]+"</td><td>"+ initData.done[j] +"</td></tr>";
             }else{
                 pun_tableHTML += "<tr class = data_pun_tr><td>"+initData.date[j]+"</td><td>"+initData.name[j]+"</td>";
-                pun_tableHTML += "<td>"+initData.punishtxt[j]+"</td><td>"+initData.times[j]+"</td><td>"+initData.fine[j]+"</td><td>"+initData.odds[j]+"</td></tr>";
+                pun_tableHTML += "<td>"+initData.punishtxt[j]+"</td><td>"+initData.times[j]+"</td><td>"+initData.fine[j]+"</td><td>"+initData.odds[j]+"</td><td>"+ initData.done[j] +"</td></tr>";
             }
         }
         pun_tbody.innerHTML += pun_tableHTML;

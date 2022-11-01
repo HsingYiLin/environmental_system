@@ -23,13 +23,14 @@ var parseStr = "";
 var table_days = "";
 var last_emp = "";
 var pun_arr = Array();
+var pun_date = Array();
 var mon = "";
+var year = "";
 var isPreEdit = false;
 var tableHTML="";
 var dateSort;
-//邏輯交給後段判斷
-//前端負責表格修改的部分
-//前端修改的部分整張存入資料庫
+var pun_data_ind = 1; //pun的第一筆
+var emp_data_ind = 1; //emp的第一筆
 
 var sequence_init = function(){
     console.log("sequence_init");
@@ -64,10 +65,6 @@ var sequence_init = function(){
             seq_confirm.addEventListener("click", req_val);
     
             actionDB("init");
-
-            // var tmp = judgeDate(year,month);
-            
-            // parseTable();
         }
     })
     
@@ -88,6 +85,7 @@ var actionDB = function(params) {
                 pload: "lastEmp",
                 lastEmp: last_emp,
                 punishList: pun_arr,
+                punishDate: pun_date,
                 mon: mon
             }  
             httpReqFun(seq_toSend);
@@ -117,9 +115,9 @@ var httpReqFun = function (param){
 }
 
 var sortData = function(data){
-    var year = monList.value.substring(0,4);
+   year = monList.value.substring(0,4);
     mon = monList.value.substring(5,7);
-    dynamicTable(year, mon);
+    dynamicTable(year, mon);//整個月表格
 
     dateSortCls = document.getElementsByClassName("dateSortCls");
     dateName = document.getElementsByClassName("dateName");
@@ -127,21 +125,20 @@ var sortData = function(data){
 
     var dateJudgeDate;
     var cnt = 1; //第一個完整周
-    var pun_data_ind = 1; //pun的第一筆
-    var emp_data_ind = 1; //emp的第一筆
-    var tmp = 1;
     var pun_data_size = 0;
     var dateSortTimeStamp, startText, startTimeStamp;
-
     if (data.name != undefined) {
         pun_data_size = Object.keys(data["name"]).length;
     }
     var emp_data_size = Object.keys(data["emp_name"]).length;
+    var tmp =1;
 
-    //六、日、清潔公司
-    for(var i=1; i <= table_days; i++){
+    //順位:
+    //剪輯組(第一個完整禮拜)?剪輯組:懲罰者
+    //兩者都沒有，其他職位員工
+    for( i=1; i <= table_days; i++){
         dateJudgeDate = new Date(year +"-"+ mon + "-"+ i);
-        if(mon % 2 !=0 && dateJudgeDate.getDay() == 1 && cnt == 1){//剪輯組
+        if(mon % 2 !=0 && dateJudgeDate.getDay() == 1 && cnt == 1){
             for(var j =i; j < i+6; j++){
                 dateName[j].innerText = "剪輯組";
             }
@@ -164,14 +161,15 @@ var sortData = function(data){
         if(dateName[i].innerText == "" && pun_data_size > 0 && pun_data_size >= pun_data_ind){
             dateName[i].innerText = data.name[pun_data_ind];
             pun_arr.push(data.name[pun_data_ind]);
+            pun_date.push(data.pun_date[pun_data_ind]);
             datePunish[i].innerText = data.pun_date[pun_data_ind].substring(5,7) + "/" + data.pun_date[pun_data_ind].substring(8,10) + data.punishtxt[pun_data_ind];
             pun_data_ind ++;
         }
-       
-        dateSortTimeStamp = new Date(dateSortCls[i-1].innerText.split('/').join('-')).getTime();//表格日期時間戳
+        
+        dateSortTimeStamp = new Date((year+ "/" +dateSortCls[i-1].innerText).split('/').join('-')).getTime();//表格日期時間戳
         if(dateName[i].innerText == ""){
             for( emp_data_ind = tmp ; emp_data_ind <= emp_data_size; emp_data_ind++){
-                startText = new Date(data.startdate[emp_data_ind].substring(5, 10)); 
+                startText = new Date(data.startdate[emp_data_ind]); 
                 startTimeStamp = startText.setMonth(startText.getMonth() + 1);//員工報到時間戳
                 if(dateSortTimeStamp > startTimeStamp){
                     dateName[i].innerText = data.emp_name[emp_data_ind];
@@ -179,12 +177,17 @@ var sortData = function(data){
                     if(tmp > emp_data_size){
                         tmp = 1;
                     }
+                    
                     break;
                 }
+                tmp = emp_data_ind + 1;
+                if(tmp > emp_data_size){
+                    tmp = 1;
+                }
             }
-        }    
-        
+        }     
     }
+    last_emp = data.emp_name[emp_data_ind];
     actionDB("lastEmp");
    
 
