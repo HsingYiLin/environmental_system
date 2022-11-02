@@ -16,7 +16,27 @@
 	$object = json_decode($requestPayload, true);
   	$arr_res =Array();
 
-    if($object["pload"] == "init"){
+	if($object["pload"] == "dataExist"){
+		$tableName = $object["tableName"];
+		$sql_sequence = "SELECT * FROM sequence"."$tableName";
+		$result_sequence = mysqli_query($mydb_link, $sql_sequence);
+		$i=1;
+		if (mysqli_num_rows($result_sequence) > 0){
+			while($row = mysqli_fetch_array($result_sequence)){
+				$arr_res["calender"][$i] = $row['calender'];
+				$arr_res["txt"][$i] = $row['txt'];
+				$arr_res["punish"][$i] = $row['punish'];
+				$arr_res["replace_emp"][$i] = $row['replace_emp'];
+				$i++;
+			}
+			$arr_res["sequence_status"] = "sequence data exist";
+		}else{
+			$arr_res["sequence_status"] = "sequence no data";
+		}
+		echo json_encode($arr_res);
+		mysqli_close($mydb_link);
+	
+	}else if($object["pload"] == "init"){
 		$mon = $object["mon"];
 		$mon_str = substr($mon, 5, 2);
 		$year_str = substr($mon, 0, 4);
@@ -24,7 +44,7 @@
 		$max_date = $year_str . $mon_str . $month_days;
 		$sql_employee = "SELECT * FROM employee WHERE `title` = '其他' AND `state` = '在職'";
 		$sql_employee .= " AND "."'$max_date'". " >= DATE_ADD(`startdate`, INTERVAL 1 MONTH) ORDER BY `startdate` DESC";
-		$sql_punish = "SELECT `name`, `punishtxt`, `pun_date` FROM punish WHERE  `done` = 0  AND `pun_date` NOT LIKE "."'$mon%'"." ORDER BY `pun_date` ASC";
+		$sql_punish = "SELECT `name`, `punishtxt`, `pun_date` FROM punish WHERE  `done` = 0  AND `pun_date` < "."'$mon%'"."-1 ORDER BY `pun_date` ASC";
 		$result_employee = mysqli_query($mydb_link, $sql_employee);
 		$result_punish= mysqli_query($mydb_link, $sql_punish);
 		$i=1;
@@ -76,25 +96,16 @@
 			} else {
 				$arr_res["status"] = "add fail";	
 			}
-		}
-
-		// $sql_init_last_ind = " UPDATE employee SET `lastIndex` = '0'";
-		// if(mysqli_query($mydb_link,$sql_init_last_ind) == TRUE){
-			// }
-		
-		// $mon = $object["mon"];
-		// if(!empty($object["lastEmp"])){
-		// 	$lastEmp = $object["lastEmp"];
-		// 	$mon = $object["mon"];
-		// 	$punishDate = $object["punishDate"];
-		// 	$sql_update_last_ind = "UPDATE employee SET `lastIndex` = "."'$mon'". " WHERE `emp_name` = "."'$lastEmp'";
-		// 	if(mysqli_query($mydb_link, $sql_update_last_ind) == TRUE){
-		// 		$arr_res["status"] = "update punish success";
-		// 	}
-		
-	
-		$arr_res["status"] = "update success";
-		 
+		}	
+		$mon = $object["mon"];
+		if(!empty($object["lastEmp"])){
+			$lastEmp = $object["lastEmp"];
+			$mon = $object["mon"];
+			$sql_update_last_ind = "UPDATE employee SET `lastIndex` = "."'$mon'". " WHERE `emp_name` = "."'$lastEmp'";
+			if(mysqli_query($mydb_link, $sql_update_last_ind) == TRUE){
+				$arr_res["status"] = "update  success";
+			}
+		}			 
 
 		echo json_encode($arr_res);
 		mysqli_close($mydb_link);

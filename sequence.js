@@ -27,10 +27,9 @@ var last_emp = "";
 var mon = "";
 var year = "";
 var isPreEdit = false;
+var isExist = false;
 var tableHTML="";
 var dateSort;
-var pun_data_ind = 1; //pun的第一筆
-var emp_data_ind = 1; //emp的第一筆
 
 var sequence_init = function(){
     console.log("sequence_init");
@@ -45,38 +44,46 @@ var sequence_init = function(){
     seq_edit.style.display = "none";
     clean_comp = document.getElementById("clean_comp");
 
-    dynamicTable();
     pre_confirm.addEventListener("click", function(){
-        isPreEdit = (monList.value != "" && clean_comp.value != "")? true:false;
-        if(isPreEdit){
-            seq_edit.style.display = "";
-            pre_edit.style.display = "none";
-            
-            seq_sequence = document.getElementById("seq_sequence");
-            seq_calender = document.getElementById("seq_calender");
-            seq_name = document.getElementById("seq_name");
-            seq_confirm = document.getElementById("seq_confirm");
-            seq_stateInfo = document.getElementById("seq_stateInfo");
-            on_off = document.getElementById("on_off");
-            seq_txt = document.getElementById("seq_txt");
-            workDateForm = document.getElementById("workDateForm");
-    
-            seq_sequence.setAttribute("selected", true);
-            seq_confirm.addEventListener("click", req_val);
-    
-            actionDB("init");
-        }
-    })
-    
+        actionDB("dataExist");
+    })   
 }
+
+var createTable = function(isPreEdit){
+    if(isPreEdit){
+        seq_edit.style.display = "";
+        pre_edit.style.display = "none";
+        
+        seq_sequence = document.getElementById("seq_sequence");
+        seq_calender = document.getElementById("seq_calender");
+        seq_name = document.getElementById("seq_name");
+        seq_confirm = document.getElementById("seq_confirm");
+        seq_stateInfo = document.getElementById("seq_stateInfo");
+        on_off = document.getElementById("on_off");
+        seq_txt = document.getElementById("seq_txt");
+        workDateForm = document.getElementById("workDateForm");
+
+        seq_sequence.setAttribute("selected", true);
+        seq_confirm.addEventListener("click", req_val);
+
+        actionDB("init");
+    }
+}
+
 
 var actionDB = function(params) {
     switch(params){
+        case "dataExist":
+            seq_toSend ={
+                pload: "dataExist",
+                tableName: monList.value.split("-").join("")
+            }
+            httpReqFun(seq_toSend);
+            break;
         case "init":
             seq_toSend = {
                 pload: "init",
                 mon: monList.value
-                // days: daysLen
             }   
             httpReqFun(seq_toSend);
             break;
@@ -107,7 +114,6 @@ var actionDB = function(params) {
 }
 
 var httpReqFun = function (param){
-    // console.log("httpReqFun",param);
     var arr_data;
     jsonString = JSON.stringify(param);
     xmlhttp.open("POST",seq_Url);
@@ -118,19 +124,33 @@ var httpReqFun = function (param){
             setTimeout(function(){
                 // pun_stateInfo.innerText = "";
             },3000);
-            console.log("arr_data",arr_data);
+            // console.log("arr_data",arr_data);
             if(arr_data["emp_status"] == "employee success!" && arr_data["pun_status"] == "punish success!" || arr_data["pun_status"] == "punish no data"){
                 sortData(arr_data);
+            }else if(arr_data["sequence_status"] == "sequence data exist"){
+                parseTable(arr_data);
+            }else if(arr_data["sequence_status"] == "sequence no data"){
+                isPreEdit = (monList.value != "" && clean_comp.value != "")? true:false;
+                createTable(isPreEdit);
             }
         }
     }
     xmlhttp.send(jsonString);
 }
+var parseTable = function (data){
+    table_days = pun_data_size = Object.keys(data["calender"]).length
+    for(var i=1; i <= table_days; i++){
+        tableHTML +="<tr><td class = dateSortCls>"+data.calender[i].substring(5, 10).split("-").join("/")+"</td><td class = dateName>"+data.txt[i]+"</td>"
+        tableHTML +="<td class = datePunish>"+data.punish[i]+"</td><td class = dateReplace>"+data.replace_emp[i]+"</td></tr>"
+    }
+    seq_tbody.innerHTML += tableHTML;
+}
 
 var sortData = function(data){
-   year = monList.value.substring(0,4);
+    // console.log(data);
+    year = monList.value.substring(0,4);
     mon = monList.value.substring(5,7);
-    dynamicTable(year, mon);//整個月表格
+    dynamicTable(year, mon);
 
     dateSortCls = document.getElementsByClassName("dateSortCls");
     dateName = document.getElementsByClassName("dateName");
@@ -146,7 +166,15 @@ var sortData = function(data){
     }
     var emp_data_size = Object.keys(data["emp_name"]).length;
     var tmp =1;
-
+    var emp_data_ind = 1; //emp的第一筆
+    var pun_data_ind = 1; //pun的第一筆
+    //上個月輪到哪個人
+    for(var n = 1; n <= emp_data_size; n++){
+        if(data.lastIndex[n]*1 +1 == mon){
+            emp_data_ind = n+1 ;
+            break;
+        }
+    }
     //順位:
     //剪輯組(第一個完整禮拜)?剪輯組:懲罰者
     //兩者都沒有，其他職位員工
@@ -175,50 +203,42 @@ var sortData = function(data){
 
         if(dateName[i].innerText == "" && pun_data_size > 0 && pun_data_size >= pun_data_ind){
             dateName[i].innerText = data.name[pun_data_ind];
-            // punish_arr.push(data.pun_date[pun_data_ind]);
             datePunish[i].innerText = data.pun_date[pun_data_ind].substring(5,7) + "/" + data.pun_date[pun_data_ind].substring(8,10) + data.punishtxt[pun_data_ind];
             pun_data_ind ++;
         }
-
         dateSortTimeStamp = new Date((year+ "/" +dateSortCls[i].innerText).split('/').join('-')).getTime();//表格日期時間戳
         if(dateName[i].innerText == ""){
-            for( emp_data_ind = tmp ; emp_data_ind <= emp_data_size; emp_data_ind++){
+            for(emp_data_ind  ; emp_data_ind <= emp_data_size; emp_data_ind++){
                 startText = new Date(data.startdate[emp_data_ind]); 
                 startTimeStamp = startText.setMonth(startText.getMonth() + 1);//員工報到時間戳
                 if(dateSortTimeStamp > startTimeStamp){
                     dateName[i].innerText = data.emp_name[emp_data_ind];
-                    tmp = emp_data_ind + 1;
-                    if(tmp > emp_data_size){
-                        tmp = 1;
+                    emp_data_ind += 1;
+                    if(emp_data_ind > emp_data_size){
+                        emp_data_ind = 1;
                     }
-                    
                     break;
                 }
-                tmp = emp_data_ind + 1;
-                if(tmp > emp_data_size){
-                    tmp = 1;
+                if(emp_data_ind > emp_data_size){
+                    emp_data_ind = 1;
                 }
             }
         }     
     }
+    emp_data_ind = (emp_data_ind-1)==0?11:emp_data_ind-1;
     last_emp = data.emp_name[emp_data_ind];
     actionDB("create");
 }
 
 var dynamicTable = function (year, mon){
-    seq_tbody.innerHTML = "<tr class=first_tr><td>日期</td><td>值日生</td><td>懲罰</td><td>候補</td></tr>"
-    if(isPreEdit){
-        var dateObj = new Date(year,mon,0);
-        table_days = dateObj.getDate();
-        for(var i =1; i<=table_days; i++){
-            dateSort = mon+"/"+i;
-            // dateSort_arr.push(dateSort);
-            tableHTML +="<tr><td class = dateSortCls>"+dateSort+"</td><td class = dateName></td><td class = datePunish></td><td class = dateReplace></td></tr>"
-        }
-        // console.log(dateSort_arr);
-
-        seq_tbody.innerHTML += tableHTML;
-    }  
+    var dateObj = new Date(year,mon,0);
+    table_days = dateObj.getDate();
+    for(var i =1; i<=table_days; i++){
+        dateSort = mon+"/"+i;
+        tableHTML +="<tr><td class = dateSortCls>"+dateSort+"</td><td class = dateName></td><td class = datePunish></td><td class = dateReplace></td></tr>"
+    }
+    seq_tbody.innerHTML += tableHTML;
+    
 }
 
 var req_val = function (){
