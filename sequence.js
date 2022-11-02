@@ -17,13 +17,13 @@ var seq_tbody;
 var seq_Url = "http://localhost:8080/CleanSystem/sequence.php";
 const xmlhttp =new XMLHttpRequest();
 var seq_toSend = {};
+var dateSortCls;
 var dateName;
 var datePunish;
+var dateReplace;
 var parseStr = "";
 var table_days = "";
 var last_emp = "";
-var pun_arr = Array();
-var pun_date = Array();
 var mon = "";
 var year = "";
 var isPreEdit = false;
@@ -80,13 +80,26 @@ var actionDB = function(params) {
             }   
             httpReqFun(seq_toSend);
             break;
-        case "lastEmp":
+        case "create":
+            var punish_arr = Array();
+            var calender_arr = Array();
+            var txt_arr = Array();
+            var replace_emp_arr = Array();
+            for (var i = 0; i < table_days; i++) {
+                calender_arr.push((year+ "/" +dateSortCls[i].innerText).split('/').join('-'));
+                txt_arr.push(dateName[i].innerText);
+                punish_arr.push(datePunish[i].innerText);
+                replace_emp_arr.push(dateReplace[i].innerText);
+            }
             seq_toSend = {
-                pload: "lastEmp",
+                pload: "create",
+                calender_arr: calender_arr,
+                txt_arr: txt_arr,
+                punish_arr: punish_arr,
+                replace_emp_arr: replace_emp_arr,
                 lastEmp: last_emp,
-                punishList: pun_arr,
-                punishDate: pun_date,
-                mon: mon
+                mon: mon,
+                tableName:year + mon
             }  
             httpReqFun(seq_toSend);
             break;
@@ -122,6 +135,7 @@ var sortData = function(data){
     dateSortCls = document.getElementsByClassName("dateSortCls");
     dateName = document.getElementsByClassName("dateName");
     datePunish = document.getElementsByClassName("datePunish"); 
+    dateReplace = document.getElementsByClassName("dateReplace");
 
     var dateJudgeDate;
     var cnt = 1; //第一個完整周
@@ -136,8 +150,8 @@ var sortData = function(data){
     //順位:
     //剪輯組(第一個完整禮拜)?剪輯組:懲罰者
     //兩者都沒有，其他職位員工
-    for( i=1; i <= table_days; i++){
-        dateJudgeDate = new Date(year +"-"+ mon + "-"+ i);
+    for(var i=0; i < table_days; i++){
+        dateJudgeDate = new Date(year +"-"+ mon + "-"+ (i+1));
         if(mon % 2 !=0 && dateJudgeDate.getDay() == 1 && cnt == 1){
             for(var j =i; j < i+6; j++){
                 dateName[j].innerText = "剪輯組";
@@ -158,15 +172,15 @@ var sortData = function(data){
                 dateName[i].style.backgroundColor = "#E0E0E0";
                 break;
         }
+
         if(dateName[i].innerText == "" && pun_data_size > 0 && pun_data_size >= pun_data_ind){
             dateName[i].innerText = data.name[pun_data_ind];
-            pun_arr.push(data.name[pun_data_ind]);
-            pun_date.push(data.pun_date[pun_data_ind]);
+            // punish_arr.push(data.pun_date[pun_data_ind]);
             datePunish[i].innerText = data.pun_date[pun_data_ind].substring(5,7) + "/" + data.pun_date[pun_data_ind].substring(8,10) + data.punishtxt[pun_data_ind];
             pun_data_ind ++;
         }
-        
-        dateSortTimeStamp = new Date((year+ "/" +dateSortCls[i-1].innerText).split('/').join('-')).getTime();//表格日期時間戳
+
+        dateSortTimeStamp = new Date((year+ "/" +dateSortCls[i].innerText).split('/').join('-')).getTime();//表格日期時間戳
         if(dateName[i].innerText == ""){
             for( emp_data_ind = tmp ; emp_data_ind <= emp_data_size; emp_data_ind++){
                 startText = new Date(data.startdate[emp_data_ind]); 
@@ -188,32 +202,29 @@ var sortData = function(data){
         }     
     }
     last_emp = data.emp_name[emp_data_ind];
-    actionDB("lastEmp");
-   
-
+    actionDB("create");
 }
 
 var dynamicTable = function (year, mon){
-    seq_tbody.innerHTML = "<tr class=first_tr><td>日期</td><td class = dateName>值日生</td><td class = datePunish>懲罰</td><td>候補</td></tr>"
+    seq_tbody.innerHTML = "<tr class=first_tr><td>日期</td><td>值日生</td><td>懲罰</td><td>候補</td></tr>"
     if(isPreEdit){
         var dateObj = new Date(year,mon,0);
         table_days = dateObj.getDate();
         for(var i =1; i<=table_days; i++){
             dateSort = mon+"/"+i;
-            tableHTML +="<tr><td class = dateSortCls>"+dateSort+"</td><td class = dateName></td><td class = datePunish></td><td></td></tr>"
+            // dateSort_arr.push(dateSort);
+            tableHTML +="<tr><td class = dateSortCls>"+dateSort+"</td><td class = dateName></td><td class = datePunish></td><td class = dateReplace></td></tr>"
         }
+        // console.log(dateSort_arr);
+
         seq_tbody.innerHTML += tableHTML;
     }  
 }
 
-var judgeHoliday = function (){
-
-}
-
 var req_val = function (){
     var tmpDate = seq_calender.value.substring(8, 10);
-    dateName[tmpDate-1].innerText = seq_name.value;
-    datePunish[tmpDate-1].innerText = seq_txt.value;
+    dateName[tmpDate].innerText = seq_name.value;
+    datePunish[tmpDate].innerText = seq_txt.value;
 }
 
 var seq_changePage = function (e) {

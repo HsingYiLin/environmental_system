@@ -53,28 +53,52 @@
 		}
 		echo json_encode($arr_res);
 		mysqli_close($mydb_link);
-	}else if($object["pload"] == "lastEmp"){
+	}else if($object["pload"] == "create"){
+		$calender_arr = $object["calender_arr"];
+		$txt_arr = $object["txt_arr"];
+		$punish_arr = $object["punish_arr"];
+		$replace_emp_arr = $object["replace_emp_arr"];
+		$lastEmp = $object["lastEmp"];
+		$mon = $object["mon"];
+		$tableName = $object["tableName"];
+		$arr_res["calender_arr"] = $calender_arr;
+		$arr_res["txt_arr"] = $txt_arr[1];
+		$arr_res["punish_arr"] = $punish_arr;
+		$arr_res["replace_emp_arr"] = $replace_emp_arr;
+		$arr_res["tableName"] = $tableName;
+
+		for ($i=0; $i < count($calender_arr); $i++) { 
+			$sql_insert[$i] = "INSERT INTO sequence"."$tableName"." (`calender`, `txt`, `punish`, `replace_emp`)";
+			$sql_insert[$i] .= " VALUES( "."'$calender_arr[$i]'".", "."'$txt_arr[$i]'".", "."'$punish_arr[$i]'".", "."'$replace_emp_arr[$i]'".")";
+			$arr_res["sql_insert"][$i] = $sql_insert[$i];
+			if(mysqli_query($mydb_link, $sql_insert[$i]) == TRUE){
+				$arr_res["status"][$i] = "add success";
+			} else {
+				$arr_res["status"] = "add fail";	
+			}
+		}
+
 		// $sql_init_last_ind = " UPDATE employee SET `lastIndex` = '0'";
 		// if(mysqli_query($mydb_link,$sql_init_last_ind) == TRUE){
-			$arr_res["status"] = "update init success";
-		// }
+			// }
+		
+		// $mon = $object["mon"];
 		// if(!empty($object["lastEmp"])){
 		// 	$lastEmp = $object["lastEmp"];
 		// 	$mon = $object["mon"];
-		// 	$punishList = $object["punishList"];
 		// 	$punishDate = $object["punishDate"];
 		// 	$sql_update_last_ind = "UPDATE employee SET `lastIndex` = "."'$mon'". " WHERE `emp_name` = "."'$lastEmp'";
 		// 	if(mysqli_query($mydb_link, $sql_update_last_ind) == TRUE){
 		// 		$arr_res["status"] = "update punish success";
 		// 	}
-			// foreach($punishDate as $date){
-			// 	$sql_update_punish_done = "UPDATE punish SET `done` = 1 WHERE `pun_date` = "."'$date'";
-			// 	if(mysqli_query($mydb_link, $sql_update_punish_done) == TRUE){
-			// 		$arr_res["status"] = "update punish success";
-			// 	}
-			// }
-		// }
-		echo json_encode($arr_res);
+		
+	
+		$arr_res["status"] = "update success";
+		 
 
-	}
+		echo json_encode($arr_res);
+		mysqli_close($mydb_link);
+
+	}	
+
 ?>
