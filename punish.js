@@ -14,20 +14,17 @@ var pun_toSend ={};
 var pun_url = "http://localhost:8080/CleanSystem/punish.php";
 const xmlhttp =new XMLHttpRequest();
 
-var pun_init = function(){
+var pun_init = function (){
     console.log("pun_init");
     pun_chgpage = document.querySelector("#pun_chgpage");
     pun_punish = document.getElementById("pun_punish");
-
     pun_calender = document.getElementById("pun_calender");
     pun_name = document.getElementById("pun_name");
     pun_txt = document.getElementById("pun_txt");
-
     pun_sel_confirm = document.getElementById("pun_sel_confirm");
     pun_ad_confirm = document.getElementById("pun_ad_confirm");
     pun_up_confirm = document.getElementById("pun_up_confirm");
     pun_del_confirm = document.getElementById("pun_del_confirm");
-
     pun_stateInfo = document.getElementById("pun_stateInfo");
     pun_tbody = document.getElementById("pun_tbody");
     actionDB("init");
@@ -47,7 +44,6 @@ var actionDB = function(params) {
             pun_toSend = {pload: "init"};
             httpReqFun(pun_toSend);
             break;
-
         case "add":
             if(pun_calender.value != "" && pun_name.value != "" && pun_txt.value !="" && pun_calender.value < nowDate){
                 pun_toSend ={
@@ -61,7 +57,6 @@ var actionDB = function(params) {
                 pun_stateInfo.innerText = "表格不得為空||日期錯誤";
             }
             break;
-
         case "select":
             if(pun_name.value != "" || pun_calender.value!=""){
                 pun_toSend ={
@@ -75,7 +70,6 @@ var actionDB = function(params) {
                 httpReqFun(pun_toSend);
             }
             break;
-
         case "update":
             if(pun_name.value != "" && pun_calender.value!=""){
                 pun_toSend ={
@@ -89,7 +83,6 @@ var actionDB = function(params) {
                 pun_stateInfo.innerText = "名字和日期不得為空";
             }
             break;
-
         case "delete":
             if(pun_name.value != "" && pun_calender.value!=""){
                 pun_toSend ={

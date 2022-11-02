@@ -37,20 +37,16 @@ var emp_crud_init = function () {
     sel_confirm.addEventListener("click", function(){actionDB("select");});
     up_confirm.addEventListener("click", function(){actionDB("update")});
     del_confirm.addEventListener("click", function(){actionDB("delete")});
-
-
 }
 
 var actionDB = function(params) {
     var dateObj = new Date();
     var nowDate = dateObj.getFullYear() + "-" + (dateObj.getMonth()+1) + "-" + dateObj.getDate();
     switch(params){
-
         case "init":
             toSend = {pload: "init"};
             httpReqFun(toSend);
             break;
-
         case "add":
             var state = emp_status.checked?"在職":"離職";
             if(emp_startDate.value != "" && emp_name.value != "" && emp_startDate.value < nowDate){
@@ -66,7 +62,6 @@ var actionDB = function(params) {
                 emp_stateInfo.innerText = "到職日或名字不得為空||日期錯誤";
             }
             break;
-
         case "select":
             if(emp_name.value != "" || emp_startDate.value != ""){
                 toSend ={
@@ -80,7 +75,6 @@ var actionDB = function(params) {
                 httpReqFun(toSend);
             }
             break;
-
         case "update":
             var state = emp_status.checked?"在職":"離職";
             if(emp_name.value != ""){
@@ -106,8 +100,6 @@ var actionDB = function(params) {
             }else{
                 emp_stateInfo.innerText = "名字不得為空";
             }
-
-
     }
 }
 

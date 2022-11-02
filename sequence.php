@@ -73,6 +73,7 @@
 		}
 		echo json_encode($arr_res);
 		mysqli_close($mydb_link);
+
 	}else if($object["pload"] == "create"){
 		$calender_arr = $object["calender_arr"];
 		$txt_arr = $object["txt_arr"];
@@ -97,6 +98,7 @@
 				$arr_res["status"] = "add fail";	
 			}
 		}	
+
 		$mon = $object["mon"];
 		if(!empty($object["lastEmp"])){
 			$lastEmp = $object["lastEmp"];
@@ -105,11 +107,9 @@
 			if(mysqli_query($mydb_link, $sql_update_last_ind) == TRUE){
 				$arr_res["status"] = "update  success";
 			}
-		}			 
-
+		}		
 		echo json_encode($arr_res);
 		mysqli_close($mydb_link);
-
+		
 	}	
-
 ?>

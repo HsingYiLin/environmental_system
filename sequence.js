@@ -4,7 +4,6 @@ var monList;
 var clean_comp;
 var seq_edit;
 var pre_confirm;
-var clean_comp;
 var seq_sequence;
 var seq_calender;
 var on_off;
@@ -27,7 +26,6 @@ var last_emp = "";
 var mon = "";
 var year = "";
 var isPreEdit = false;
-var isExist = false;
 var tableHTML="";
 var dateSort;
 
@@ -43,17 +41,13 @@ var sequence_init = function(){
     seq_chgpage.addEventListener("change", seq_changePage, false);
     seq_edit.style.display = "none";
     clean_comp = document.getElementById("clean_comp");
-
-    pre_confirm.addEventListener("click", function(){
-        actionDB("dataExist");
-    })   
+    pre_confirm.addEventListener("click", function () {actionDB("dataExist");})   
 }
 
 var createTable = function(isPreEdit){
     if(isPreEdit){
         seq_edit.style.display = "";
-        pre_edit.style.display = "none";
-        
+        pre_edit.style.display = "none";     
         seq_sequence = document.getElementById("seq_sequence");
         seq_calender = document.getElementById("seq_calender");
         seq_name = document.getElementById("seq_name");
@@ -62,10 +56,8 @@ var createTable = function(isPreEdit){
         on_off = document.getElementById("on_off");
         seq_txt = document.getElementById("seq_txt");
         workDateForm = document.getElementById("workDateForm");
-
         seq_sequence.setAttribute("selected", true);
         seq_confirm.addEventListener("click", req_val);
-
         actionDB("init");
     }
 }

@@ -118,6 +118,6 @@
 		}
 		echo json_encode($arr_res);
 		mysqli_close($mydb_link);
+		
 	}
-
 ?>
