@@ -29,9 +29,9 @@
 				$arr_res["replace_emp"][$i] = $row['replace_emp'];
 				$i++;
 			}
-			$arr_res["sequence_status"] = "sequence data exist";
+			$arr_res["status"] = "sequence data exist";
 		}else{
-			$arr_res["sequence_status"] = "sequence no data";
+			$arr_res["status"] = "sequence no data";
 		}
 		echo json_encode($arr_res);
 		mysqli_close($mydb_link);
@@ -44,7 +44,8 @@
 		$max_date = $year_str . $mon_str . $month_days;
 		$sql_employee = "SELECT * FROM employee WHERE `title` = '其他' AND `state` = '在職'";
 		$sql_employee .= " AND "."'$max_date'". " >= DATE_ADD(`startdate`, INTERVAL 1 MONTH) ORDER BY `startdate` DESC";
-		$sql_punish = "SELECT `name`, `punishtxt`, `pun_date` FROM punish WHERE  `done` = 0  AND `pun_date` < "."'$mon%'"."-1 ORDER BY `pun_date` ASC";
+		$sql_punish = "SELECT `name`, `punishtxt`, `pun_date` FROM punish WHERE  `done` = 0  AND `pun_date` < "."'$mon-1'"." ORDER BY `pun_date` ASC";
+		$arr_res["sql_punish"] = $sql_punish;
 		$result_employee = mysqli_query($mydb_link, $sql_employee);
 		$result_punish= mysqli_query($mydb_link, $sql_punish);
 		$i=1;
@@ -55,9 +56,11 @@
 				$arr_res["lastIndex"][$i] = $row['lastIndex'];
 				$i++;
 			}
-			$arr_res["emp_status"] = "employee success!";
+			$arr_res["status"] = "emp success";
 		}else{
-			$arr_res["emp_status"] = "employee no data";
+			$arr_res["status"] = "emp no data";
+			die();
+			mysqli_close($mydb_link);
 		}
 		$i=1;
 		if (mysqli_num_rows($result_punish) > 0) {
@@ -67,10 +70,11 @@
 				$arr_res["pun_date"][$i] = $row['pun_date'];
 				$i++;
 			}
-			$arr_res["pun_status"] = "punish success!";
+			$arr_res["status"] = "pun success";
 		}else{
-			$arr_res["pun_status"] = "punish no data";
+			$arr_res["status"] = "pun no data";
 		}
+		
 		echo json_encode($arr_res);
 		mysqli_close($mydb_link);
 
@@ -82,16 +86,10 @@
 		$lastEmp = $object["lastEmp"];
 		$mon = $object["mon"];
 		$tableName = $object["tableName"];
-		$arr_res["calender_arr"] = $calender_arr;
-		$arr_res["txt_arr"] = $txt_arr[1];
-		$arr_res["punish_arr"] = $punish_arr;
-		$arr_res["replace_emp_arr"] = $replace_emp_arr;
-		$arr_res["tableName"] = $tableName;
 
 		for ($i=0; $i < count($calender_arr); $i++) { 
 			$sql_insert[$i] = "INSERT INTO sequence"."$tableName"." (`calender`, `txt`, `punish`, `replace_emp`)";
 			$sql_insert[$i] .= " VALUES( "."'$calender_arr[$i]'".", "."'$txt_arr[$i]'".", "."'$punish_arr[$i]'".", "."'$replace_emp_arr[$i]'".")";
-			$arr_res["sql_insert"][$i] = $sql_insert[$i];
 			if(mysqli_query($mydb_link, $sql_insert[$i]) == TRUE){
 				$arr_res["status"][$i] = "add success";
 			} else {
@@ -99,17 +97,47 @@
 			}
 		}	
 
-		$mon = $object["mon"];
 		if(!empty($object["lastEmp"])){
 			$lastEmp = $object["lastEmp"];
 			$mon = $object["mon"];
 			$sql_update_last_ind = "UPDATE employee SET `lastIndex` = "."'$mon'". " WHERE `emp_name` = "."'$lastEmp'";
 			if(mysqli_query($mydb_link, $sql_update_last_ind) == TRUE){
-				$arr_res["status"] = "update  success";
+				$arr_res["status"] = "update emp success";
 			}
-		}		
+		}	
+		
+		if(!empty($object["punish_date_arr"])){
+			$punish_date_arr = $object["punish_date_arr"];
+			for ($j=1; $j <= count($punish_date_arr); $j++) { 
+				$sql_update_punish_done[$j] = "UPDATE punish SET `done` = '1' WHERE `pun_date` = "."'$punish_date_arr[$j]'";
+				if(mysqli_query($mydb_link, $sql_update_punish_done[$j]) == TRUE){
+					$arr_res["status"] = "update punish success";
+				}
+			}
+		}	
 		echo json_encode($arr_res);
 		mysqli_close($mydb_link);
 		
-	}	
+	}else if($object["pload"] == "delete"){
+		$mon = $object["mon"];
+		$table_len = 12 - ($mon*1);
+		for ($i=0; $i <= $table_len; $i++) { 
+			$tableName = $object["tableName"];
+			$mon = $object["mon"];
+			$tableName = $tableName + $i;
+			$mon = $mon + $i;
+			$sql_delete_table[$i] = "DELETE FROM sequence"."$tableName";
+			$sql_update_lastIndex[$i] = "UPDATE employee SET `lastIndex` = '0' WHERE `lastIndex` = "."'$mon'";
+			if(mysqli_query($mydb_link, $sql_delete_table[$i])){
+				$arr_res["status"] = "delete success";
+			}
+			if(mysqli_query($mydb_link, $sql_update_lastIndex[$i]) == TRUE){
+				$arr_res["status"] = "update success";
+			}
+		}
+		
+
+		echo json_encode($arr_res);
+		mysqli_close($mydb_link);
+	}
 ?>

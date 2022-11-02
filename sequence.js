@@ -11,6 +11,7 @@ var seq_name;
 var seq_txt;
 var workDateForm;
 var seq_confirm;
+var seq_delete;
 var seq_stateInfo;
 var seq_tbody;
 var seq_Url = "http://localhost:8080/CleanSystem/sequence.php";
@@ -28,6 +29,7 @@ var year = "";
 var isPreEdit = false;
 var tableHTML="";
 var dateSort;
+var punish_date_arr = Array();
 
 var sequence_init = function(){
     console.log("sequence_init");
@@ -38,13 +40,16 @@ var sequence_init = function(){
     seq_edit = document.getElementById("seq_edit");
     pre_confirm  = document.getElementById("pre_confirm");
     seq_tbody = document.getElementById("seq_tbody");
+    seq_delete = document.getElementById("seq_delete");
     seq_chgpage.addEventListener("change", seq_changePage, false);
     seq_edit.style.display = "none";
     clean_comp = document.getElementById("clean_comp");
-    pre_confirm.addEventListener("click", function () {actionDB("dataExist");})   
+    pre_confirm.addEventListener("click", function () {actionDB("dataExist");}) 
 }
 
 var createTable = function(isPreEdit){
+    console.log("createTable");
+    console.log("isPreEdit",isPreEdit);
     if(isPreEdit){
         seq_edit.style.display = "";
         pre_edit.style.display = "none";     
@@ -90,11 +95,13 @@ var actionDB = function(params) {
                 punish_arr.push(datePunish[i].innerText);
                 replace_emp_arr.push(dateReplace[i].innerText);
             }
+            console.log(punish_date_arr);
             seq_toSend = {
                 pload: "create",
                 calender_arr: calender_arr,
                 txt_arr: txt_arr,
                 punish_arr: punish_arr,
+                punish_date_arr: punish_date_arr,
                 replace_emp_arr: replace_emp_arr,
                 lastEmp: last_emp,
                 mon: mon,
@@ -102,7 +109,16 @@ var actionDB = function(params) {
             }  
             httpReqFun(seq_toSend);
             break;
-        }
+        case "delete":
+            console.log(monList.value.split("-").join(""));
+            seq_toSend = {
+                pload: "delete",
+                tableName: monList.value.split("-").join(""),
+                mon: monList.value.substring(5, 7)
+            }
+            httpReqFun(seq_toSend);
+            break;
+    }
 }
 
 var httpReqFun = function (param){
@@ -113,29 +129,30 @@ var httpReqFun = function (param){
     xmlhttp.onreadystatechange = () => {
         if(xmlhttp.readyState === 4 && xmlhttp.status == 200){
             arr_data = JSON.parse(xmlhttp.responseText);
-            setTimeout(function(){
-                // pun_stateInfo.innerText = "";
-            },3000);
-            // console.log("arr_data",arr_data);
-            if(arr_data["emp_status"] == "employee success!" && arr_data["pun_status"] == "punish success!" || arr_data["pun_status"] == "punish no data"){
+            console.log("arr_data",arr_data);
+            if(arr_data["status"] == "emp success" || arr_data["status"] == "pun success" || arr_data["status"] == "pun no data"){
                 sortData(arr_data);
-            }else if(arr_data["sequence_status"] == "sequence data exist"){
+            }else if(arr_data["status"] == "sequence data exist"){
                 parseTable(arr_data);
-            }else if(arr_data["sequence_status"] == "sequence no data"){
+            }else if(arr_data["status"] == "sequence no data"){
                 isPreEdit = (monList.value != "" && clean_comp.value != "")? true:false;
                 createTable(isPreEdit);
+            }else if(arr_data["status"] == "delete success" || arr_data["status"] == "update success"){
+                sequence_init();
             }
         }
     }
     xmlhttp.send(jsonString);
 }
 var parseTable = function (data){
-    table_days = pun_data_size = Object.keys(data["calender"]).length
+    table_days = pun_data_size = Object.keys(data["calender"]).length;
     for(var i=1; i <= table_days; i++){
-        tableHTML +="<tr><td class = dateSortCls>"+data.calender[i].substring(5, 10).split("-").join("/")+"</td><td class = dateName>"+data.txt[i]+"</td>"
-        tableHTML +="<td class = datePunish>"+data.punish[i]+"</td><td class = dateReplace>"+data.replace_emp[i]+"</td></tr>"
+        tableHTML +="<tr><td class = dateSortCls>"+data.calender[i].substring(5, 10).split("-").join("/")+"</td><td class = dateName>"+data.txt[i]+"</td>";
+        tableHTML +="<td class = datePunish>"+data.punish[i]+"</td><td class = dateReplace>"+data.replace_emp[i]+"</td></tr>";
     }
     seq_tbody.innerHTML += tableHTML;
+    seq_delete.style.display = "";
+    seq_delete.addEventListener("click", function () {actionDB("delete");} )  
 }
 
 var sortData = function(data){
@@ -143,7 +160,7 @@ var sortData = function(data){
     year = monList.value.substring(0,4);
     mon = monList.value.substring(5,7);
     dynamicTable(year, mon);
-
+    punish_date_arr =data.pun_date;
     dateSortCls = document.getElementsByClassName("dateSortCls");
     dateName = document.getElementsByClassName("dateName");
     datePunish = document.getElementsByClassName("datePunish"); 
@@ -163,7 +180,7 @@ var sortData = function(data){
     //上個月輪到哪個人
     for(var n = 1; n <= emp_data_size; n++){
         if(data.lastIndex[n]*1 +1 == mon){
-            emp_data_ind = n+1 ;
+            emp_data_ind = ((n+1) > emp_data_size)?1 :(n+1);
             break;
         }
     }
@@ -195,11 +212,12 @@ var sortData = function(data){
 
         if(dateName[i].innerText == "" && pun_data_size > 0 && pun_data_size >= pun_data_ind){
             dateName[i].innerText = data.name[pun_data_ind];
-            datePunish[i].innerText = data.pun_date[pun_data_ind].substring(5,7) + "/" + data.pun_date[pun_data_ind].substring(8,10) + data.punishtxt[pun_data_ind];
+            datePunish[i].innerText = data.pun_date[pun_data_ind].substring(5,7) + "/" + data.pun_date[pun_data_ind].substring(8,10) + data.punishtxt[pun_data_ind];           
             pun_data_ind ++;
         }
         dateSortTimeStamp = new Date((year+ "/" +dateSortCls[i].innerText).split('/').join('-')).getTime();//表格日期時間戳
         if(dateName[i].innerText == ""){
+            console.log("這次迴圈",emp_data_ind);
             for(emp_data_ind  ; emp_data_ind <= emp_data_size; emp_data_ind++){
                 startText = new Date(data.startdate[emp_data_ind]); 
                 startTimeStamp = startText.setMonth(startText.getMonth() + 1);//員工報到時間戳
@@ -209,15 +227,19 @@ var sortData = function(data){
                     if(emp_data_ind > emp_data_size){
                         emp_data_ind = 1;
                     }
+                    console.log("下次迴圈",emp_data_ind);
                     break;
                 }
                 if(emp_data_ind > emp_data_size){
                     emp_data_ind = 1;
                 }
+                console.log("下次迴圈",emp_data_ind);
             }
         }     
     }
-    emp_data_ind = (emp_data_ind-1)==0?11:emp_data_ind-1;
+    console.log(emp_data_ind);
+    emp_data_ind = (emp_data_ind-1)==0?emp_data_size:emp_data_ind-1;
+    console.log(emp_data_ind);
     last_emp = data.emp_name[emp_data_ind];
     actionDB("create");
 }
@@ -239,6 +261,6 @@ var req_val = function (){
     datePunish[tmpDate].innerText = seq_txt.value;
 }
 
-var seq_changePage = function (e) {
+var seq_changePage = function (e){
     window.location.replace("C:/xampp/htdocs/CleanSystem/"+this.value+".html");
 }
