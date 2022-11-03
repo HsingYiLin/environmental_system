@@ -29,7 +29,7 @@
 
     <div id="pre_edit">
         <span>值日生表月份:</span>
-        <input type="month" id="monList" min="2022-09" max="2023-12" value=""><br>
+        <input type="month" id="monList" min="2022-09" max="2022-12" value=""><br>
         <span>清潔公司:</span>
         <select name="" id="clean_comp">
             <option value=""></option>
@@ -41,7 +41,6 @@
         </select><br>
         <input type="submit" id="pre_confirm" value="生成">
         <input type="submit" id="seq_delete" value="刪除值日生表" style="display:none ;">
-
     </div>
 
     <div id="seq_edit">
@@ -67,10 +66,11 @@
             </select><br>        
             <span>候補:</span>&nbsp&nbsp&nbsp&nbsp
             <input type="text" id="seq_replace"><br>
-            <input type="submit" id="seq_confirm" value="修改">
-            <span id="seq_stateInfo"></span>
+            <input type="submit" id="seq_modify" value="修改">
+            <input type="submit" id="seq_save" value="儲存" style="display:none;">
         </div>        
     </div>
+    <span id="seq_stateInfo"></span>
     <table id="seq_tbody" class="sys_tb">
         <tr class=first_tr>
             <td>日期</td>

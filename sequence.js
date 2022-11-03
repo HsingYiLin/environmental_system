@@ -10,7 +10,8 @@ var on_off;
 var seq_name;
 var seq_txt;
 var workDateForm;
-var seq_confirm;
+var seq_modify;
+var seq_save;
 var seq_delete;
 var seq_stateInfo;
 var seq_tbody;
@@ -42,31 +43,34 @@ var sequence_init = function(){
     seq_tbody = document.getElementById("seq_tbody");
     seq_delete = document.getElementById("seq_delete");
     seq_chgpage.addEventListener("change", seq_changePage, false);
-    seq_edit.style.display = "none";
     clean_comp = document.getElementById("clean_comp");
-    pre_confirm.addEventListener("click", function () {actionDB("dataExist");}) 
+    seq_stateInfo = document.getElementById("seq_stateInfo");
+    seq_stateInfo.style.color = "#CE0000";
+    pre_confirm.addEventListener("click", function () {
+        (monList.value == "")?seq_stateInfo.innerText = "表格不得為空!":actionDB("dataExist");
+    }) 
+    pre_edit.style.display = "";     
+    seq_edit.style.display = "none";
 }
 
 var createTable = function(isPreEdit){
-    console.log("createTable");
-    console.log("isPreEdit",isPreEdit);
     if(isPreEdit){
         seq_edit.style.display = "";
         pre_edit.style.display = "none";     
         seq_sequence = document.getElementById("seq_sequence");
         seq_calender = document.getElementById("seq_calender");
         seq_name = document.getElementById("seq_name");
-        seq_confirm = document.getElementById("seq_confirm");
-        seq_stateInfo = document.getElementById("seq_stateInfo");
+        seq_modify = document.getElementById("seq_modify");
+        seq_save = document.getElementById("seq_save");
         on_off = document.getElementById("on_off");
         seq_txt = document.getElementById("seq_txt");
         workDateForm = document.getElementById("workDateForm");
         seq_sequence.setAttribute("selected", true);
-        seq_confirm.addEventListener("click", req_val);
+        seq_modify.addEventListener("click", req_val);
+        seq_save.style.display = "";
         actionDB("init");
     }
 }
-
 
 var actionDB = function(params) {
     switch(params){
@@ -80,7 +84,7 @@ var actionDB = function(params) {
         case "init":
             seq_toSend = {
                 pload: "init",
-                mon: monList.value
+                mon: monList.value,
             }   
             httpReqFun(seq_toSend);
             break;
@@ -95,7 +99,6 @@ var actionDB = function(params) {
                 punish_arr.push(datePunish[i].innerText);
                 replace_emp_arr.push(dateReplace[i].innerText);
             }
-            console.log(punish_date_arr);
             seq_toSend = {
                 pload: "create",
                 calender_arr: calender_arr,
@@ -110,7 +113,6 @@ var actionDB = function(params) {
             httpReqFun(seq_toSend);
             break;
         case "delete":
-            console.log(monList.value.split("-").join(""));
             seq_toSend = {
                 pload: "delete",
                 tableName: monList.value.split("-").join(""),
@@ -129,21 +131,48 @@ var httpReqFun = function (param){
     xmlhttp.onreadystatechange = () => {
         if(xmlhttp.readyState === 4 && xmlhttp.status == 200){
             arr_data = JSON.parse(xmlhttp.responseText);
-            console.log("arr_data",arr_data);
-            if(arr_data["status"] == "emp success" || arr_data["status"] == "pun success" || arr_data["status"] == "pun no data"){
-                sortData(arr_data);
-            }else if(arr_data["status"] == "sequence data exist"){
-                parseTable(arr_data);
-            }else if(arr_data["status"] == "sequence no data"){
-                isPreEdit = (monList.value != "" && clean_comp.value != "")? true:false;
-                createTable(isPreEdit);
-            }else if(arr_data["status"] == "delete success" || arr_data["status"] == "update success"){
-                sequence_init();
+            // setTimeout(function(){
+            //     seq_stateInfo.innerText = "";
+            // },8000);
+            console.log("arr_data",arr_data);            
+            switch(arr_data["status"]){
+                case "emp success":
+                case "pun success":
+                case "pun no data":
+                    sortData(arr_data);
+                    seq_stateInfo.innerText = "生成成功!點擊儲存此列表將會保存下來";
+                    break;
+                case "sequence data exist":
+                    parseTable(arr_data);
+                    seq_stateInfo.innerText = "列表已存在!";
+                    pre_confirm.remove();                    
+                    break;
+                case "sequence no data":
+                    isPreEdit = (monList.value != "" && clean_comp.value != "")? true:false;
+                    seq_stateInfo.innerText = "表格不得為空!";
+                    createTable(isPreEdit);
+                    break;
+                case "last sequence no data":
+                    seq_stateInfo.innerText = "上個月未排值日生!";
+                    break;
+                case "delete success":
+                case "update success":
+                    window.location.reload();
+                    break;
+                case "update emp success":
+                case "update punish success":
+                    sequence_init();
+                    seq_stateInfo.innerText = "已儲存!";
+                    pre_confirm.style.display = "none";
+                    seq_delete.style.display = "";
+                    seq_delete.addEventListener("click", function () {actionDB("delete")});
+                    break;
             }
         }
     }
     xmlhttp.send(jsonString);
 }
+
 var parseTable = function (data){
     table_days = pun_data_size = Object.keys(data["calender"]).length;
     for(var i=1; i <= table_days; i++){
@@ -174,7 +203,6 @@ var sortData = function(data){
         pun_data_size = Object.keys(data["name"]).length;
     }
     var emp_data_size = Object.keys(data["emp_name"]).length;
-    var tmp =1;
     var emp_data_ind = 1; //emp的第一筆
     var pun_data_ind = 1; //pun的第一筆
     //上個月輪到哪個人
@@ -217,7 +245,6 @@ var sortData = function(data){
         }
         dateSortTimeStamp = new Date((year+ "/" +dateSortCls[i].innerText).split('/').join('-')).getTime();//表格日期時間戳
         if(dateName[i].innerText == ""){
-            console.log("這次迴圈",emp_data_ind);
             for(emp_data_ind  ; emp_data_ind <= emp_data_size; emp_data_ind++){
                 startText = new Date(data.startdate[emp_data_ind]); 
                 startTimeStamp = startText.setMonth(startText.getMonth() + 1);//員工報到時間戳
@@ -227,21 +254,17 @@ var sortData = function(data){
                     if(emp_data_ind > emp_data_size){
                         emp_data_ind = 1;
                     }
-                    console.log("下次迴圈",emp_data_ind);
                     break;
                 }
                 if(emp_data_ind > emp_data_size){
                     emp_data_ind = 1;
                 }
-                console.log("下次迴圈",emp_data_ind);
             }
         }     
     }
-    console.log(emp_data_ind);
     emp_data_ind = (emp_data_ind-1)==0?emp_data_size:emp_data_ind-1;
-    console.log(emp_data_ind);
     last_emp = data.emp_name[emp_data_ind];
-    actionDB("create");
+    seq_save.addEventListener("click", function(){actionDB("create")});
 }
 
 var dynamicTable = function (year, mon){

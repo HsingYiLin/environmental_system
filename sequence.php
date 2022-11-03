@@ -18,7 +18,23 @@
 
 	if($object["pload"] == "dataExist"){
 		$tableName = $object["tableName"];
+		$latTableName = $tableName*1 - 1;
+		$isCorrect = false;
 		$sql_sequence = "SELECT * FROM sequence"."$tableName";
+		$isCorrect = ($tableName == "202209")? true : false;
+		if(!$isCorrect){//如果前個月未排值日生，無法判斷這個月的第一個是誰
+			$sql_latTable = "SELECT * FROM sequence"."$latTableName";
+			$result_lastSequence = mysqli_query($mydb_link, $sql_latTable);
+			if (mysqli_num_rows($result_lastSequence) > 0){
+				$arr_res["status"] = "last sequence data exist";
+			}else{
+				$arr_res["status"] = "last sequence no data";
+				echo json_encode($arr_res);
+				die();
+				mysqli_close($mydb_link);
+			}
+		}
+
 		$result_sequence = mysqli_query($mydb_link, $sql_sequence);
 		$i=1;
 		if (mysqli_num_rows($result_sequence) > 0){
@@ -128,6 +144,7 @@
 			$mon = $mon + $i;
 			$sql_delete_table[$i] = "DELETE FROM sequence"."$tableName";
 			$sql_update_lastIndex[$i] = "UPDATE employee SET `lastIndex` = '0' WHERE `lastIndex` = "."'$mon'";
+			$arr_res["sql_update_lastIndex"][$i] = $sql_update_lastIndex[$i] ;
 			if(mysqli_query($mydb_link, $sql_delete_table[$i])){
 				$arr_res["status"] = "delete success";
 			}
@@ -135,9 +152,8 @@
 				$arr_res["status"] = "update success";
 			}
 		}
-		
-
 		echo json_encode($arr_res);
 		mysqli_close($mydb_link);
+
 	}
 ?>
