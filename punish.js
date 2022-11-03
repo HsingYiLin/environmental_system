@@ -108,8 +108,8 @@ var httpReqFun = function (param){
             arr_data = JSON.parse(xmlhttp.responseText);
             setTimeout(function(){
                 pun_stateInfo.innerText = "";
-            },3000);
-            console.log("arr_data",arr_data); 
+            },5000);
+            // console.log("arr_data",arr_data); 
             switch(arr_data["status"]){
             case "add success":
             case "update success":
@@ -128,7 +128,6 @@ var httpReqFun = function (param){
                 break;
             case "date duplicate":
                 pun_stateInfo.innerText = "資料重複";
-                parseAllData(arr_data);
                 break;
             }  
         }
@@ -137,9 +136,9 @@ var httpReqFun = function (param){
 }
 
 var parseAllData = function (initData){
+    pun_tbody.innerHTML = "<tr class=first_tr><td>受罰日期</td><td>值日生</td><td>懲罰原因</td><td>次數</td><td>罰金</td><td>倍率</td><td>進度</td></tr>";
     pun_tableHTML = "";
     var done = "";
-    if(initData["status"] != "update fail" && initData["status"] != "date duplicate"){
         var data_size = Object.keys(initData["name"]).length;
         for(var j = 1; j <= data_size; j++){
             done = (initData.done[j] == "1")?"完成":"";
@@ -155,8 +154,7 @@ var parseAllData = function (initData){
                 pun_tableHTML += "<td>"+initData.punishtxt[j]+"</td><td>"+initData.times[j]+"</td><td>"+initData.fine[j]+"</td><td>"+initData.odds[j]+"</td><td>"+ done +"</td></tr>";
             }
         }
-        pun_tbody.innerHTML = pun_tableHTML;
-    }
+        pun_tbody.innerHTML += pun_tableHTML;
 }
 
 var pun_changePage = function (e) {

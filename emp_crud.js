@@ -41,7 +41,7 @@ var emp_crud_init = function () {
 
 var actionDB = function(params) {
     var dateObj = new Date();
-    var nowDate = dateObj.getFullYear() + "-" + (dateObj.getMonth()+1) + "-" + dateObj.getDate();
+    var nowDate = new Date(dateObj.getFullYear() + "-" + (dateObj.getMonth()+1) + "-" + dateObj.getDate());
     switch(params){
         case "init":
             toSend = {pload: "init"};
@@ -49,7 +49,7 @@ var actionDB = function(params) {
             break;
         case "add":
             var state = emp_status.checked?"在職":"離職";
-            if(emp_startDate.value != "" && emp_name.value != "" && emp_startDate.value < nowDate){
+            if(emp_startDate.value != "" && emp_name.value != "" && new Date(emp_startDate.value) < nowDate){
                 toSend ={
                     pload: "add",
                     startDate: emp_startDate.value,
@@ -113,15 +113,37 @@ var httpReqFun = function (param){
             arr_data = JSON.parse(xmlhttp.responseText);
             setTimeout(function(){
                 emp_stateInfo.innerText = "";
-            },3000);
-            if(arr_data["status"] == "add success" || arr_data["status"] == "update success" ||arr_data["status"] == "delete success"){
-                actionDB("init");
-                clearInput();
+            },5000);
+            console.log(arr_data["status"]);
+            // if(arr_data["status"] == "add success" || arr_data["status"] == "update success" ||arr_data["status"] == "delete success"){
+            //     actionDB("init");
+            //     clearInput();
         
-            }else if(arr_data["status"] == "success!"|| arr_data["status"] == "select success" || arr_data["status"] == "no data" || arr_data["status"] == "update fail"  || arr_data["status"] == "duplicate"){
-                emp_stateInfo.innerText = arr_data["status"];
-                parseAllData(arr_data);
-            }        
+            // }else if(arr_data["status"] == "success!"|| arr_data["status"] == "select success" || arr_data["status"] == "no data" || arr_data["status"] == "update fail"  || arr_data["status"] == "duplicate"){
+            //     emp_stateInfo.innerText = arr_data["status"];
+            //     parseAllData(arr_data);
+            // }   
+            switch(arr_data["status"]){
+                case "add success":
+                case "update success":
+                case "delete success":
+                    actionDB("init");
+                    clearInput();
+                    break;
+                case "success!":
+                case "select success":
+                    emp_stateInfo.innerText = "成功";
+                    parseAllData(arr_data);
+                    break;
+                case "no data":
+                    emp_stateInfo.innerText = "無資料";
+                    break;
+                case "update fail":
+                case "duplicate":
+                    emp_stateInfo.innerText = "資料重複";
+                    parseAllData(arr_data);
+                    break;
+            }  
         }
     }
     xmlhttp.send(jsonString);
