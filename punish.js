@@ -38,14 +38,14 @@ var pun_init = function (){
 
 var actionDB = function(params) {
     var dateObj = new Date();
-    var nowDate = dateObj.getFullYear() + "-" + (dateObj.getMonth()+1) + "-" + dateObj.getDate();
+    var nowDate = new Date(dateObj.getFullYear() + "-" + (dateObj.getMonth()+1) + "-" + dateObj.getDate());
     switch(params){
         case "init":
             pun_toSend = {pload: "init"};
             httpReqFun(pun_toSend);
             break;
         case "add":
-            if(pun_calender.value != "" && pun_name.value != "" && pun_txt.value !="" && pun_calender.value < nowDate){
+            if(pun_calender.value != "" && pun_name.value != "" && pun_txt.value !="" && new Date(pun_calender.value) < nowDate){
                 pun_toSend ={
                     pload: "add",
                     date: pun_calender.value,
@@ -109,14 +109,28 @@ var httpReqFun = function (param){
             setTimeout(function(){
                 pun_stateInfo.innerText = "";
             },3000);
-            console.log("arr_data",arr_data);
-            if(arr_data["status"] == "add success" || arr_data["status"] == "update success" ||arr_data["status"] == "delete success" ||arr_data["status"] == "no data update"){
+            console.log("arr_data",arr_data); 
+            switch(arr_data["status"]){
+            case "add success":
+            case "update success":
+            case "delete success":
+            case "no data update":
                 actionDB("init");
                 clearInput();
-            }else if(arr_data["status"] == "success!" || arr_data["status"] == "select success"  || arr_data["status"] == "no data" || arr_data["status"] == "update fail" || arr_data["status"] == "date duplicate"){
-                pun_stateInfo.innerText = arr_data["status"];
+                break;
+            case "success!":
+            case "select success":
+                pun_stateInfo.innerText = "成功";
                 parseAllData(arr_data);
-            }        
+                break;
+            case "no data":
+                pun_stateInfo.innerText = "無資料";
+                break;
+            case "date duplicate":
+                pun_stateInfo.innerText = "資料重複";
+                parseAllData(arr_data);
+                break;
+            }  
         }
     }
     xmlhttp.send(jsonString);
@@ -125,8 +139,7 @@ var httpReqFun = function (param){
 var parseAllData = function (initData){
     pun_tableHTML = "";
     var done = "";
-    pun_tbody.innerHTML = "<tr class=first_tr><td>受罰日期</td><td>值日生</td><td>懲罰原因</td><td>次數</td><td>罰金</td><td>倍率</td><td>進度</td></tr>";
-    if(initData["status"] != "update fail" && initData["status"] != "no data" && initData["status"] != "date duplicate"){
+    if(initData["status"] != "update fail" && initData["status"] != "date duplicate"){
         var data_size = Object.keys(initData["name"]).length;
         for(var j = 1; j <= data_size; j++){
             done = (initData.done[j] == "1")?"完成":"";
@@ -142,7 +155,7 @@ var parseAllData = function (initData){
                 pun_tableHTML += "<td>"+initData.punishtxt[j]+"</td><td>"+initData.times[j]+"</td><td>"+initData.fine[j]+"</td><td>"+initData.odds[j]+"</td><td>"+ done +"</td></tr>";
             }
         }
-        pun_tbody.innerHTML += pun_tableHTML;
+        pun_tbody.innerHTML = pun_tableHTML;
     }
 }
 

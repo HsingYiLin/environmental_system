@@ -16,7 +16,7 @@
   	$arr_res =Array();
 
     if($object["pload"] == "init"){
-		$sql_init = "SELECT * FROM punish ORDER BY `pun_date` ASC";
+		$sql_init = "SELECT * FROM punish ORDER BY `name`, `pun_date` ASC";
 		$result_init = mysqli_query($mydb_link, $sql_init);
 		$i=1;
 		if ($result_init->num_rows > 0) {
@@ -59,7 +59,7 @@
 		}
 		
 		//日期不能重複
-		$sql_duplicate = "SELECT `name`, `pun_date` FROM punish WHERE `name` = "."'$name'" ." AND `pun_date` = "."'$date'";
+		$sql_duplicate = "SELECT `name`, `pun_date` FROM punish WHERE `name` = "."'$name'" ." AND `pun_date` = "."'$date'". " OR `pun_date` = "."'$date'";
 		$result_duplicate = mysqli_query($mydb_link, $sql_duplicate);
 		if (mysqli_num_rows($result_duplicate) > 0) {
             $arr_res["status"] = "date duplicate";
@@ -118,12 +118,13 @@
 		$i=1;
 		if ($result_select->num_rows > 0) {
 			while($row=mysqli_fetch_assoc($result_select)){
-				$arr_res["name"][$i]=$row['name'];
-				$arr_res["punishtxt"][$i]=$row['punishtxt'];
-				$arr_res["date"][$i]=$row['pun_date'];
-				$arr_res["fine"][$i]=$row['fine'];
-				$arr_res["times"][$i]=$row['times'];
-				$arr_res["odds"][$i]=$row['odds'];
+				$arr_res["name"][$i] = $row['name'];
+				$arr_res["punishtxt"][$i] = $row['punishtxt'];
+				$arr_res["date"][$i] = $row['pun_date'];
+				$arr_res["fine"][$i] = $row['fine'];
+				$arr_res["times"][$i] = $row['times'];
+				$arr_res["odds"][$i] = $row['odds'];
+				$arr_res["done"][$i] = $row['done'];
 
 				$i++;		
 			}
