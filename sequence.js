@@ -7,8 +7,8 @@ var pre_confirm;
 var seq_sequence;
 var seq_calender;
 var on_off;
-var seq_name;
-var seq_txt;
+// var seq_name;
+// var seq_txt;
 var workDateForm;
 var seq_modify;
 var seq_save;
@@ -59,11 +59,11 @@ var createTable = function(isPreEdit){
         pre_edit.style.display = "none";     
         seq_sequence = document.getElementById("seq_sequence");
         seq_calender = document.getElementById("seq_calender");
-        seq_name = document.getElementById("seq_name");
+        // seq_name = document.getElementById("seq_name");
         seq_modify = document.getElementById("seq_modify");
         seq_save = document.getElementById("seq_save");
         on_off = document.getElementById("on_off");
-        seq_txt = document.getElementById("seq_txt");
+        // seq_txt = document.getElementById("seq_txt");
         workDateForm = document.getElementById("workDateForm");
         seq_sequence.setAttribute("selected", true);
         seq_modify.addEventListener("click", req_val);
@@ -280,8 +280,8 @@ var dynamicTable = function (year, mon){
 
 var req_val = function (){
     var tmpDate = seq_calender.value.substring(8, 10);
-    dateName[tmpDate].innerText = seq_name.value;
-    datePunish[tmpDate].innerText = seq_txt.value;
+    // dateName[tmpDate].innerText = seq_name.value;
+    // datePunish[tmpDate].innerText = seq_txt.value;
 }
 
 var seq_changePage = function (e){

@@ -114,15 +114,7 @@ var httpReqFun = function (param){
             setTimeout(function(){
                 emp_stateInfo.innerText = "";
             },5000);
-            console.log(arr_data["status"]);
-            // if(arr_data["status"] == "add success" || arr_data["status"] == "update success" ||arr_data["status"] == "delete success"){
-            //     actionDB("init");
-            //     clearInput();
-        
-            // }else if(arr_data["status"] == "success!"|| arr_data["status"] == "select success" || arr_data["status"] == "no data" || arr_data["status"] == "update fail"  || arr_data["status"] == "duplicate"){
-            //     emp_stateInfo.innerText = arr_data["status"];
-            //     parseAllData(arr_data);
-            // }   
+              
             switch(arr_data["status"]){
                 case "add success":
                 case "update success":

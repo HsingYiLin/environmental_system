@@ -60,7 +60,7 @@
 		$max_date = $year_str . $mon_str . $month_days;
 		$sql_employee = "SELECT * FROM employee WHERE `title` = '其他' AND `state` = '在職'";
 		$sql_employee .= " AND "."'$max_date'". " >= DATE_ADD(`startdate`, INTERVAL 1 MONTH) ORDER BY `startdate` DESC";
-		$sql_punish = "SELECT `name`, `punishtxt`, `pun_date` FROM punish WHERE  `done` = 0  AND `pun_date` < "."'$mon-1'"." ORDER BY `pun_date` ASC";
+		$sql_punish = "SELECT `name`, `punishtxt`, `pun_date` FROM punish WHERE  `done` = 0  AND `pun_date` < "."$mon"."-1 ORDER BY `pun_date` ASC";
 		$arr_res["sql_punish"] = $sql_punish;
 		$result_employee = mysqli_query($mydb_link, $sql_employee);
 		$result_punish= mysqli_query($mydb_link, $sql_punish);
@@ -116,7 +116,7 @@
 		if(!empty($object["lastEmp"])){
 			$lastEmp = $object["lastEmp"];
 			$mon = $object["mon"];
-			$sql_update_last_ind = "UPDATE employee SET `lastIndex` = "."'$mon'". " WHERE `emp_name` = "."'$lastEmp'";
+			$sql_update_last_ind = "UPDATE employee SET `lastIndex` = "."$mon". " WHERE `emp_name` = "."'$lastEmp'";
 			if(mysqli_query($mydb_link, $sql_update_last_ind) == TRUE){
 				$arr_res["status"] = "update emp success";
 			}
@@ -139,11 +139,11 @@
 		$table_len = 12 - ($mon*1);
 		for ($i=0; $i <= $table_len; $i++) { 
 			$tableName = $object["tableName"];
-			$mon = $object["mon"];
 			$tableName = $tableName + $i;
-			$mon = $mon + $i;
+			$del_ind = $mon + $i;
+			$arr_res["del_ind"][$i] =$del_ind;
 			$sql_delete_table[$i] = "DELETE FROM sequence"."$tableName";
-			$sql_update_lastIndex[$i] = "UPDATE employee SET `lastIndex` = '0' WHERE `lastIndex` = "."'$mon'";
+			$sql_update_lastIndex[$i] = "UPDATE employee SET `lastIndex` = 0 WHERE `lastIndex` = "."$del_ind";
 			$arr_res["sql_update_lastIndex"][$i] = $sql_update_lastIndex[$i] ;
 			if(mysqli_query($mydb_link, $sql_delete_table[$i])){
 				$arr_res["status"] = "delete success";
