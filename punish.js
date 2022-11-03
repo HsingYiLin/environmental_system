@@ -26,6 +26,7 @@ var pun_init = function (){
     pun_up_confirm = document.getElementById("pun_up_confirm");
     pun_del_confirm = document.getElementById("pun_del_confirm");
     pun_stateInfo = document.getElementById("pun_stateInfo");
+    pun_stateInfo.style.color = "#CE0000";
     pun_tbody = document.getElementById("pun_tbody");
     actionDB("init");
     pun_punish.setAttribute("selected", true);

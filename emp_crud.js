@@ -29,6 +29,7 @@ var emp_crud_init = function () {
     sel_confirm = document.getElementById("sel_confirm");
     del_confirm = document.getElementById("del_confirm");
     emp_stateInfo = document.getElementById("emp_stateInfo");
+    emp_stateInfo.style.color = "#CE0000";
     emp_tbody = document.getElementById("emp_tbody");
     actionDB("init");
     emp_crud.setAttribute("selected", true);

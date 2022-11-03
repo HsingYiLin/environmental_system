@@ -55,6 +55,7 @@ var sequence_init = function(){
 
 var createTable = function(isPreEdit){
     if(isPreEdit){
+        actionDB("init");
         seq_edit.style.display = "";
         pre_edit.style.display = "none";     
         seq_sequence = document.getElementById("seq_sequence");
@@ -68,7 +69,6 @@ var createTable = function(isPreEdit){
         seq_sequence.setAttribute("selected", true);
         seq_modify.addEventListener("click", req_val);
         seq_save.style.display = "";
-        actionDB("init");
     }
 }
 
@@ -173,17 +173,6 @@ var httpReqFun = function (param){
     xmlhttp.send(jsonString);
 }
 
-var parseTable = function (data){
-    table_days = pun_data_size = Object.keys(data["calender"]).length;
-    for(var i=1; i <= table_days; i++){
-        tableHTML +="<tr><td class = dateSortCls>"+data.calender[i].substring(5, 10).split("-").join("/")+"</td><td class = dateName>"+data.txt[i]+"</td>";
-        tableHTML +="<td class = datePunish>"+data.punish[i]+"</td><td class = dateReplace>"+data.replace_emp[i]+"</td></tr>";
-    }
-    seq_tbody.innerHTML += tableHTML;
-    seq_delete.style.display = "";
-    seq_delete.addEventListener("click", function () {actionDB("delete");} )  
-}
-
 var sortData = function(data){
     // console.log(data);
     year = monList.value.substring(0,4);
@@ -219,25 +208,11 @@ var sortData = function(data){
         dateJudgeDate = new Date(year +"-"+ mon + "-"+ (i+1));
         if(mon % 2 !=0 && dateJudgeDate.getDay() == 1 && cnt == 1){
             for(var j =i; j < i+6; j++){
-                dateName[j].innerText = "剪輯組";
+                if(dateName[j].innerText == "")dateName[j].innerText = "剪輯組";             
             }
             cnt ++;
         }
-        switch(dateJudgeDate.getDay()){
-            case 0:
-                dateName[i].innerText = "日";
-                dateName[i].style.backgroundColor = "#FFD1A4";
-                break;
-            case 6:
-                dateName[i].innerText = "六";
-                dateName[i].style.backgroundColor = "#FFD1A4";
-                break;
-            case clean_comp.value * 1:
-                dateName[i].innerText = "清潔公司";
-                dateName[i].style.backgroundColor = "#E0E0E0";
-                break;
-        }
-
+        
         if(dateName[i].innerText == "" && pun_data_size > 0 && pun_data_size >= pun_data_ind){
             dateName[i].innerText = data.name[pun_data_ind];
             datePunish[i].innerText = data.pun_date[pun_data_ind].substring(5,7) + "/" + data.pun_date[pun_data_ind].substring(8,10) + data.punishtxt[pun_data_ind];           
@@ -275,13 +250,57 @@ var dynamicTable = function (year, mon){
         tableHTML +="<tr><td class = dateSortCls>"+dateSort+"</td><td class = dateName></td><td class = datePunish></td><td class = dateReplace></td></tr>"
     }
     seq_tbody.innerHTML += tableHTML;
+
+    dateName = document.getElementsByClassName("dateName");
+    console.log(dateName[1]);
+    for(var i=0; i < table_days; i++){
+        dateJudgeDate = new Date(year +"-"+ mon + "-"+ (i+1));
+        switch(dateJudgeDate.getDay()){
+            case 0:
+                dateName[i].innerText = "日";
+                dateName[i].style.backgroundColor = "#FFD1A4";
+                break;
+            case 6:
+                dateName[i].innerText = "六";
+                dateName[i].style.backgroundColor = "#FFD1A4";
+                break;
+            case clean_comp.value * 1:
+                dateName[i].innerText = "清潔公司";
+                dateName[i].style.backgroundColor = "#E0E0E0";
+                break;
+        }
+    }
     
+}
+
+var parseTable = function (data){
+    table_days = pun_data_size = Object.keys(data["calender"]).length;
+    for(var i=1; i <= table_days; i++){
+        tableHTML +="<tr><td class = dateSortCls>"+data.calender[i].substring(5, 10).split("-").join("/")+"</td><td class = dateName>"+data.txt[i]+"</td>";
+        tableHTML +="<td class = datePunish>"+data.punish[i]+"</td><td class = dateReplace>"+data.replace_emp[i]+"</td></tr>";
+    }
+    seq_tbody.innerHTML += tableHTML;
+    dateName = document.getElementsByClassName("dateName");
+    for(var i=0; i < table_days; i++){
+        switch(dateName[i].innerText){
+            case "日":
+                dateName[i].style.backgroundColor = "#FFD1A4";
+                break;
+            case "六":
+                dateName[i].style.backgroundColor = "#FFD1A4";
+                break;
+            case "清潔公司":
+                dateName[i].style.backgroundColor = "#E0E0E0";
+                break;
+        }
+    }
+    seq_delete.style.display = "";
+    seq_delete.addEventListener("click", function () {actionDB("delete");} )  
 }
 
 var req_val = function (){
     var tmpDate = seq_calender.value.substring(8, 10);
-    // dateName[tmpDate].innerText = seq_name.value;
-    // datePunish[tmpDate].innerText = seq_txt.value;
+    console.log(dateName[1]);
 }
 
 var seq_changePage = function (e){
