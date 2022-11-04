@@ -48,17 +48,33 @@
         <input type="date" id="seq_calender" value="" min="01-01" max="12-31"><br>
         <span>開關:</span>&nbsp&nbsp&nbsp&nbsp
         <select name="" id="on_off">
+            <option value=""></option>
             <option value="work">上班日</option>
             <option value="holiday">假日</option>
-            <option value="reWork">補班日</option>
         </select><br>
-        
-        <div id="workDateForm">       
+        <div id="nationHoliday" style="display: none;">      
+            <span>假日備註:</span>&nbsp
+            <select name="" id="seq_holiday">
+                <option value=""></option>
+                <option value="元旦">元旦</option>
+                <option value="春節">春節</option>
+                <option value="228連假">228連假</option>
+                <option value="清明連假">清明連假</option>
+                <option value="勞動節">勞動節</option>
+                <option value="端午連假">端午連假</option>
+                <option value="中秋連假">中秋連假</option>
+                <option value="國慶連假">國慶連假</option>
+                <option value="放假">放假</option>
+            </select><br>
+        </div>  
+        <div id="workDateForm">      
             <span>候補:</span>&nbsp&nbsp&nbsp&nbsp
-            <input type="text" id="seq_replace"><br>
-            <input type="submit" id="seq_modify" value="修改">
-            <input type="submit" id="seq_save" value="儲存" style="display:none;">
-        </div>        
+            <select name="" id="seq_replace">
+                <option value=""></option>
+            </select><br>
+        </div>   
+        <input type="submit" id="seq_modify" value="修改">
+        <input type="submit" id="seq_save" value="儲存" style="display:none;">     
     </div>
     <span id="seq_stateInfo"></span>
     <table id="seq_tbody" class="sys_tb">

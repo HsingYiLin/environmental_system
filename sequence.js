@@ -6,10 +6,11 @@ var seq_edit;
 var pre_confirm;
 var seq_sequence;
 var seq_calender;
+var seq_replace;
+var seq_holiday;
 var on_off;
-// var seq_name;
-// var seq_txt;
 var workDateForm;
+var nationHoliday;
 var seq_modify;
 var seq_save;
 var seq_delete;
@@ -31,6 +32,8 @@ var isPreEdit = false;
 var tableHTML="";
 var dateSort;
 var punish_date_arr = Array();
+var arr_data;
+var emp_data_size;
 
 var sequence_init = function(){
     console.log("sequence_init");
@@ -60,12 +63,14 @@ var createTable = function(isPreEdit){
         pre_edit.style.display = "none";     
         seq_sequence = document.getElementById("seq_sequence");
         seq_calender = document.getElementById("seq_calender");
-        // seq_name = document.getElementById("seq_name");
+        seq_replace = document.getElementById("seq_replace");
+        seq_holiday = document.getElementById("seq_holiday");
         seq_modify = document.getElementById("seq_modify");
         seq_save = document.getElementById("seq_save");
         on_off = document.getElementById("on_off");
-        // seq_txt = document.getElementById("seq_txt");
         workDateForm = document.getElementById("workDateForm");
+        nationHoliday = document.getElementById("nationHoliday");
+        on_off.addEventListener("change", parseOptionList, false);
         seq_sequence.setAttribute("selected", true);
         seq_modify.addEventListener("click", req_val);
         seq_save.style.display = "";
@@ -124,7 +129,7 @@ var actionDB = function(params) {
 }
 
 var httpReqFun = function (param){
-    var arr_data;
+    // var arr_data;
     jsonString = JSON.stringify(param);
     xmlhttp.open("POST",seq_Url);
     xmlhttp.setRequestHeader("Content-Type","application/json");
@@ -139,6 +144,9 @@ var httpReqFun = function (param){
                 case "emp success":
                 case "pun success":
                 case "pun no data":
+                    year = monList.value.substring(0,4);
+                    mon = monList.value.substring(5,7);
+                    dynamicTable(year, mon);
                     sortData(arr_data);
                     seq_stateInfo.innerText = "生成成功!點擊儲存此列表將會保存下來";
                     break;
@@ -175,15 +183,15 @@ var httpReqFun = function (param){
 
 var sortData = function(data){
     // console.log(data);
-    year = monList.value.substring(0,4);
-    mon = monList.value.substring(5,7);
-    dynamicTable(year, mon);
+    // year = monList.value.substring(0,4);
+    // mon = monList.value.substring(5,7);
+    // dynamicTable(year, mon);
     punish_date_arr =data.pun_date;
-    dateSortCls = document.getElementsByClassName("dateSortCls");
-    dateName = document.getElementsByClassName("dateName");
-    datePunish = document.getElementsByClassName("datePunish"); 
-    dateReplace = document.getElementsByClassName("dateReplace");
-
+    // dateSortCls = document.getElementsByClassName("dateSortCls");
+    // dateName = document.getElementsByClassName("dateName");
+    // datePunish = document.getElementsByClassName("datePunish"); 
+    // dateReplace = document.getElementsByClassName("dateReplace");
+    
     var dateJudgeDate;
     var cnt = 1; //第一個完整周
     var pun_data_size = 0;
@@ -191,7 +199,7 @@ var sortData = function(data){
     if (data.name != undefined) {
         pun_data_size = Object.keys(data["name"]).length;
     }
-    var emp_data_size = Object.keys(data["emp_name"]).length;
+    emp_data_size = Object.keys(data["emp_name"]).length;
     var emp_data_ind = 1; //emp的第一筆
     var pun_data_ind = 1; //pun的第一筆
     //上個月輪到哪個人
@@ -251,9 +259,10 @@ var dynamicTable = function (year, mon){
     }
     seq_tbody.innerHTML += tableHTML;
 
+    dateSortCls = document.getElementsByClassName("dateSortCls");
     dateName = document.getElementsByClassName("dateName");
-    console.log(dateName[1]);
-    for(var i=0; i < table_days; i++){
+    datePunish = document.getElementsByClassName("datePunish"); 
+    dateReplace = document.getElementsByClassName("dateReplace");    for(var i=0; i < table_days; i++){
         dateJudgeDate = new Date(year +"-"+ mon + "-"+ (i+1));
         switch(dateJudgeDate.getDay()){
             case 0:
@@ -270,7 +279,7 @@ var dynamicTable = function (year, mon){
                 break;
         }
     }
-    
+   
 }
 
 var parseTable = function (data){
@@ -298,9 +307,56 @@ var parseTable = function (data){
     seq_delete.addEventListener("click", function () {actionDB("delete");} )  
 }
 
+var parseOptionList = function(){
+    if(this.value == "holiday"){
+        nationHoliday.style.display = "";
+        workDateForm.style.display = "none";
+    }else if(this.value == "work"){
+        nationHoliday.style.display = "none";
+        workDateForm.style.display = "";
+        var empList = arr_data.emp_name;
+        for (var i = 1; i <= emp_data_size; i++) {
+            seq_replace.innerHTML += "<option value="+empList[i]+">"+ empList[i] +"</option>"
+        }
+    }
+}
+
 var req_val = function (){
-    var tmpDate = seq_calender.value.substring(8, 10);
-    console.log(dateName[1]);
+    var numTd = seq_calender.value.substring(8, 10)*1;
+    var calenderDate = seq_calender.value.substring(0, 7)
+    var replaceTxt =  dateReplace[numTd-1];
+    var nameTxt = dateName[numTd-1];
+
+    if(monList.value == calenderDate){
+        var dayType = (new Date(seq_calender.value).getDay() == 6 || new Date(seq_calender.value).getDay() == 0)?"holiday": "work";
+        if("work" == on_off.value){
+            if("work" == dayType && nameTxt.innerText != seq_replace.value){
+                nameTxt.innerText == "";
+                replaceTxt.innerText = seq_replace.value;
+            }else if("holiday" == dayType){
+                nameTxt.innerText = "";
+                nameTxt.style.backgroundColor = "#66B3FF";
+                replaceTxt.innerText = seq_replace.value;
+            }else{
+                seq_stateInfo.innerText = "資料錯誤!";
+            }
+        }else if("holiday" == on_off.value){
+            if("work" == dayType && seq_holiday.value != ""){
+                nameTxt.innerText = seq_holiday.value;
+                nameTxt.style.backgroundColor = "#FFC1E0";
+                replaceTxt.innerText = "";
+            }else if("holiday" == dayType && seq_holiday.value != ""){
+                nameTxt.style.backgroundColor = "#FFC1E0";
+                nameTxt.innerText = seq_holiday.value;
+                replaceTxt.innerText = "";
+            }else{
+                seq_stateInfo.innerText = "假日備註不得為空!";
+            }
+        }
+    }else{
+        seq_stateInfo.innerText = "請輸入這個月的日期!";
+    }
+    // sortData(arr_data);
 }
 
 var seq_changePage = function (e){
