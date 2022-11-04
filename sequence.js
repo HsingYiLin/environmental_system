@@ -182,16 +182,7 @@ var httpReqFun = function (param){
 }
 
 var sortData = function(data){
-    // console.log(data);
-    // year = monList.value.substring(0,4);
-    // mon = monList.value.substring(5,7);
-    // dynamicTable(year, mon);
-    punish_date_arr =data.pun_date;
-    // dateSortCls = document.getElementsByClassName("dateSortCls");
-    // dateName = document.getElementsByClassName("dateName");
-    // datePunish = document.getElementsByClassName("datePunish"); 
-    // dateReplace = document.getElementsByClassName("dateReplace");
-    
+    punish_date_arr =data.pun_date;   
     var dateJudgeDate;
     var cnt = 1; //第一個完整周
     var pun_data_size = 0;
@@ -220,14 +211,15 @@ var sortData = function(data){
             }
             cnt ++;
         }
-        
-        if(dateName[i].innerText == "" && pun_data_size > 0 && pun_data_size >= pun_data_ind){
+
+        var isPass = (dateName[i].innerText != "六" && dateName[i].innerText != "日" && dateName[i].innerText != "清潔公司"  && dateName[i].innerText != "剪輯組" && dateName[i].innerText != "元旦" && dateName[i].innerText != "春節" && dateName[i].innerText != "228連假" && dateName[i].innerText != "清明連假" && dateName[i].innerText != "勞動節" && dateName[i].innerText != "端午連假" && dateName[i].innerText != "中秋連假" && dateName[i].innerText != "國慶連假" && dateName[i].innerText != "放假")?true:false
+        if(isPass && pun_data_size > 0 && pun_data_size >= pun_data_ind){
             dateName[i].innerText = data.name[pun_data_ind];
             datePunish[i].innerText = data.pun_date[pun_data_ind].substring(5,7) + "/" + data.pun_date[pun_data_ind].substring(8,10) + data.punishtxt[pun_data_ind];           
             pun_data_ind ++;
         }
         dateSortTimeStamp = new Date((year+ "/" +dateSortCls[i].innerText).split('/').join('-')).getTime();//表格日期時間戳
-        if(dateName[i].innerText == ""){
+        if(isPass){
             for(emp_data_ind  ; emp_data_ind <= emp_data_size; emp_data_ind++){
                 startText = new Date(data.startdate[emp_data_ind]); 
                 startTimeStamp = startText.setMonth(startText.getMonth() + 1);//員工報到時間戳
@@ -301,6 +293,16 @@ var parseTable = function (data){
             case "清潔公司":
                 dateName[i].style.backgroundColor = "#E0E0E0";
                 break;
+            case "元旦":
+            case "春節":
+            case "228連假":
+            case "清明連假":
+            case "勞動節":
+            case "端午連假":
+            case "中秋連假":
+            case "國慶連假":
+            case "放假":
+                dateName[i].style.backgroundColor = "#FFC1E0";
         }
     }
     seq_delete.style.display = "";
@@ -308,6 +310,7 @@ var parseTable = function (data){
 }
 
 var parseOptionList = function(){
+    seq_replace.innerHTML = "<option value=></option>";
     if(this.value == "holiday"){
         nationHoliday.style.display = "";
         workDateForm.style.display = "none";
@@ -326,6 +329,7 @@ var req_val = function (){
     var calenderDate = seq_calender.value.substring(0, 7)
     var replaceTxt =  dateReplace[numTd-1];
     var nameTxt = dateName[numTd-1];
+    var dateTxt = dateSortCls[numTd-1]
 
     if(monList.value == calenderDate){
         var dayType = (new Date(seq_calender.value).getDay() == 6 || new Date(seq_calender.value).getDay() == 0)?"holiday": "work";
@@ -356,7 +360,7 @@ var req_val = function (){
     }else{
         seq_stateInfo.innerText = "請輸入這個月的日期!";
     }
-    // sortData(arr_data);
+    sortData(arr_data);
 }
 
 var seq_changePage = function (e){
