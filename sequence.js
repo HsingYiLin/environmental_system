@@ -7,6 +7,7 @@ var pre_confirm;
 var seq_sequence;
 var seq_calender;
 var seq_replace;
+var replace_opt;
 var seq_holiday;
 var on_off;
 var workDateForm;
@@ -34,6 +35,7 @@ var dateSort;
 var punish_date_arr = Array();
 var arr_data;
 var emp_data_size;
+var replaceOption ;
 
 var sequence_init = function(){
     console.log("sequence_init");
@@ -64,6 +66,7 @@ var createTable = function(isPreEdit){
         seq_sequence = document.getElementById("seq_sequence");
         seq_calender = document.getElementById("seq_calender");
         seq_replace = document.getElementById("seq_replace");
+        replace_opt = document.getElementById("replace_opt");
         seq_holiday = document.getElementById("seq_holiday");
         seq_modify = document.getElementById("seq_modify");
         seq_save = document.getElementById("seq_save");
@@ -74,6 +77,7 @@ var createTable = function(isPreEdit){
         seq_sequence.setAttribute("selected", true);
         seq_modify.addEventListener("click", req_val);
         seq_save.style.display = "";
+        seq_save.addEventListener("click", function(){actionDB("create")});
     }
 }
 
@@ -94,6 +98,7 @@ var actionDB = function(params) {
             httpReqFun(seq_toSend);
             break;
         case "create":
+            console.log("create");
             var punish_arr = Array();
             var calender_arr = Array();
             var txt_arr = Array();
@@ -113,7 +118,8 @@ var actionDB = function(params) {
                 replace_emp_arr: replace_emp_arr,
                 lastEmp: last_emp,
                 mon: mon,
-                tableName:year + mon
+                tableName:year + mon,
+                replaceOption: replaceOption
             }  
             httpReqFun(seq_toSend);
             break;
@@ -182,6 +188,7 @@ var httpReqFun = function (param){
 }
 
 var sortData = function(data){
+    console.log("sortData");
     punish_date_arr =data.pun_date;   
     var dateJudgeDate;
     var cnt = 1; //第一個完整周
@@ -239,7 +246,6 @@ var sortData = function(data){
     }
     emp_data_ind = (emp_data_ind-1)==0?emp_data_size:emp_data_ind-1;
     last_emp = data.emp_name[emp_data_ind];
-    seq_save.addEventListener("click", function(){actionDB("create")});
 }
 
 var dynamicTable = function (year, mon){
@@ -321,6 +327,9 @@ var parseOptionList = function(){
         for (var i = 1; i <= emp_data_size; i++) {
             seq_replace.innerHTML += "<option value="+empList[i]+">"+ empList[i] +"</option>"
         }
+    }else{
+        nationHoliday.style.display = "none";
+        workDateForm.style.display = "none";
     }
 }
 
@@ -329,38 +338,42 @@ var req_val = function (){
     var calenderDate = seq_calender.value.substring(0, 7)
     var replaceTxt =  dateReplace[numTd-1];
     var nameTxt = dateName[numTd-1];
-    var dateTxt = dateSortCls[numTd-1]
-
+    var dayType = (new Date(seq_calender.value).getDay() == 6 || new Date(seq_calender.value).getDay() == 0)?"holiday": "work";
+    
     if(monList.value == calenderDate){
-        var dayType = (new Date(seq_calender.value).getDay() == 6 || new Date(seq_calender.value).getDay() == 0)?"holiday": "work";
-        if("work" == on_off.value){
-            if("work" == dayType && nameTxt.innerText != seq_replace.value){
-                nameTxt.innerText == "";
-                replaceTxt.innerText = seq_replace.value;
-            }else if("holiday" == dayType){
-                nameTxt.innerText = "";
-                nameTxt.style.backgroundColor = "#66B3FF";
-                replaceTxt.innerText = seq_replace.value;
-            }else{
-                seq_stateInfo.innerText = "資料錯誤!";
-            }
-        }else if("holiday" == on_off.value){
-            if("work" == dayType && seq_holiday.value != ""){
-                nameTxt.innerText = seq_holiday.value;
-                nameTxt.style.backgroundColor = "#FFC1E0";
-                replaceTxt.innerText = "";
-            }else if("holiday" == dayType && seq_holiday.value != ""){
-                nameTxt.style.backgroundColor = "#FFC1E0";
-                nameTxt.innerText = seq_holiday.value;
-                replaceTxt.innerText = "";
-            }else{
-                seq_stateInfo.innerText = "假日備註不得為空!";
-            }
+        var modifySituation = {
+            1: ("work" == dayType && "work" == on_off.value),
+            2: ("work" == dayType && "holiday" == on_off.value),
+            3: ("holiday" == dayType && "work" == on_off.value),
+            4: ("holiday" == dayType && "holiday" == on_off.value)
+        }
+        var mustDo = {
+            1: (seq_replace.value != "" && nameTxt.innerText != seq_replace.value && replace_opt.value != "" ),
+            2: (seq_holiday.value != "")
+        }
+        if(modifySituation[1] && mustDo[1]){
+            nameTxt.innerText == "";
+            replaceOption = replace_opt.value;
+            replaceTxt.innerText = seq_replace.value +" "+ replaceOption;
+            console.log(seq_replace.value + replaceOption);
+        }else if(modifySituation[2] && mustDo[2]){
+            nameTxt.innerText = seq_holiday.value;
+            nameTxt.style.backgroundColor = "#FFC1E0";
+            replaceTxt.innerText = "";
+        }else if(modifySituation[3]){
+            nameTxt.innerText = "";
+            nameTxt.style.backgroundColor = "#66B3FF";
+            replaceTxt.innerText = seq_replace.value;
+        }else if(modifySituation[4] && mustDo[2]){
+            nameTxt.style.backgroundColor = "#FFC1E0";
+            nameTxt.innerText = seq_holiday.value;
+            replaceTxt.innerText = "";
+        }else{
+            seq_stateInfo.innerText = "格式錯誤"
         }
     }else{
         seq_stateInfo.innerText = "請輸入這個月的日期!";
     }
-    sortData(arr_data);
 }
 
 var seq_changePage = function (e){

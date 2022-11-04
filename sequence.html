@@ -67,9 +67,15 @@
                 <option value="放假">放假</option>
             </select><br>
         </div>  
-        <div id="workDateForm">      
+        <div id="workDateForm" style="display: none;">      
             <span>候補:</span>&nbsp&nbsp&nbsp&nbsp
             <select name="" id="seq_replace"></select><br>
+            <span>選項:</span>&nbsp&nbsp&nbsp&nbsp
+            <select name="" id="replace_opt">
+                <option value=""></option>
+                <option value="代替">代替</option>
+                <option value="調用">調用</option>
+            </select>
         </div>   
         <input type="submit" id="seq_modify" value="修改">
         <input type="submit" id="seq_save" value="儲存" style="display:none;">     
