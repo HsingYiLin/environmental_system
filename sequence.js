@@ -107,7 +107,7 @@ var actionDB = function(params) {
                 calender_arr.push((year+ "/" +dateSortCls[i].innerText).split('/').join('-'));
                 txt_arr.push(dateName[i].innerText);
                 punish_arr.push(datePunish[i].innerText);
-                replace_emp_arr.push(dateReplace[i].innerText);
+                replace_emp_arr.push(dateReplace[i].innerText.slice(-2));
             }
             seq_toSend = {
                 pload: "create",
@@ -119,7 +119,6 @@ var actionDB = function(params) {
                 lastEmp: last_emp,
                 mon: mon,
                 tableName:year + mon,
-                replaceOption: replaceOption
             }  
             httpReqFun(seq_toSend);
             break;
@@ -339,7 +338,6 @@ var req_val = function (){
     var replaceTxt =  dateReplace[numTd-1];
     var nameTxt = dateName[numTd-1];
     var dayType = (new Date(seq_calender.value).getDay() == 6 || new Date(seq_calender.value).getDay() == 0)?"holiday": "work";
-    
     if(monList.value == calenderDate){
         var modifySituation = {
             1: ("work" == dayType && "work" == on_off.value),
@@ -353,27 +351,30 @@ var req_val = function (){
         }
         if(modifySituation[1] && mustDo[1]){
             nameTxt.innerText == "";
-            replaceOption = replace_opt.value;
-            replaceTxt.innerText = seq_replace.value +" "+ replaceOption;
-            console.log(seq_replace.value + replaceOption);
+            replaceTxt.innerText = seq_replace.value +" "+ replace_opt.value;
+            sortData(arr_data);
         }else if(modifySituation[2] && mustDo[2]){
             nameTxt.innerText = seq_holiday.value;
             nameTxt.style.backgroundColor = "#FFC1E0";
             replaceTxt.innerText = "";
+            sortData(arr_data);
         }else if(modifySituation[3]){
             nameTxt.innerText = "";
             nameTxt.style.backgroundColor = "#66B3FF";
             replaceTxt.innerText = seq_replace.value;
+            sortData(arr_data);
         }else if(modifySituation[4] && mustDo[2]){
             nameTxt.style.backgroundColor = "#FFC1E0";
             nameTxt.innerText = seq_holiday.value;
             replaceTxt.innerText = "";
+            sortData(arr_data);
         }else{
             seq_stateInfo.innerText = "格式錯誤"
         }
     }else{
         seq_stateInfo.innerText = "請輸入這個月的日期!";
     }
+    setTimeout(function(){seq_stateInfo.innerText = ""}, 3000 )
 }
 
 var seq_changePage = function (e){
