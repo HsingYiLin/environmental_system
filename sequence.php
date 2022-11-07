@@ -113,18 +113,18 @@
 				$arr_res["status"] = "add fail";	
 			}
 		}	
-		$replcae_tmp = "";
+	
 		if(!empty($lastEmp) || !empty($replace_emp_arr)){
-			$tmp_len = 1;
 			for($i = 0; $i < count($replace_emp_arr); $i++){
 				if(!empty($replace_emp_arr[$i])){
-					if($tmp_len > 1){
-						$sql_update_replace_emp[$i] = "UPDATE employee SET `replace_emp` = "."CONCAT(`replace_emp`, '$replace_emp_arr[$i], ')" ." WHERE `emp_name` =". "'$txt_arr[$i]'";
-					}else{
-						$sql_update_replace_emp[$i] = "UPDATE employee SET `replace_emp` = "."'$replace_emp_arr[$i], '" ." WHERE `emp_name` =". "'$txt_arr[$i]'";
-						$tmp_len +=1;
+					$replcae_bol = (strpos($replace_emp_arr[$i], "代替"));
+					$replace_name[$i] = mb_substr($replace_emp_arr[$i], 0, -2);
+					if($replcae_bol != false){ //代替
+						$sql_update_replace_emp[$i] = "UPDATE employee SET `replace_emp` = "."CONCAT(`replace_emp`, '$txt_arr[$i], ')" ." WHERE `emp_name` =". "'$replace_name[$i]'";
+					}else{//調用
+						$sql_update_replace_emp[$i] = "UPDATE employee SET `increase_emp` = `increase_emp` + 1 WHERE `emp_name` =". "'$replace_name[$i]'";
 					}
-					// $arr_res["sql_update_replace_emp"][$i] = $sql_update_replace_emp[$i];
+					$arr_res["sql_update_replace_emp"][$i] = $sql_update_replace_emp[$i];
 					if(mysqli_query($mydb_link, $sql_update_replace_emp[$i]) == TRUE){
 						$arr_res["status"] = "update replace success";
 					} 
@@ -159,7 +159,7 @@
 			$del_ind = $mon + $i;
 			$arr_res["del_ind"][$i] =$del_ind;
 			$sql_delete_table[$i] = "DELETE FROM sequence"."$tableName";
-			$sql_update_lastIndex[$i] = "UPDATE employee SET `lastIndex` = 0 , `replace_emp` = '' WHERE `lastIndex` = "."$del_ind" ." OR `replace_emp` != ''";
+			$sql_update_lastIndex[$i] = "UPDATE employee SET `lastIndex` = 0 , `replace_emp` = '', increase_emp = 0  WHERE `lastIndex` = "."$del_ind" ." OR `replace_emp` != ''";
 			if(mysqli_query($mydb_link, $sql_delete_table[$i])){
 				$arr_res["status"] = "delete success";
 			}

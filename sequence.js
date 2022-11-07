@@ -33,10 +33,8 @@ var isPreEdit = false;
 var tableHTML="";
 var dateSort;
 var punish_date_arr = Array();
-// var replace_emp_arr = Array();
 var arr_data;
 var emp_data_size;
-// var beReplace_emp = Array();
 
 var sequence_init = function(){
     console.log("sequence_init");
@@ -260,7 +258,8 @@ var dynamicTable = function (year, mon){
     dateSortCls = document.getElementsByClassName("dateSortCls");
     dateName = document.getElementsByClassName("dateName");
     datePunish = document.getElementsByClassName("datePunish"); 
-    dateReplace = document.getElementsByClassName("dateReplace");    for(var i=0; i < table_days; i++){
+    dateReplace = document.getElementsByClassName("dateReplace");    
+    for(var i=0; i < table_days; i++){
         dateJudgeDate = new Date(year +"-"+ mon + "-"+ (i+1));
         switch(dateJudgeDate.getDay()){
             case 0:
@@ -351,8 +350,10 @@ var req_val = function (){
             2: (seq_holiday.value != "")
         }
         if(modifySituation[1] && mustDo[1]){
-            nameTxt.innerText == "";
+            console.log("11");
+            // nameTxt.innerText == "";
             replaceTxt.innerText = seq_replace.value + replace_opt.value;
+            console.log("360",nameTxt.innerText );
             sortData(arr_data);
         }else if(modifySituation[2] && mustDo[2]){
             nameTxt.innerText = seq_holiday.value;
@@ -360,9 +361,10 @@ var req_val = function (){
             replaceTxt.innerText = "";
             sortData(arr_data);
         }else if(modifySituation[3]){
+            console.log("22");
             nameTxt.innerText = "";
             nameTxt.style.backgroundColor = "#66B3FF";
-            replaceTxt.innerText = seq_replace.value;
+            replaceTxt.innerText = seq_replace.value + replace_opt.value;
             sortData(arr_data);
         }else if(modifySituation[4] && mustDo[2]){
             nameTxt.style.backgroundColor = "#FFC1E0";
