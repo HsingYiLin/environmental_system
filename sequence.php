@@ -61,7 +61,7 @@
 		$sql_employee = "SELECT * FROM employee WHERE `title` = '其他' AND `state` = '在職'";
 		$sql_employee .= " AND "."'$max_date'". " >= DATE_ADD(`startdate`, INTERVAL 1 MONTH) ORDER BY `startdate` DESC";
 		$sql_punish = "SELECT `name`, `punishtxt`, `pun_date` FROM punish WHERE  `done` = 0  AND `pun_date` < "."$mon"."-1 ORDER BY `pun_date` ASC";
-		$arr_res["sql_punish"] = $sql_punish;
+		// $arr_res["sql_punish"] = $sql_punish;
 		$result_employee = mysqli_query($mydb_link, $sql_employee);
 		$result_punish= mysqli_query($mydb_link, $sql_punish);
 		$i=1;
@@ -70,6 +70,7 @@
 				$arr_res["emp_name"][$i] = $row['emp_name'];
 				$arr_res["startdate"][$i] = $row['startdate'];
 				$arr_res["lastIndex"][$i] = $row['lastIndex'];
+				$arr_res["replace_emp"][$i] = $row['replace_emp'];
 				$i++;
 			}
 			$arr_res["status"] = "emp success";
@@ -112,8 +113,23 @@
 				$arr_res["status"] = "add fail";	
 			}
 		}	
-
-		if(!empty($object["lastEmp"])){
+		$replcae_tmp = "";
+		if(!empty($lastEmp) || !empty($replace_emp_arr)){
+			$tmp_len = 1;
+			for($i = 0; $i < count($replace_emp_arr); $i++){
+				if(!empty($replace_emp_arr[$i])){
+					if($tmp_len > 1){
+						$sql_update_replace_emp[$i] = "UPDATE employee SET `replace_emp` = "."CONCAT(`replace_emp`, '$replace_emp_arr[$i], ')" ." WHERE `emp_name` =". "'$txt_arr[$i]'";
+					}else{
+						$sql_update_replace_emp[$i] = "UPDATE employee SET `replace_emp` = "."'$replace_emp_arr[$i], '" ." WHERE `emp_name` =". "'$txt_arr[$i]'";
+						$tmp_len +=1;
+					}
+					// $arr_res["sql_update_replace_emp"][$i] = $sql_update_replace_emp[$i];
+					if(mysqli_query($mydb_link, $sql_update_replace_emp[$i]) == TRUE){
+						$arr_res["status"] = "update replace success";
+					} 
+				}		
+			}
 			$lastEmp = $object["lastEmp"];
 			$mon = $object["mon"];
 			$sql_update_last_ind = "UPDATE employee SET `lastIndex` = "."$mon". " WHERE `emp_name` = "."'$lastEmp'";
@@ -143,8 +159,7 @@
 			$del_ind = $mon + $i;
 			$arr_res["del_ind"][$i] =$del_ind;
 			$sql_delete_table[$i] = "DELETE FROM sequence"."$tableName";
-			$sql_update_lastIndex[$i] = "UPDATE employee SET `lastIndex` = 0 WHERE `lastIndex` = "."$del_ind";
-			$arr_res["sql_update_lastIndex"][$i] = $sql_update_lastIndex[$i] ;
+			$sql_update_lastIndex[$i] = "UPDATE employee SET `lastIndex` = 0 , `replace_emp` = '' WHERE `lastIndex` = "."$del_ind" ." OR `replace_emp` != ''";
 			if(mysqli_query($mydb_link, $sql_delete_table[$i])){
 				$arr_res["status"] = "delete success";
 			}

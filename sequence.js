@@ -33,9 +33,10 @@ var isPreEdit = false;
 var tableHTML="";
 var dateSort;
 var punish_date_arr = Array();
+// var replace_emp_arr = Array();
 var arr_data;
 var emp_data_size;
-var replaceOption ;
+// var beReplace_emp = Array();
 
 var sequence_init = function(){
     console.log("sequence_init");
@@ -107,7 +108,7 @@ var actionDB = function(params) {
                 calender_arr.push((year+ "/" +dateSortCls[i].innerText).split('/').join('-'));
                 txt_arr.push(dateName[i].innerText);
                 punish_arr.push(datePunish[i].innerText);
-                replace_emp_arr.push(dateReplace[i].innerText.slice(-2));
+                replace_emp_arr.push(dateReplace[i].innerText);
             }
             seq_toSend = {
                 pload: "create",
@@ -351,7 +352,7 @@ var req_val = function (){
         }
         if(modifySituation[1] && mustDo[1]){
             nameTxt.innerText == "";
-            replaceTxt.innerText = seq_replace.value +" "+ replace_opt.value;
+            replaceTxt.innerText = seq_replace.value + replace_opt.value;
             sortData(arr_data);
         }else if(modifySituation[2] && mustDo[2]){
             nameTxt.innerText = seq_holiday.value;
