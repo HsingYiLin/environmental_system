@@ -52,7 +52,7 @@ var sequence_init = function(){
     seq_stateInfo = document.getElementById("seq_stateInfo");
     seq_stateInfo.style.color = "#CE0000";
     pre_confirm.addEventListener("click", function () {
-        (monList.value == "")?seq_stateInfo.innerText = "表格不得為空!":actionDB("dataExist");
+        (monList.value == "")?seq_stateInfo.innerText = info_tw("FORM NOT BE EMPTY"):actionDB("dataExist");
     }) 
     pre_edit.style.display = "";     
     seq_edit.style.display = "none";
@@ -153,20 +153,20 @@ var httpReqFun = function (param){
                     mon = monList.value.substring(5,7);
                     dynamicTable(year, mon);
                     sortData(arr_data);
-                    seq_stateInfo.innerText = "生成成功!點擊儲存此列表將會保存下來";
+                    seq_stateInfo.innerText = info_tw("GENER SUCCESS");
                     break;
                 case "sequence data exist":
                     parseTable(arr_data);
-                    seq_stateInfo.innerText = "列表已存在!";
+                    seq_stateInfo.innerText = info_tw("LIST EXISIT");
                     pre_confirm.remove();                    
                     break;
                 case "sequence no data":
                     isPreEdit = (monList.value != "" && clean_comp.value != "")? true:false;
-                    seq_stateInfo.innerText = "表格不得為空!";
+                    seq_stateInfo.innerText = info_tw("FORM NOT BE EMPTY");
                     createTable(isPreEdit);
                     break;
                 case "last sequence no data":
-                    seq_stateInfo.innerText = "上個月未排值日生!";
+                    seq_stateInfo.innerText = info_tw("UNSCHEDULED");
                     break;
                 case "delete success":
                 case "update success":
@@ -175,7 +175,7 @@ var httpReqFun = function (param){
                 case "update emp success":
                 case "update punish success":
                     sequence_init();
-                    seq_stateInfo.innerText = "已儲存!";
+                    seq_stateInfo.innerText = info_tw("SAVED");
                     pre_confirm.style.display = "none";
                     seq_delete.style.display = "";
                     seq_delete.addEventListener("click", function () {actionDB("delete")});
@@ -369,10 +369,10 @@ var req_val = function (){
             replaceTxt.innerText = "";
             sortData(arr_data);
         }else{
-            seq_stateInfo.innerText = "格式錯誤"
+            seq_stateInfo.innerText = info_tw("WRONG FORMAT");
         }
     }else{
-        seq_stateInfo.innerText = "請輸入這個月的日期!";
+        seq_stateInfo.innerText = info_tw("DATE OF THE MON");
     }
     setTimeout(function(){seq_stateInfo.innerText = ""}, 3000 )
 }

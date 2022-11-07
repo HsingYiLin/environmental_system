@@ -60,7 +60,7 @@ var actionDB = function(params) {
                 };   
                 httpReqFun(toSend);
             }else{
-                emp_stateInfo.innerText = "到職日或名字不得為空||日期錯誤";
+                emp_stateInfo.innerText = info_tw("STARTDATE AND NAME NOT BE EMPTY");
             }
             break;
         case "select":
@@ -88,7 +88,7 @@ var actionDB = function(params) {
                 };   
                 httpReqFun(toSend);
             }else{
-                emp_stateInfo.innerText = "名字不得為空";
+                emp_stateInfo.innerText = info_tw("NAME NOT BE EMPTY");
             }
             break;
         case "delete":
@@ -99,7 +99,7 @@ var actionDB = function(params) {
                 };   
                 httpReqFun(toSend);
             }else{
-                emp_stateInfo.innerText = "名字不得為空";
+                emp_stateInfo.innerText = info_tw("NAME NOT BE EMPTY");
             }
     }
 }
@@ -125,15 +125,15 @@ var httpReqFun = function (param){
                     break;
                 case "success!":
                 case "select success":
-                    emp_stateInfo.innerText = "成功";
+                    emp_stateInfo.innerText = info_tw("SUCCESS");
                     parseAllData(arr_data);
                     break;
                 case "no data":
-                    emp_stateInfo.innerText = "無資料";
+                    emp_stateInfo.innerText = info_tw("NO DATA");
                     break;
                 case "update fail":
                 case "duplicate":
-                    emp_stateInfo.innerText = "資料重複";
+                    emp_stateInfo.innerText = info_tw("DUPLICATE");
                     parseAllData(arr_data);
                     break;
             }  

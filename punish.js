@@ -55,7 +55,7 @@ var actionDB = function(params) {
                 };   
                 httpReqFun(pun_toSend);
             }else{
-                pun_stateInfo.innerText = "表格不得為空||日期錯誤";
+                pun_stateInfo.innerText = info_tw("FORM NOT BE EMPTY") + "||" + info_tw("WRONG DATE");
             }
             break;
         case "select":
@@ -81,7 +81,7 @@ var actionDB = function(params) {
                 };   
                 httpReqFun(pun_toSend);
             }else{
-                pun_stateInfo.innerText = "名字和日期不得為空";
+                pun_stateInfo.innerText = info_tw("NAME NOT BE EMPTY");
             }
             break;
         case "delete":
@@ -93,7 +93,7 @@ var actionDB = function(params) {
                 };   
                 httpReqFun(pun_toSend);
             }else{
-                pun_stateInfo.innerText = "名字和日期不得為空";
+                pun_stateInfo.innerText = info_tw("NAME AND DATE NOT BE EMPTY");
             }
             break;
     }
@@ -121,14 +121,14 @@ var httpReqFun = function (param){
                 break;
             case "success!":
             case "select success":
-                pun_stateInfo.innerText = "成功";
+                pun_stateInfo.innerText = info_tw("SUCCESS");
                 parseAllData(arr_data);
                 break;
             case "no data":
-                pun_stateInfo.innerText = "無資料";
+                pun_stateInfo.innerText = info_tw("NO DATA");
                 break;
             case "date duplicate":
-                pun_stateInfo.innerText = "資料重複";
+                pun_stateInfo.innerText = info_tw("DUPLICATE");
                 break;
             }  
         }
