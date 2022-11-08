@@ -35,6 +35,7 @@ var dateSort;
 var punish_date_arr = Array();
 var arr_data;
 var emp_data_size;
+var replace_arr;
 
 var sequence_init = function(){
     console.log("sequence_init");
@@ -187,7 +188,8 @@ var httpReqFun = function (param){
 
 var sortData = function(data){
     console.log("sortData");
-    punish_date_arr =data.pun_date;   
+    punish_date_arr = data.pun_date;
+    var increase_arr = data.increase_emp;
     var dateJudgeDate;
     var cnt = 1; //第一個完整周
     var pun_data_size = 0;
@@ -205,6 +207,20 @@ var sortData = function(data){
             break;
         }
     }
+    
+    var replace_ind = [];
+    var replace_txt;
+    var replace_name;
+    var tmp_ind = 0 ;
+    for(var k = 1; k <= emp_data_size; k++){
+        replace_txt = data.replace_emp[k].split(",");
+        replace_txt.pop();
+        if(replace_txt != ""){
+            replace_name = data.emp_name[k];
+            replace_ind[replace_name] = 0
+        }
+    }
+ 
     //順位:
     //剪輯組(第一個完整禮拜)?剪輯組:懲罰者
     //兩者都沒有，其他職位員工
@@ -216,6 +232,7 @@ var sortData = function(data){
             }
             cnt ++;
         }
+        increase_arr = data.increase_emp[emp_data_ind]
 
         var isPass = (dateName[i].innerText != "六" && dateName[i].innerText != "日" && dateName[i].innerText != "清潔公司"  && dateName[i].innerText != "剪輯組" && dateName[i].innerText != "元旦" && dateName[i].innerText != "春節" && dateName[i].innerText != "228連假" && dateName[i].innerText != "清明連假" && dateName[i].innerText != "勞動節" && dateName[i].innerText != "端午連假" && dateName[i].innerText != "中秋連假" && dateName[i].innerText != "國慶連假" && dateName[i].innerText != "放假")?true:false
         if(isPass && pun_data_size > 0 && pun_data_size >= pun_data_ind){
@@ -229,9 +246,16 @@ var sortData = function(data){
                 startText = new Date(data.startdate[emp_data_ind]); 
                 startTimeStamp = startText.setMonth(startText.getMonth() + 1);//員工報到時間戳
                 if(dateSortTimeStamp > startTimeStamp){
-                    dateName[i].innerText = data.emp_name[emp_data_ind];
+                    var replace_tmp = data.replace_emp[emp_data_ind].split(",");
+                    replace_tmp.pop();
+                    if(replace_tmp != ""){
+                        tmp_ind = replace_ind[data.emp_name[emp_data_ind]]++;
+                        dateName[i].innerText = (tmp_ind<replace_tmp.length)?replace_tmp[tmp_ind]:data.emp_name[emp_data_ind];
+                    }else{
+                        dateName[i].innerText = data.emp_name[emp_data_ind];
+                    }
                     emp_data_ind += 1;
-                    if(emp_data_ind > emp_data_size){
+                    if(emp_data_ind > emp_data_size){ 
                         emp_data_ind = 1;
                     }
                     break;
@@ -240,11 +264,12 @@ var sortData = function(data){
                     emp_data_ind = 1;
                 }
             }
-        }     
+        }
     }
     emp_data_ind = (emp_data_ind-1)==0?emp_data_size:emp_data_ind-1;
     last_emp = data.emp_name[emp_data_ind];
 }
+
 
 var dynamicTable = function (year, mon){
     var dateObj = new Date(year,mon,0);
@@ -350,10 +375,8 @@ var req_val = function (){
             2: (seq_holiday.value != "")
         }
         if(modifySituation[1] && mustDo[1]){
-            console.log("11");
             // nameTxt.innerText == "";
             replaceTxt.innerText = seq_replace.value + replace_opt.value;
-            console.log("360",nameTxt.innerText );
             sortData(arr_data);
         }else if(modifySituation[2] && mustDo[2]){
             nameTxt.innerText = seq_holiday.value;
@@ -361,7 +384,6 @@ var req_val = function (){
             replaceTxt.innerText = "";
             sortData(arr_data);
         }else if(modifySituation[3]){
-            console.log("22");
             nameTxt.innerText = "";
             nameTxt.style.backgroundColor = "#66B3FF";
             replaceTxt.innerText = seq_replace.value + replace_opt.value;

@@ -71,6 +71,7 @@
 				$arr_res["startdate"][$i] = $row['startdate'];
 				$arr_res["lastIndex"][$i] = $row['lastIndex'];
 				$arr_res["replace_emp"][$i] = $row['replace_emp'];
+				$arr_res["increase_emp"][$i] = $row['increase_emp'];
 				$i++;
 			}
 			$arr_res["status"] = "emp success";
@@ -120,11 +121,11 @@
 					$replcae_bol = (strpos($replace_emp_arr[$i], "代替"));
 					$replace_name[$i] = mb_substr($replace_emp_arr[$i], 0, -2);
 					if($replcae_bol != false){ //代替
-						$sql_update_replace_emp[$i] = "UPDATE employee SET `replace_emp` = "."CONCAT(`replace_emp`, '$txt_arr[$i], ')" ." WHERE `emp_name` =". "'$replace_name[$i]'";
+						$sql_update_replace_emp[$i] = "UPDATE employee SET `replace_emp` = "."CONCAT(`replace_emp`, '$txt_arr[$i]代, ')" ." WHERE `emp_name` =". "'$replace_name[$i]'";
 					}else{//調用
 						$sql_update_replace_emp[$i] = "UPDATE employee SET `increase_emp` = `increase_emp` + 1 WHERE `emp_name` =". "'$replace_name[$i]'";
 					}
-					$arr_res["sql_update_replace_emp"][$i] = $sql_update_replace_emp[$i];
+					// $arr_res["sql_update_replace_emp"][$i] = $sql_update_replace_emp[$i];
 					if(mysqli_query($mydb_link, $sql_update_replace_emp[$i]) == TRUE){
 						$arr_res["status"] = "update replace success";
 					} 
