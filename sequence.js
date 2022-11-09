@@ -1,10 +1,8 @@
-var seq_chgpage;
 var pre_edit;
 var monList;
 var clean_comp;
 var seq_edit;
 var pre_confirm;
-var seq_sequence;
 var seq_calender;
 var seq_replace;
 var replace_opt;
@@ -12,8 +10,6 @@ var seq_holiday;
 var on_off;
 var workDateForm;
 var nationHoliday;
-var seq_modify;
-var seq_save;
 var seq_delete;
 var seq_stateInfo;
 var seq_tbody;
@@ -24,7 +20,6 @@ var dateSortCls;
 var dateName;
 var datePunish;
 var dateReplace;
-var parseStr = "";
 var table_days = "";
 var last_emp = "";
 var mon = "";
@@ -33,13 +28,14 @@ var isPreEdit = false;
 var tableHTML="";
 var dateSort;
 var punish_date_arr = Array();
+var replaceDone = Array();
+var doneKey = Array();
 var arr_data;
 var emp_data_size;
-var replace_arr;
 
 var sequence_init = function(){
     console.log("sequence_init");
-    seq_chgpage = document.querySelector("#seq_chgpage");
+    var seq_chgpage = document.querySelector("#seq_chgpage");
     pre_edit = document.getElementById("pre_edit");
     monList = document.getElementById("monList");
     clean_comp = document.getElementById("clean_comp");
@@ -63,13 +59,14 @@ var createTable = function(isPreEdit){
         actionDB("init");
         seq_edit.style.display = "";
         pre_edit.style.display = "none";     
-        seq_sequence = document.getElementById("seq_sequence");
+        var seq_sequence = document.getElementById("seq_sequence");
+        var seq_modify = document.getElementById("seq_modify");
+        var seq_save = document.getElementById("seq_save");
+        var seq_clear = document.getElementById("seq_clear");
         seq_calender = document.getElementById("seq_calender");
         seq_replace = document.getElementById("seq_replace");
         replace_opt = document.getElementById("replace_opt");
         seq_holiday = document.getElementById("seq_holiday");
-        seq_modify = document.getElementById("seq_modify");
-        seq_save = document.getElementById("seq_save");
         on_off = document.getElementById("on_off");
         workDateForm = document.getElementById("workDateForm");
         nationHoliday = document.getElementById("nationHoliday");
@@ -78,6 +75,7 @@ var createTable = function(isPreEdit){
         seq_modify.addEventListener("click", req_val);
         seq_save.style.display = "";
         seq_save.addEventListener("click", function(){actionDB("create")});
+        seq_clear.addEventListener("click",clearInput);
     }
 }
 
@@ -99,6 +97,8 @@ var actionDB = function(params) {
             break;
         case "create":
             console.log("create");
+            // console.log(doneKey);
+            // console.log(replaceDone);           
             var punish_arr = Array();
             var calender_arr = Array();
             var txt_arr = Array();
@@ -116,6 +116,8 @@ var actionDB = function(params) {
                 punish_arr: punish_arr,
                 punish_date_arr: punish_date_arr,
                 replace_emp_arr: replace_emp_arr,
+                doneKey: doneKey,
+                replaceDone: replaceDone,
                 lastEmp: last_emp,
                 mon: mon,
                 tableName:year + mon,
@@ -148,7 +150,9 @@ var httpReqFun = function (param){
             switch(arr_data["status"]){
                 case "emp success":
                 case "pun success":
+                case "rep success":
                 case "pun no data":
+                case "rep no data":
                     year = monList.value.substring(0,4);
                     mon = monList.value.substring(5,7);
                     dynamicTable(year, mon);
@@ -174,6 +178,7 @@ var httpReqFun = function (param){
                     break;
                 case "update emp success":
                 case "update punish success":
+                case "update replace success":
                     sequence_init();
                     seq_stateInfo.innerText = info_tw("SAVED");
                     pre_confirm.style.display = "none";
@@ -188,6 +193,12 @@ var httpReqFun = function (param){
 
 var sortData = function(data){
     console.log("sortData");
+    console.log(data);
+    if(data.empname != undefined){
+        var empname_arr = Object.values(data.empname);
+        var rep_name_arr = Object.values(data.rep_name);
+    }
+
     punish_date_arr = data.pun_date;
     var increase_arr = data.increase_emp;
     var dateJudgeDate;
@@ -207,20 +218,7 @@ var sortData = function(data){
             break;
         }
     }
-    
-    var replace_ind = [];
-    var replace_txt;
-    var replace_name;
-    var tmp_ind = 0 ;
-    for(var k = 1; k <= emp_data_size; k++){
-        replace_txt = data.replace_emp[k].split(",");
-        replace_txt.pop();
-        if(replace_txt != ""){
-            replace_name = data.emp_name[k];
-            replace_ind[replace_name] = 0
-        }
-    }
- 
+
     //順位:
     //剪輯組(第一個完整禮拜)?剪輯組:懲罰者
     //兩者都沒有，其他職位員工
@@ -245,12 +243,19 @@ var sortData = function(data){
             for(emp_data_ind  ; emp_data_ind <= emp_data_size; emp_data_ind++){
                 startText = new Date(data.startdate[emp_data_ind]); 
                 startTimeStamp = startText.setMonth(startText.getMonth() + 1);//員工報到時間戳
-                if(dateSortTimeStamp > startTimeStamp){
-                    var replace_tmp = data.replace_emp[emp_data_ind].split(",");
-                    replace_tmp.pop();
-                    if(replace_tmp != ""){
-                        tmp_ind = replace_ind[data.emp_name[emp_data_ind]]++;
-                        dateName[i].innerText = (tmp_ind<replace_tmp.length)?replace_tmp[tmp_ind]:data.emp_name[emp_data_ind];
+                if(dateSortTimeStamp > startTimeStamp){ 
+                    if(empname_arr !=undefined){
+                        dateName[i].innerText = data.emp_name[emp_data_ind];
+                        for(var j = 0; j < empname_arr.length; j++){
+                            if( data.emp_name[emp_data_ind] == empname_arr[j]){
+                                dateName[i].innerText = rep_name_arr[j];
+                                doneKey.push(empname_arr[j]);
+                                replaceDone.push(rep_name_arr[j]);
+                                empname_arr.splice(j, 1);
+                                rep_name_arr.splice(j, 1);
+                                break;
+                            }
+                        }
                     }else{
                         dateName[i].innerText = data.emp_name[emp_data_ind];
                     }
@@ -368,11 +373,13 @@ var req_val = function (){
             1: ("work" == dayType && "work" == on_off.value),
             2: ("work" == dayType && "holiday" == on_off.value),
             3: ("holiday" == dayType && "work" == on_off.value),
-            4: ("holiday" == dayType && "holiday" == on_off.value)
+            4: ("holiday" == dayType && "holiday" == on_off.value),
+            5: ("" == on_off.value)
         }
         var mustDo = {
             1: (seq_replace.value != "" && nameTxt.innerText != seq_replace.value && replace_opt.value != "" ),
-            2: (seq_holiday.value != "")
+            2: (seq_holiday.value != ""),
+            3: (seq_replace.value == "")
         }
         if(modifySituation[1] && mustDo[1]){
             // nameTxt.innerText == "";
@@ -393,6 +400,8 @@ var req_val = function (){
             nameTxt.innerText = seq_holiday.value;
             replaceTxt.innerText = "";
             sortData(arr_data);
+        }else if(modifySituation[5] && mustDo[3]){
+            replaceTxt.innerText = "";
         }else{
             seq_stateInfo.innerText = info_tw("WRONG FORMAT");
         }
@@ -400,6 +409,13 @@ var req_val = function (){
         seq_stateInfo.innerText = info_tw("DATE OF THE MON");
     }
     setTimeout(function(){seq_stateInfo.innerText = ""}, 3000 )
+}
+
+var clearInput = function (){
+    on_off.value = "";
+    seq_replace.value = "";
+    replace_opt.value = "";
+    seq_holiday.value = "";
 }
 
 var seq_changePage = function (e){
