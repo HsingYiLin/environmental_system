@@ -245,6 +245,7 @@ var sortData = function(data){
                 startTimeStamp = startText.setMonth(startText.getMonth() + 1);//員工報到時間戳
                 if(dateSortTimeStamp > startTimeStamp){ 
                     if(empname_arr !=undefined){
+                        // console.log(emp_data_ind);
                         dateName[i].innerText = data.emp_name[emp_data_ind];
                         for(var j = 0; j < empname_arr.length; j++){
                             if( data.emp_name[emp_data_ind] == empname_arr[j]){
@@ -257,6 +258,8 @@ var sortData = function(data){
                             }
                         }
                     }else{
+                        // console.log("123321");
+                        // console.log(data.increase_emp[i]);
                         dateName[i].innerText = data.emp_name[emp_data_ind];
                     }
                     emp_data_ind += 1;
@@ -364,7 +367,6 @@ var parseOptionList = function(){
 
 var req_val = function (){
     var rep_empname = arr_data.emp_name;
-    console.log("req_val",rep_empname);
     var numTd = seq_calender.value.substring(8, 10)*1;
     var calenderDate = seq_calender.value.substring(0, 7)
     var replaceTxt =  dateReplace[numTd-1];
@@ -383,12 +385,12 @@ var req_val = function (){
             2: (seq_holiday.value != ""),
             3: (seq_replace.value == "")
         }
+
+        dateSortTimeStamp = new Date(seq_calender.value).getTime();//表格日期時間戳
         if(modifySituation[1] && mustDo[1]){
             nameTxt.innerText == "";
             for(var i = 1; i <= emp_data_size; i++){
                 if(seq_replace.value == arr_data.emp_name[i]){
-                    console.log(arr_data.emp_name[i]);
-                    dateSortTimeStamp = new Date(seq_calender.value).getTime();//表格日期時間戳
                     startText = new Date(arr_data.startdate[i]); 
                     startTimeStamp = startText.setMonth(startText.getMonth() + 1);
                     if(dateSortTimeStamp > startTimeStamp){ 
@@ -408,8 +410,19 @@ var req_val = function (){
         }else if(modifySituation[3]){
             nameTxt.innerText = "";
             nameTxt.style.backgroundColor = "#66B3FF";
-            replaceTxt.innerText = seq_replace.value + replace_opt.value;
-            sortData(arr_data);
+            for(var i = 1; i <= emp_data_size; i++){
+                if(seq_replace.value == arr_data.emp_name[i]){
+                    startText = new Date(arr_data.startdate[i]); 
+                    startTimeStamp = startText.setMonth(startText.getMonth() + 1);
+                    if(dateSortTimeStamp > startTimeStamp){ 
+                        replaceTxt.innerText = seq_replace.value + replace_opt.value;
+                        break;
+                    }else{
+                        seq_stateInfo.innerText = info_tw("LESS THAN ONE MONTH");
+                    }
+                }
+            }
+            sortData(arr_data); 
         }else if(modifySituation[4] && mustDo[2]){
             nameTxt.style.backgroundColor = "#FFC1E0";
             nameTxt.innerText = seq_holiday.value;
