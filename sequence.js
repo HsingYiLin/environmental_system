@@ -33,6 +33,8 @@ var doneKey = Array();
 var arr_data;
 var emp_data_size;
 var dateSortTimeStamp, startText, startTimeStamp;
+var setting_arr = ["六","日","清潔公司","剪輯組","元旦","春節","228連假","清明連假","勞動節","端午連假","中秋連假","國慶連假","放假",]
+
 
 var sequence_init = function(){
     console.log("sequence_init");
@@ -201,18 +203,22 @@ var sortData = function(data){
         var empname_arr = Object.values(data.empname);
         var rep_name_arr = Object.values(data.rep_name);
     }
-
+    // console.log(empname_arr == undefined);
     punish_date_arr = data.pun_date;
     var increase_arr = data.increase_emp;
+    // console.log(increase_arr);
     var dateJudgeDate;
     var cnt = 1; //第一個完整周
     var pun_data_size = 0;
+    var emptyColumn;
+
     if (data.name != undefined) {
         pun_data_size = Object.keys(data["name"]).length;
     }
     emp_data_size = Object.keys(data["emp_name"]).length;
-    var emp_data_ind = 1; //emp的第一筆
-    var pun_data_ind = 1; //pun的第一筆
+    //回傳初始
+    var emp_data_ind = 1;
+    var pun_data_ind = 1;
     //上個月輪到哪個人
     for(var n = 1; n <= emp_data_size; n++){
         if(data.lastIndex[n]*1 +1 == mon){
@@ -232,25 +238,35 @@ var sortData = function(data){
             }
             cnt ++;
         }
-        increase_arr = data.increase_emp[emp_data_ind]
 
-        var isPass = (dateName[i].innerText != "六" && dateName[i].innerText != "日" && dateName[i].innerText != "清潔公司"  && dateName[i].innerText != "剪輯組" && dateName[i].innerText != "元旦" && dateName[i].innerText != "春節" && dateName[i].innerText != "228連假" && dateName[i].innerText != "清明連假" && dateName[i].innerText != "勞動節" && dateName[i].innerText != "端午連假" && dateName[i].innerText != "中秋連假" && dateName[i].innerText != "國慶連假" && dateName[i].innerText != "放假")?true:false
-        if(isPass && pun_data_size > 0 && pun_data_size >= pun_data_ind){
+        //檢查該欄有無設定值
+        for(var ind = 0; ind < setting_arr.length; ind++){
+            emptyColumn = (setting_arr[ind] != dateName[i].innerText)?true:false;
+            if(!emptyColumn)break;
+        }
+        
+        //處罰
+        if(emptyColumn && pun_data_size > 0 && pun_data_size >= pun_data_ind){
             dateName[i].innerText = data.name[pun_data_ind];
             datePunish[i].innerText = data.pun_date[pun_data_ind].substring(5,7) + "/" + data.pun_date[pun_data_ind].substring(8,10) + data.punishtxt[pun_data_ind];           
             pun_data_ind ++;
         }
         dateSortTimeStamp = new Date((year+ "/" +dateSortCls[i].innerText).split('/').join('-')).getTime();//表格日期時間戳
-        if(isPass){
-            for(emp_data_ind  ; emp_data_ind <= emp_data_size; emp_data_ind++){
+        
+        //排序
+        if(emptyColumn){
+            for(emp_data_ind; emp_data_ind <= emp_data_size; emp_data_ind++){
+                
                 startText = new Date(data.startdate[emp_data_ind]); 
                 startTimeStamp = startText.setMonth(startText.getMonth() + 1);//員工報到時間戳
+
                 if(dateSortTimeStamp > startTimeStamp){ 
-                    if(empname_arr !=undefined){
+                    if(empname_arr !=undefined){//有替補 || 調用
                         // console.log(emp_data_ind);
-                        dateName[i].innerText = data.emp_name[emp_data_ind];
+                        dateName[i].innerText = data.emp_name[emp_data_ind];//要先塞值才有辦法判斷
                         for(var j = 0; j < empname_arr.length; j++){
                             if( data.emp_name[emp_data_ind] == empname_arr[j]){
+                                // console.log("有",emp_data_ind);
                                 dateName[i].innerText = rep_name_arr[j];
                                 doneKey.push(empname_arr[j]);
                                 replaceDone.push(rep_name_arr[j]);
@@ -259,20 +275,14 @@ var sortData = function(data){
                                 break;
                             }
                         }
-                    }else{
-                        // console.log("123321");
-                        // console.log(data.increase_emp[i]);
+                    }else{ 
                         dateName[i].innerText = data.emp_name[emp_data_ind];
                     }
                     emp_data_ind += 1;
-                    if(emp_data_ind > emp_data_size){ 
-                        emp_data_ind = 1;
-                    }
+                    if(emp_data_ind > emp_data_size) emp_data_ind = 1;
                     break;
                 }
-                if(emp_data_ind > emp_data_size){
-                    emp_data_ind = 1;
-                }
+                if(emp_data_ind > emp_data_size)emp_data_ind = 1;
             }
         }
     }

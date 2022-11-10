@@ -62,7 +62,6 @@
 		$sql_employee .= " AND "."'$max_date'". " >= DATE_ADD(`startdate`, INTERVAL 1 MONTH) ORDER BY `startdate` DESC";
 		$sql_punish = "SELECT `name`, `punishtxt`, `pun_date` FROM punish WHERE  `done` = 0  AND `pun_date` < "."$mon"."-1 ORDER BY `pun_date` ASC";
 		$sql_rep = "SELECT * FROM rep WHERE `rep_done` = 0 AND "."'$mon'"." > `rep_date`";
-		$arr_res["sql_rep"] = $sql_rep;
 		$result_employee = mysqli_query($mydb_link, $sql_employee);
 		$result_punish = mysqli_query($mydb_link, $sql_punish);
 		$result_rep = mysqli_query($mydb_link, $sql_rep);
