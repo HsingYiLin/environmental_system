@@ -110,6 +110,7 @@ var actionDB = function(params) {
                 punish_arr.push(datePunish[i].innerText);
                 replace_emp_arr.push(dateReplace[i].innerText);
             }
+            console.log("creat",year);
             seq_toSend = {
                 pload: "create",
                 calender_arr: calender_arr,
@@ -121,6 +122,7 @@ var actionDB = function(params) {
                 replaceDone: replaceDone,
                 lastEmp: last_emp,
                 mon: mon,
+                year: year,
                 tableName:year + mon,
             }  
             httpReqFun(seq_toSend);

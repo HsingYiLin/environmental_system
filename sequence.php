@@ -61,7 +61,8 @@
 		$sql_employee = "SELECT * FROM employee WHERE `title` = '其他' AND `state` = '在職'";
 		$sql_employee .= " AND "."'$max_date'". " >= DATE_ADD(`startdate`, INTERVAL 1 MONTH) ORDER BY `startdate` DESC";
 		$sql_punish = "SELECT `name`, `punishtxt`, `pun_date` FROM punish WHERE  `done` = 0  AND `pun_date` < "."$mon"."-1 ORDER BY `pun_date` ASC";
-		$sql_rep = "SELECT * FROM rep WHERE `rep_done` = 0";
+		$sql_rep = "SELECT * FROM rep WHERE `rep_done` = 0 AND "."'$mon'"." > `rep_date`";
+		$arr_res["sql_rep"] = $sql_rep;
 		$result_employee = mysqli_query($mydb_link, $sql_employee);
 		$result_punish = mysqli_query($mydb_link, $sql_punish);
 		$result_rep = mysqli_query($mydb_link, $sql_rep);
@@ -115,6 +116,7 @@
 		$replace_emp_arr = $object["replace_emp_arr"];
 		$lastEmp = $object["lastEmp"];
 		$mon = $object["mon"];
+		$year = $object["year"];
 		$tableName = $object["tableName"];
 		$doneKey = $object["doneKey"];
 		$replaceDone = $object["replaceDone"];
@@ -135,11 +137,12 @@
 				$replace_name[$i] = mb_substr($replace_emp_arr[$i], 0, -2);
 				if($replcae_bol != false){ //代替
 					$sql_update_replace_emp[$i] = "INSERT INTO rep (`empname`, `rep_date`, `rep_name`)";
-					$sql_update_replace_emp[$i] .= " VALUES("."'$replace_name[$i]'".", "."$mon".", "."'$txt_arr[$i]代'".")";
+					$sql_update_replace_emp[$i] .= " VALUES("."'$replace_name[$i]'".", "."'$year-$mon'".", "."'$txt_arr[$i]代'".")";
 					$k++;
 				}else{//調用
 					$sql_update_replace_emp[$i] = "UPDATE employee SET `increase_emp` = `increase_emp` + 1 WHERE `emp_name` =". "'$replace_name[$i]'";
 				}
+				$arr_res["sql_update_replace_emp"][$i] = $sql_update_replace_emp[$i];
 				if(mysqli_query($mydb_link, $sql_update_replace_emp[$i]) == TRUE){
 					$arr_res["status"] = "update replace success";
 				} 
@@ -182,7 +185,7 @@
 			$del_ind = $mon + $i;
 			$arr_res["del_ind"][$i] =$del_ind;
 			$sql_delete_table[$i] = "DELETE FROM sequence"."$tableName";
-			$sql_update_lastIndex[$i] = "UPDATE employee SET `lastIndex` = 0 WHERE `lastIndex` = "."$del_ind" ." OR `replace_emp` != ''";
+			$sql_update_lastIndex[$i] = "UPDATE employee SET `lastIndex` = 0 WHERE `lastIndex` = "."$del_ind";
 			$sql_replace_update[$i] = "UPDATE rep SET `rep_done` = 0 WHERE `rep_done` = "."'$del_ind'";
 			if(mysqli_query($mydb_link, $sql_delete_table[$i])){
 				$arr_res["status"] = "delete success";
