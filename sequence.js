@@ -32,6 +32,7 @@ var replaceDone = Array();
 var doneKey = Array();
 var arr_data;
 var emp_data_size;
+var dateSortTimeStamp, startText, startTimeStamp;
 
 var sequence_init = function(){
     console.log("sequence_init");
@@ -193,7 +194,7 @@ var httpReqFun = function (param){
 
 var sortData = function(data){
     console.log("sortData");
-    console.log(data);
+    // console.log(data);
     if(data.empname != undefined){
         var empname_arr = Object.values(data.empname);
         var rep_name_arr = Object.values(data.rep_name);
@@ -204,7 +205,6 @@ var sortData = function(data){
     var dateJudgeDate;
     var cnt = 1; //第一個完整周
     var pun_data_size = 0;
-    var dateSortTimeStamp, startText, startTimeStamp;
     if (data.name != undefined) {
         pun_data_size = Object.keys(data["name"]).length;
     }
@@ -363,6 +363,8 @@ var parseOptionList = function(){
 }
 
 var req_val = function (){
+    var rep_empname = arr_data.emp_name;
+    console.log("req_val",rep_empname);
     var numTd = seq_calender.value.substring(8, 10)*1;
     var calenderDate = seq_calender.value.substring(0, 7)
     var replaceTxt =  dateReplace[numTd-1];
@@ -382,9 +384,22 @@ var req_val = function (){
             3: (seq_replace.value == "")
         }
         if(modifySituation[1] && mustDo[1]){
-            // nameTxt.innerText == "";
-            replaceTxt.innerText = seq_replace.value + replace_opt.value;
-            sortData(arr_data);
+            nameTxt.innerText == "";
+            for(var i = 1; i <= emp_data_size; i++){
+                if(seq_replace.value == arr_data.emp_name[i]){
+                    console.log(arr_data.emp_name[i]);
+                    dateSortTimeStamp = new Date(seq_calender.value).getTime();//表格日期時間戳
+                    startText = new Date(arr_data.startdate[i]); 
+                    startTimeStamp = startText.setMonth(startText.getMonth() + 1);
+                    if(dateSortTimeStamp > startTimeStamp){ 
+                        replaceTxt.innerText = seq_replace.value + replace_opt.value;
+                        sortData(arr_data); 
+                        break;
+                    }else{
+                        seq_stateInfo.innerText = info_tw("LESS THAN ONE MONTH");
+                    }
+                }
+            }
         }else if(modifySituation[2] && mustDo[2]){
             nameTxt.innerText = seq_holiday.value;
             nameTxt.style.backgroundColor = "#FFC1E0";
