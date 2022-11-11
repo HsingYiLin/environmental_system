@@ -187,16 +187,23 @@
 		
 	}else if($object["pload"] == "delete"){
 		$mon = $object["mon"];
+		$year = $object["year"];
 		$table_len = 12 - ($mon*1);
 		for ($i=0; $i <= $table_len; $i++) { 
 			$tableName = $object["tableName"];
 			$tableName = $tableName + $i;
 			$del_ind = $mon + $i;
+			$del_rep = strval($del_ind);
 			$arr_res["del_ind"][$i] =$del_ind;
 			$sql_delete_table[$i] = "DELETE FROM sequence"."$tableName";
-			$sql_update_lastIndex[$i] = "UPDATE employee SET `lastIndex` = 0 WHERE `lastIndex` = "."$del_ind";
+			$sql_delete_replace[$i] = "DELETE FROM rep WHERE `rep_date` >= "."'$year-$mon'";
+			$arr_res["sql_delete_replace"][$i] = $sql_delete_replace[$i];
+			$sql_update_lastIndex[$i] = "UPDATE employee SET `lastIndex` = 0 WHERE `lastIndex` = "."'$del_ind'";
 			$sql_replace_update[$i] = "UPDATE rep SET `rep_done` = 0 WHERE `rep_done` = "."'$del_ind'";
 			if(mysqli_query($mydb_link, $sql_delete_table[$i])){
+				$arr_res["status"] = "delete success";
+			}
+			if(mysqli_query($mydb_link, $sql_delete_replace[$i])){
 				$arr_res["status"] = "delete success";
 			}
 			if(mysqli_query($mydb_link, $sql_update_lastIndex[$i]) == TRUE){

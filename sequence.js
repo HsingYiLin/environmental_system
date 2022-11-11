@@ -132,7 +132,8 @@ var actionDB = function(params) {
             seq_toSend = {
                 pload: "delete",
                 tableName: monList.value.split("-").join(""),
-                mon: monList.value.substring(5, 7)
+                mon: monList.value.substring(5, 7),
+                year: monList.value.substring(0, 4)
             }
             httpReqFun(seq_toSend);
             break;
