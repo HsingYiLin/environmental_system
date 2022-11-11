@@ -30,6 +30,7 @@ var dateSort;
 var punish_date_arr = Array();
 var replaceDone = Array();
 var doneKey = Array();
+var increase_arr;
 var arr_data;
 var emp_data_size;
 var dateSortTimeStamp, startText, startTimeStamp;
@@ -98,9 +99,7 @@ var actionDB = function(params) {
             }   
             httpReqFun(seq_toSend);
             break;
-        case "create":
-            // console.log(doneKey);
-            // console.log(replaceDone);           
+        case "create":        
             var punish_arr = Array();
             var calender_arr = Array();
             var txt_arr = Array();
@@ -124,6 +123,8 @@ var actionDB = function(params) {
                 mon: mon,
                 year: year,
                 tableName:year + mon,
+                increase_arr: increase_arr,
+                emp_name: arr_data.emp_name
             }  
             httpReqFun(seq_toSend);
             break;
@@ -180,6 +181,7 @@ var httpReqFun = function (param){
                 case "update emp success":
                 case "update punish success":
                 case "update replace success":
+                case "update incr success":
                     sequence_init();
                     seq_stateInfo.innerText = info_tw("SAVED");
                     pre_confirm.style.display = "none";
@@ -198,11 +200,11 @@ var sortData = function(data){
         var empname_arr = Object.values(data.empname);
         var rep_name_arr = Object.values(data.rep_name);
     }
+    increase_arr = data.increase_emp;
     punish_date_arr = data.pun_date;
-    // var increase_arr = data.increase_emp;
-    var pun_data_size = 0;
-    var emptyColumn;
 
+    var emptyColumn;
+    var pun_data_size = 0;
     if (data.name != undefined) {
         pun_data_size = Object.keys(data["name"]).length;
     }
@@ -217,7 +219,6 @@ var sortData = function(data){
             break;
         }
     }
-
     //順位:
     //剪輯組(第一個完整禮拜)?剪輯組:懲罰者
     //兩者都沒有，其他職位員工
@@ -238,32 +239,59 @@ var sortData = function(data){
         
         //排序
         if(emptyColumn){
-            for(emp_data_ind; emp_data_ind <= emp_data_size; emp_data_ind++){
-                
+            for(emp_data_ind; emp_data_ind <= emp_data_size; emp_data_ind++){  
                 startText = new Date(data.startdate[emp_data_ind]); 
                 startTimeStamp = startText.setMonth(startText.getMonth() + 1);//員工報到時間戳
+                var repBool = false;
+                var rep_name = "";
+                var rep_name_idx = undefined;
+                if(empname_arr !=undefined){
+                    for(var j = 0; j < empname_arr.length; j++){
+                        if( data.emp_name[emp_data_ind] == empname_arr[j]){
+                            rep_name = rep_name_arr[j];
+                            rep_name_idx = j;
+                            repBool = true;
+                            break;
+                        }
+                        repBool = false;
+                    }
+                }
 
                 if(dateSortTimeStamp > startTimeStamp){ 
-                    if(empname_arr !=undefined){//有替補 || 調用
-                        dateName[i].innerText = data.emp_name[emp_data_ind];//要先塞值才有辦法判斷
-                        for(var j = 0; j < empname_arr.length; j++){
-                            if( data.emp_name[emp_data_ind] == empname_arr[j]){
-                                dateName[i].innerText = rep_name_arr[j];
-                                doneKey.push(empname_arr[j]);
-                                replaceDone.push(rep_name_arr[j]);
-                                empname_arr.splice(j, 1);
-                                rep_name_arr.splice(j, 1);
-                                break;
-                            }
-                        }
-                    }else{ 
-                        dateName[i].innerText = data.emp_name[emp_data_ind];
+                    var sortLogic = {
+                        1 : (repBool && increase_arr[emp_data_ind] > 0 ),//有替補 有調用 先塞替補塞完 再來會跳到3
+                        2 : (repBool &&  increase_arr[emp_data_ind] == 0),//有替補 無調用 先塞替補塞完 再來會跳到4
+                        3 : (!repBool && increase_arr[emp_data_ind] > 0),//無替補 有調用 不塞 --玩跳到下一順位繼續檢查 等全部都等於0後跳到4
+                        4 : (!repBool && increase_arr[emp_data_ind] == 0)//無替補 無調用 負責塞值
                     }
-                    emp_data_ind += 1;
-                    if(emp_data_ind > emp_data_size) emp_data_ind = 1;
+                    
+                    if(sortLogic[1]){
+                        dateName[i].innerText = rep_name;
+                        doneKey.push(empname_arr[rep_name_idx]);
+                        replaceDone.push(rep_name_arr[rep_name_idx]);
+                        empname_arr.splice(rep_name_idx, 1);
+                        rep_name_arr.splice(rep_name_idx, 1);
+
+                    }else if(sortLogic[2]){
+                        dateName[i].innerText = rep_name;
+                        doneKey.push(empname_arr[rep_name_idx]);
+                        replaceDone.push(rep_name_arr[rep_name_idx]);
+                        empname_arr.splice(rep_name_idx, 1);
+                        rep_name_arr.splice(rep_name_idx, 1);
+
+                    }else if(sortLogic[3]){
+                        increase_arr[emp_data_ind] = increase_arr[emp_data_ind]*1 - 1;
+                        if(emp_data_ind == emp_data_size)emp_data_ind = 1;
+                        continue;
+
+                    }else if(sortLogic[4]){
+                        dateName[i].innerText = data.emp_name[emp_data_ind];
+
+                    }
+                    emp_data_ind ++;
+                    if(emp_data_ind > emp_data_size)emp_data_ind = 1;
                     break;
                 }
-                if(emp_data_ind > emp_data_size)emp_data_ind = 1;
             }
         }
     }

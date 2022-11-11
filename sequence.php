@@ -119,6 +119,8 @@
 		$tableName = $object["tableName"];
 		$doneKey = $object["doneKey"];
 		$replaceDone = $object["replaceDone"];
+		$increase_arr = $object["increase_arr"];
+		$emp_name = $object["emp_name"];
 
 		for ($i=0; $i < count($calender_arr); $i++) { 
 			$sql_insert[$i] = "INSERT INTO sequence"."$tableName"." (`calender`, `txt`, `punish`, `replace_emp`)";
@@ -155,6 +157,14 @@
 				} 
 			}
 		}
+
+		for($i = 1; $i < count($increase_arr); $i++){
+			$sql_update_incr_emp[$i] = "UPDATE employee SET `increase_emp` = "."$increase_arr[$i]"." WHERE `emp_name` = "."'$emp_name[$i]'";
+			if(mysqli_query($mydb_link, $sql_update_incr_emp[$i]) == TRUE){
+				$arr_res["status"] = "update incr success";
+			}
+		}
+
 		$lastEmp = $object["lastEmp"];
 		$mon = $object["mon"];
 		$sql_update_last_ind = "UPDATE employee SET `lastIndex` = "."$mon". " WHERE `emp_name` = "."'$lastEmp'";
