@@ -141,7 +141,6 @@
 				}else{//調用
 					$sql_update_replace_emp[$i] = "UPDATE employee SET `increase_emp` = `increase_emp` + 1 WHERE `emp_name` =". "'$replace_name[$i]'";
 				}
-				$arr_res["sql_update_replace_emp"][$i] = $sql_update_replace_emp[$i];
 				if(mysqli_query($mydb_link, $sql_update_replace_emp[$i]) == TRUE){
 					$arr_res["status"] = "update replace success";
 				} 

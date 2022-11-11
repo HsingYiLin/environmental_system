@@ -99,7 +99,6 @@ var actionDB = function(params) {
             httpReqFun(seq_toSend);
             break;
         case "create":
-            console.log("create");
             // console.log(doneKey);
             // console.log(replaceDone);           
             var punish_arr = Array();
@@ -112,7 +111,6 @@ var actionDB = function(params) {
                 punish_arr.push(datePunish[i].innerText);
                 replace_emp_arr.push(dateReplace[i].innerText);
             }
-            console.log("creat",year);
             seq_toSend = {
                 pload: "create",
                 calender_arr: calender_arr,
@@ -148,9 +146,7 @@ var httpReqFun = function (param){
     xmlhttp.onreadystatechange = () => {
         if(xmlhttp.readyState === 4 && xmlhttp.status == 200){
             arr_data = JSON.parse(xmlhttp.responseText);
-            // setTimeout(function(){
-            //     seq_stateInfo.innerText = "";
-            // },8000);
+            
             console.log("arr_data",arr_data);            
             switch(arr_data["status"]){
                 case "emp success":
@@ -198,17 +194,12 @@ var httpReqFun = function (param){
 
 var sortData = function(data){
     console.log("sortData");
-    // console.log(data);
     if(data.empname != undefined){
         var empname_arr = Object.values(data.empname);
         var rep_name_arr = Object.values(data.rep_name);
     }
-    // console.log(empname_arr == undefined);
     punish_date_arr = data.pun_date;
-    var increase_arr = data.increase_emp;
-    // console.log(increase_arr);
-    var dateJudgeDate;
-    var cnt = 1; //第一個完整周
+    // var increase_arr = data.increase_emp;
     var pun_data_size = 0;
     var emptyColumn;
 
@@ -231,14 +222,6 @@ var sortData = function(data){
     //剪輯組(第一個完整禮拜)?剪輯組:懲罰者
     //兩者都沒有，其他職位員工
     for(var i=0; i < table_days; i++){
-        dateJudgeDate = new Date(year +"-"+ mon + "-"+ (i+1));
-        if(mon % 2 !=0 && dateJudgeDate.getDay() == 1 && cnt == 1){
-            for(var j =i; j < i+6; j++){
-                if(dateName[j].innerText == "")dateName[j].innerText = "剪輯組";             
-            }
-            cnt ++;
-        }
-
         //檢查該欄有無設定值
         for(var ind = 0; ind < setting_arr.length; ind++){
             emptyColumn = (setting_arr[ind] != dateName[i].innerText)?true:false;
@@ -262,11 +245,9 @@ var sortData = function(data){
 
                 if(dateSortTimeStamp > startTimeStamp){ 
                     if(empname_arr !=undefined){//有替補 || 調用
-                        // console.log(emp_data_ind);
                         dateName[i].innerText = data.emp_name[emp_data_ind];//要先塞值才有辦法判斷
                         for(var j = 0; j < empname_arr.length; j++){
                             if( data.emp_name[emp_data_ind] == empname_arr[j]){
-                                // console.log("有",emp_data_ind);
                                 dateName[i].innerText = rep_name_arr[j];
                                 doneKey.push(empname_arr[j]);
                                 replaceDone.push(rep_name_arr[j]);
@@ -293,6 +274,8 @@ var sortData = function(data){
 
 var dynamicTable = function (year, mon){
     var dateObj = new Date(year,mon,0);
+    var cnt = 1; //第一個完整周
+    var dateJudgeDate;
     table_days = dateObj.getDate();
     for(var i =1; i<=table_days; i++){
         dateSort = mon+"/"+i;
@@ -319,6 +302,13 @@ var dynamicTable = function (year, mon){
                 dateName[i].innerText = "清潔公司";
                 dateName[i].style.backgroundColor = "#E0E0E0";
                 break;
+        }
+
+        if(mon % 2 !=0 && dateJudgeDate.getDay() == 1 && cnt == 1){
+            for(var j =i; j < i+6; j++){
+                if(dateName[j].innerText == "")dateName[j].innerText = "剪輯組";             
+            }
+            cnt ++;
         }
     }
    
