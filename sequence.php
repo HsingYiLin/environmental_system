@@ -131,19 +131,26 @@
 				$arr_res["status"] = "add fail";	
 			}
 		}	
-		$k = 1;
+
+		for($i = 1; $i < count($increase_arr); $i++){
+			$sql_update_incr_emp[$i] = "UPDATE employee SET `increase_emp` = "."$increase_arr[$i]"." WHERE `emp_name` = "."'$emp_name[$i]'";
+			if(mysqli_query($mydb_link, $sql_update_incr_emp[$i]) == TRUE){
+				$arr_res["status"] = "update incr success";
+			}
+		}
+
 		for($i = 0; $i < count($replace_emp_arr); $i++){
 			if(!empty($replace_emp_arr[$i])){
 				$replcae_bol = (strpos($replace_emp_arr[$i], "代替"));
+				$incr_bol = (strpos($replace_emp_arr[$i], "調用"));
 				$replace_name[$i] = mb_substr($replace_emp_arr[$i], 0, -2);
 				if($replcae_bol != false){ //代替
 					$sql_update_replace_emp[$i] = "INSERT INTO rep (`empname`, `rep_date`, `rep_name`)";
 					$sql_update_replace_emp[$i] .= " VALUES("."'$replace_name[$i]'".", "."'$year-$mon'".", "."'$txt_arr[$i]代'".")";
-					$k++;
-				}else{//調用
-					$sql_update_replace_emp[$i] = "UPDATE employee SET `increase_emp` = `increase_emp` + 1 WHERE `emp_name` =". "'$replace_name[$i]'";
+				}else if($incr_bol != false){//調用
+					$sql_update_replace_emp[$i] = "UPDATE employee SET `increase_emp` = `increase_emp` + 1 WHERE `emp_name` = ". "'$replace_name[$i]'";
 				}
-				if(mysqli_query($mydb_link, $sql_update_replace_emp[$i]) == TRUE){
+				if(mysqli_query($mydb_link, $sql_update_replace_emp[$i]) === TRUE){
 					$arr_res["status"] = "update replace success";
 				} 
 			}		
@@ -158,12 +165,6 @@
 			}
 		}
 
-		for($i = 1; $i < count($increase_arr); $i++){
-			$sql_update_incr_emp[$i] = "UPDATE employee SET `increase_emp` = "."$increase_arr[$i]"." WHERE `emp_name` = "."'$emp_name[$i]'";
-			if(mysqli_query($mydb_link, $sql_update_incr_emp[$i]) == TRUE){
-				$arr_res["status"] = "update incr success";
-			}
-		}
 
 		$lastEmp = $object["lastEmp"];
 		$mon = $object["mon"];
