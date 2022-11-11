@@ -30,6 +30,7 @@ var dateSort;
 var punish_date_arr = Array();
 var replaceDone = Array();
 var doneKey = Array();
+var dataIncr = Array();
 var increase_arr;
 var arr_data;
 var emp_data_size;
@@ -110,6 +111,7 @@ var actionDB = function(params) {
                 punish_arr.push(datePunish[i].innerText);
                 replace_emp_arr.push(dateReplace[i].innerText);
             }
+            // console.log(dataIncr);
             seq_toSend = {
                 pload: "create",
                 calender_arr: calender_arr,
@@ -123,12 +125,13 @@ var actionDB = function(params) {
                 mon: mon,
                 year: year,
                 tableName:year + mon,
-                increase_arr: increase_arr,
+                dataIncr: dataIncr,
                 emp_name: arr_data.emp_name
             }  
             httpReqFun(seq_toSend);
             break;
         case "delete":
+            console.log(dataIncr);
             seq_toSend = {
                 pload: "delete",
                 tableName: monList.value.split("-").join(""),
@@ -154,8 +157,10 @@ var httpReqFun = function (param){
                 case "emp success":
                 case "pun success":
                 case "rep success":
+                case "incr success":
                 case "pun no data":
                 case "rep no data":
+                case "incr no data":
                     year = monList.value.substring(0,4);
                     mon = monList.value.substring(5,7);
                     dynamicTable(year, mon);
@@ -177,7 +182,7 @@ var httpReqFun = function (param){
                     break;
                 case "delete success":
                 case "update success":
-                    window.location.reload();
+                    // window.location.reload();
                     break;
                 case "update emp success":
                 case "update punish success":
@@ -201,7 +206,11 @@ var sortData = function(data){
         var empname_arr = Object.values(data.empname);
         var rep_name_arr = Object.values(data.rep_name);
     }
-    increase_arr = data.increase_emp;
+    // increase_arr = data.increase_emp;
+    if(data.incr_name != undefined){
+        increase_arr = Object.values(data.incr_name);
+        console.log(increase_arr);
+    } 
     punish_date_arr = data.pun_date;
 
     var emptyColumn;
@@ -244,8 +253,11 @@ var sortData = function(data){
                 startText = new Date(data.startdate[emp_data_ind]); 
                 startTimeStamp = startText.setMonth(startText.getMonth() + 1);//員工報到時間戳
                 var repBool = false;
+                var incrBool = false;
                 var rep_name = "";
+                var incr_name = "";
                 var rep_name_idx = undefined;
+                var incr_name_idx = undefined;
                 if(empname_arr !=undefined){
                     for(var j = 0; j < empname_arr.length; j++){
                         if( data.emp_name[emp_data_ind] == empname_arr[j]){
@@ -257,13 +269,30 @@ var sortData = function(data){
                         repBool = false;
                     }
                 }
+                if(increase_arr !=undefined){
+                    for(var r = 0; r < increase_arr.length; r++){
+                        console.log(i);
+                        console.log(data.emp_name[emp_data_ind] == increase_arr[r]);
+                        if( data.emp_name[emp_data_ind] == increase_arr[r]){
+                            incr_name = increase_arr[r];
+                            incr_name_idx = r;
+                            incrBool = true;
+                            break;
+                        }
+                        incrBool = false;
+                    }
+                }
 
                 if(dateSortTimeStamp > startTimeStamp){ 
                     var sortLogic = {
-                        1 : (repBool && increase_arr[emp_data_ind] > 0 ),//有替補 有調用 先塞替補塞完 再來會跳到3
-                        2 : (repBool &&  increase_arr[emp_data_ind] == 0),//有替補 無調用 先塞替補塞完 再來會跳到4
-                        3 : (!repBool && increase_arr[emp_data_ind] > 0),//無替補 有調用 不塞 --玩跳到下一順位繼續檢查 等全部都等於0後跳到4
-                        4 : (!repBool && increase_arr[emp_data_ind] == 0)//無替補 無調用 負責塞值
+                        // 1 : (repBool && increase_arr[emp_data_ind] > 0 ),//有替補 有調用 先塞替補塞完 再來會跳到3
+                        // 2 : (repBool &&  increase_arr[emp_data_ind] == 0),//有替補 無調用 先塞替補塞完 再來會跳到4
+                        // 3 : (!repBool && increase_arr[emp_data_ind] > 0),//無替補 有調用 不塞 --玩跳到下一順位繼續檢查 等全部都等於0後跳到4
+                        // 4 : (!repBool && increase_arr[emp_data_ind] == 0)//無替補 無調用 負責塞值
+                        1 : (repBool && incrBool ),//有替補 有調用 先塞替補塞完 再來會跳到3
+                        2 : (repBool && !incrBool),//有替補 無調用 先塞替補塞完 再來會跳到4
+                        3 : (!repBool && incrBool),//無替補 有調用 不塞 --玩跳到下一順位繼續檢查 等全部都等於0後跳到4
+                        4 : (!repBool && !incrBool)
                     }
                     
                     if(sortLogic[1]){
@@ -281,7 +310,9 @@ var sortData = function(data){
                         rep_name_arr.splice(rep_name_idx, 1);
 
                     }else if(sortLogic[3]){
-                        increase_arr[emp_data_ind] = increase_arr[emp_data_ind]*1 - 1;
+                        dataIncr.push(increase_arr[incr_name_idx]);
+                        increase_arr.splice(incr_name_idx, 1);
+                        // increase_arr[emp_data_ind] = increase_arr[emp_data_ind]*1 - 1;
                         if(emp_data_ind == emp_data_size)emp_data_ind = 1;
                         continue;
 
