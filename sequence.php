@@ -192,8 +192,9 @@
 		
 		if(!empty($object["punish_date_arr"])){
 			$punish_date_arr = $object["punish_date_arr"];
-			for ($j=1; $j <= count($punish_date_arr); $j++) { 
-				$sql_update_punish_done[$j] = "UPDATE punish SET `pun_done` = "."'$year-$mon'"." WHERE `pun_date` = "."'$punish_date_arr[$j]'";
+			for ($j=0; $j < count($punish_date_arr); $j++) { 
+				$sql_update_punish_done[$j] = "UPDATE punish SET `pun_done` = "."'$year-$mon'"." WHERE `name` = "."'$punish_date_arr[$j]'"." AND `pun_done` = 0 LIMIT 1";
+				$arr_res["sql_update_punish_done"][$i] = $sql_update_punish_done;
 				if(mysqli_query($mydb_link, $sql_update_punish_done[$j]) == TRUE){
 					$arr_res["status"] = "update punish success";
 				}

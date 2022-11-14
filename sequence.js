@@ -215,6 +215,7 @@ var sortData = function(data){
     var pun_data_ind = 1;
     var emptyColumn;
     var pun_data_size;
+    punish_date_arr = [];
     if (data.name != undefined) {
         pun_data_size = Object.keys(data["name"]).length;
     }
