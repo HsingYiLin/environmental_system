@@ -89,7 +89,7 @@ var actionDB = function(params) {
         case "dataExist":
             seq_toSend ={
                 pload: "dataExist",
-                tableName: monList.value.split("-").join("")
+                monVal : monList.value
             }
             httpReqFun(seq_toSend);
             break;
@@ -124,7 +124,6 @@ var actionDB = function(params) {
                 lastEmp: last_emp,
                 mon: mon,
                 year: year,
-                tableName:year + mon,
                 dataIncr: dataIncr,
                 emp_name: arr_data.emp_name
             }  
@@ -135,7 +134,7 @@ var actionDB = function(params) {
             console.log(dataIncr);
             seq_toSend = {
                 pload: "delete",
-                tableName: monList.value.split("-").join(""),
+                monVal : monList.value,
                 mon: monList.value.substring(5, 7),
                 year: monList.value.substring(0, 4)
             }

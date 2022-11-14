@@ -16,15 +16,15 @@
 	$object = json_decode($requestPayload, true);
   	$arr_res =Array();
 
-	if($object["pload"] == "dataExist"){
-		$tableName = $object["tableName"];
-		$latTableName = $tableName*1 - 1;
+	if($object["pload"] == "dataExist"){		
+		$monVal = $object["monVal"];
+		$lastMonStamp = strtotime('-1 month', strtotime($monVal));
+		$lastMon = date('Y-m', $lastMonStamp);
 		$isCorrect = false;
-		$sql_sequence = "SELECT * FROM sequence"."$tableName";
-		$isCorrect = ($tableName == "202209")? true : false;
+		$isCorrect = ($monVal == "2022-10")? true : false;
 		if(!$isCorrect){//如果前個月未排值日生，無法判斷這個月的第一個是誰
-			$sql_latTable = "SELECT * FROM sequence"."$latTableName";
-			$result_lastSequence = mysqli_query($mydb_link, $sql_latTable);
+			$sql_lastSequence = "SELECT * FROM sequence WHERE `calender` LIKE "."'$lastMon%'";
+			$result_lastSequence = mysqli_query($mydb_link, $sql_lastSequence);
 			if (mysqli_num_rows($result_lastSequence) > 0){
 				$arr_res["status"] = "last sequence data exist";
 			}else{
@@ -34,7 +34,8 @@
 				mysqli_close($mydb_link);
 			}
 		}
-
+		$sql_sequence = "SELECT * FROM sequence WHERE `calender` LIKE "."'$monVal%'";
+		$arr_res["sql_sequence"]= $sql_sequence;
 		$result_sequence = mysqli_query($mydb_link, $sql_sequence);
 		$i=1;
 		if (mysqli_num_rows($result_sequence) > 0){
@@ -132,14 +133,13 @@
 		$lastEmp = $object["lastEmp"];
 		$mon = $object["mon"];
 		$year = $object["year"];
-		$tableName = $object["tableName"];
 		$doneKey = $object["doneKey"];
 		$replaceDone = $object["replaceDone"];
 		$dataIncr = $object["dataIncr"];
 		$emp_name = $object["emp_name"];
 
 		for ($i=0; $i < count($calender_arr); $i++) { 
-			$sql_insert[$i] = "INSERT INTO sequence"."$tableName"." (`calender`, `txt`, `punish`, `replace_emp`)";
+			$sql_insert[$i] = "INSERT INTO sequence (`calender`, `txt`, `punish`, `replace_emp`)";
 			$sql_insert[$i] .= " VALUES( "."'$calender_arr[$i]'".", "."'$txt_arr[$i]'".", "."'$punish_arr[$i]'".", "."'$replace_emp_arr[$i]'".")";
 			if(mysqli_query($mydb_link, $sql_insert[$i]) == TRUE){
 				$arr_res["status"][$i] = "add success";
@@ -208,11 +208,11 @@
 		$year = $object["year"];
 		$table_len = 12 - ($mon*1);
 		for ($i=0; $i <= $table_len; $i++) { 
-			$tableName = $object["tableName"];
-			$tableName = $tableName + $i;
+			$monVal = $object["monVal"];
 			$del_ind = $mon + $i;
 			$del_rep = strval($del_ind);
-			$sql_delete_table[$i] = "DELETE FROM sequence"."$tableName";
+			$sql_delete_table[$i] = "DELETE FROM sequence WHERE `calender` >= "."'$monVal-01'";
+			$arr_res["sql_delete_table"][$i] = $sql_delete_table[$i];
 			// $sql_delete_punish[$i] = "DELETE FROM punish WHERE `pun_date` >= "."'$year-$mon-1'";
 			$sql_delete_replace[$i] = "DELETE FROM rep WHERE `rep_date` >= "."'$year-$mon'";
 			$sql_delete_incr[$i] = "DELETE FROM incr WHERE incr_mon >= "."'$year-$mon'";
