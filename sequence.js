@@ -206,22 +206,20 @@ var sortData = function(data){
         var empname_arr = Object.values(data.empname);
         var rep_name_arr = Object.values(data.rep_name);
     }
-    // increase_arr = data.increase_emp;
     if(data.incr_name != undefined){
         increase_arr = Object.values(data.incr_name);
-        // console.log(increase_arr);
     } 
     punish_date_arr = data.pun_date;
-
+    //回傳初始
+    var emp_data_ind = 1;
+    var pun_data_ind = 1;
     var emptyColumn;
     var pun_data_size = 0;
     if (data.name != undefined) {
         pun_data_size = Object.keys(data["name"]).length;
     }
     emp_data_size = Object.keys(data["emp_name"]).length;
-    //回傳初始
-    var emp_data_ind = 1;
-    var pun_data_ind = 1;
+    
     //上個月輪到哪個人
     for(var n = 1; n <= emp_data_size; n++){
         if(data.lastIndex[n]*1 +1 == mon){
@@ -229,9 +227,7 @@ var sortData = function(data){
             break;
         }
     }
-    //順位:
-    //剪輯組(第一個完整禮拜)?剪輯組:懲罰者
-    //兩者都沒有，其他職位員工
+    //順位:剪輯組(第一個完整禮拜)?剪輯組:懲罰者,兩者都沒有，其他職位員工
     for(var i=0; i < table_days; i++){
         //檢查該欄有無設定值
         for(var ind = 0; ind < setting_arr.length; ind++){
@@ -281,10 +277,6 @@ var sortData = function(data){
 
                 if(dateSortTimeStamp > startTimeStamp){ 
                     var sortLogic = {
-                        // 1 : (repBool && increase_arr[emp_data_ind] > 0 ),//有替補 有調用 先塞替補塞完 再來會跳到3
-                        // 2 : (repBool &&  increase_arr[emp_data_ind] == 0),//有替補 無調用 先塞替補塞完 再來會跳到4
-                        // 3 : (!repBool && increase_arr[emp_data_ind] > 0),//無替補 有調用 不塞 --玩跳到下一順位繼續檢查 等全部都等於0後跳到4
-                        // 4 : (!repBool && increase_arr[emp_data_ind] == 0)//無替補 無調用 負責塞值
                         1 : (repBool && incrBool ),//有替補 有調用 先塞替補塞完 再來會跳到3
                         2 : (repBool && !incrBool),//有替補 無調用 先塞替補塞完 再來會跳到4
                         3 : (!repBool && incrBool),//無替補 有調用 不塞 --玩跳到下一順位繼續檢查 等全部都等於0後跳到4
@@ -307,7 +299,6 @@ var sortData = function(data){
                     }else if(sortLogic[3]){
                         dataIncr.push(increase_arr[incr_name_idx]);
                         increase_arr.splice(incr_name_idx, 1);
-                        // increase_arr[emp_data_ind] = increase_arr[emp_data_ind]*1 - 1;
                         if(emp_data_ind == emp_data_size)emp_data_ind = 1;
                         continue;
 
