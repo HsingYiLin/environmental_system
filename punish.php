@@ -27,7 +27,7 @@
 				$arr_res["times"][$i]=$row['times'];
                 $arr_res["fine"][$i]=$row['fine'];
                 $arr_res["odds"][$i]=$row['odds'];
-				$arr_res["done"][$i]=$row['done'];
+				$arr_res["pun_done"][$i]=$row['pun_done'];
 				$i++;
 			}
 			$arr_res["status"] = "success!";
@@ -79,8 +79,8 @@
 		$cnt_data_add = $row_add["cnt"]+1;//包括此筆新增
 		$odds_add = pow(2, $cnt_data_add-1);
 		$fine_data_add = $init_fine * $odds_add;		
-		$sql_add = "INSERT INTO punish (`name`, `punishtxt`, `pun_date`, `fine`, `times`, `odds` )";
-		$sql_add .= " VALUES (" ."'$name'". ", " ."'$punishtxt'". ", " ."'$date'".", " ."'$fine_data_add'".", " ."'$cnt_data_add'".", " ."'$odds_add'".")";
+		$sql_add = "INSERT INTO punish (`name`, `punishtxt`, `pun_date`, `fine`, `times`, `odds`, `pun_done` )";
+		$sql_add .= " VALUES (" ."'$name'". ", " ."'$punishtxt'". ", " ."'$date'".", " ."'$fine_data_add'".", " ."'$cnt_data_add'".", " ."'$odds_add'".", '0')";
 		if($mydb_link->query($sql_add) === TRUE){
 			$arr_res["status"] = "add success";
 		}
@@ -124,7 +124,7 @@
 				$arr_res["fine"][$i] = $row['fine'];
 				$arr_res["times"][$i] = $row['times'];
 				$arr_res["odds"][$i] = $row['odds'];
-				$arr_res["done"][$i] = $row['done'];
+				$arr_res["pun_done"][$i] = $row['pun_done'];
 
 				$i++;		
 			}

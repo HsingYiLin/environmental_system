@@ -183,7 +183,7 @@ var httpReqFun = function (param){
                     break;
                 case "delete success":
                 case "update success":
-                    // window.location.reload();
+                    window.location.reload();
                     break;
                 case "update emp success":
                 case "update punish success":
@@ -235,16 +235,15 @@ var sortData = function(data){
             emptyColumn = (setting_arr[ind] != dateName[i].innerText)?true:false;
             if(!emptyColumn)break;
         }
-        
         //處罰
-        if(emptyColumn && pun_data_size > 0 && pun_data_size >= pun_data_ind){
+        if(emptyColumn && pun_data_size > 0 && pun_data_size >= pun_data_ind && dateName[i].innerText == ""){
             dateName[i].innerText = data.name[pun_data_ind];
             datePunish[i].innerText = data.pun_date[pun_data_ind].substring(5,7) + "/" + data.pun_date[pun_data_ind].substring(8,10) + data.punishtxt[pun_data_ind];           
             pun_data_ind ++;
         }
         dateSortTimeStamp = new Date((year+ "/" +dateSortCls[i].innerText).split('/').join('-')).getTime();//表格日期時間戳
         //排序
-        if(emptyColumn){
+        if(emptyColumn && dateName[i].innerText == ""){
             for(emp_data_ind; emp_data_ind <= emp_data_size; emp_data_ind++){  
                 startText = new Date(data.startdate[emp_data_ind]); 
                 startTimeStamp = startText.setMonth(startText.getMonth() + 1);//員工報到時間戳
