@@ -210,12 +210,11 @@ var sortData = function(data){
     if(data.incr_name != undefined){
         increase_arr = Object.values(data.incr_name);
     } 
-    punish_date_arr = data.pun_date;
     //回傳初始
     var emp_data_ind = 1;
     var pun_data_ind = 1;
     var emptyColumn;
-    var pun_data_size = 0;
+    var pun_data_size;
     if (data.name != undefined) {
         pun_data_size = Object.keys(data["name"]).length;
     }
@@ -236,14 +235,16 @@ var sortData = function(data){
             if(!emptyColumn)break;
         }
         //處罰
-        if(emptyColumn && pun_data_size > 0 && pun_data_size >= pun_data_ind && dateName[i].innerText == ""){
+        if(emptyColumn && pun_data_size > 0 && pun_data_size >= pun_data_ind ){
             dateName[i].innerText = data.name[pun_data_ind];
+            punish_date_arr.push(data.name[pun_data_ind]);
             datePunish[i].innerText = data.pun_date[pun_data_ind].substring(5,7) + "/" + data.pun_date[pun_data_ind].substring(8,10) + data.punishtxt[pun_data_ind];           
             pun_data_ind ++;
         }
+        
         dateSortTimeStamp = new Date((year+ "/" +dateSortCls[i].innerText).split('/').join('-')).getTime();//表格日期時間戳
         //排序
-        if(emptyColumn && dateName[i].innerText == ""){
+        if(emptyColumn && datePunish[i].innerText == ""){
             for(emp_data_ind; emp_data_ind <= emp_data_size; emp_data_ind++){  
                 startText = new Date(data.startdate[emp_data_ind]); 
                 startTimeStamp = startText.setMonth(startText.getMonth() + 1);//員工報到時間戳
@@ -420,6 +421,7 @@ var req_val = function (){
     var calenderDate = seq_calender.value.substring(0, 7)
     var replaceTxt =  dateReplace[numTd-1];
     var nameTxt = dateName[numTd-1];
+    var puntxt = datePunish[numTd-1];
     var dayType = (new Date(seq_calender.value).getDay() == 6 || new Date(seq_calender.value).getDay() == 0)?"holiday": "work";
     if(monList.value == calenderDate){
         var modifySituation = {
@@ -452,9 +454,11 @@ var req_val = function (){
                 }
             }
         }else if(modifySituation[2] && mustDo[2]){
+            console.log("222");
             nameTxt.innerText = seq_holiday.value;
             nameTxt.style.backgroundColor = "#FFC1E0";
             replaceTxt.innerText = "";
+            puntxt.innerText = "";
             sortData(arr_data);
         }else if(modifySituation[3]){
             nameTxt.innerText = "";
