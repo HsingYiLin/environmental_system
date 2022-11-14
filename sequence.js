@@ -131,7 +131,8 @@ var actionDB = function(params) {
             httpReqFun(seq_toSend);
             break;
         case "delete":
-            // console.log(dataIncr);
+            console.log("delete");
+            console.log(dataIncr);
             seq_toSend = {
                 pload: "delete",
                 tableName: monList.value.split("-").join(""),
@@ -292,6 +293,7 @@ var sortData = function(data){
                     }else if(sortLogic[2]){
                         dateName[i].innerText = rep_name;
                         doneKey.push(empname_arr[rep_name_idx]);
+                        // console.log("doneKey",doneKey);
                         replaceDone.push(rep_name_arr[rep_name_idx]);
                         empname_arr.splice(rep_name_idx, 1);
                         rep_name_arr.splice(rep_name_idx, 1);
