@@ -131,7 +131,7 @@ var actionDB = function(params) {
             httpReqFun(seq_toSend);
             break;
         case "delete":
-            console.log(dataIncr);
+            // console.log(dataIncr);
             seq_toSend = {
                 pload: "delete",
                 tableName: monList.value.split("-").join(""),
@@ -209,7 +209,7 @@ var sortData = function(data){
     // increase_arr = data.increase_emp;
     if(data.incr_name != undefined){
         increase_arr = Object.values(data.incr_name);
-        console.log(increase_arr);
+        // console.log(increase_arr);
     } 
     punish_date_arr = data.pun_date;
 
@@ -246,7 +246,6 @@ var sortData = function(data){
             pun_data_ind ++;
         }
         dateSortTimeStamp = new Date((year+ "/" +dateSortCls[i].innerText).split('/').join('-')).getTime();//表格日期時間戳
-        
         //排序
         if(emptyColumn){
             for(emp_data_ind; emp_data_ind <= emp_data_size; emp_data_ind++){  
@@ -271,10 +270,7 @@ var sortData = function(data){
                 }
                 if(increase_arr !=undefined){
                     for(var r = 0; r < increase_arr.length; r++){
-                        console.log(i);
-                        console.log(data.emp_name[emp_data_ind] == increase_arr[r]);
                         if( data.emp_name[emp_data_ind] == increase_arr[r]){
-                            incr_name = increase_arr[r];
                             incr_name_idx = r;
                             incrBool = true;
                             break;
@@ -294,7 +290,6 @@ var sortData = function(data){
                         3 : (!repBool && incrBool),//無替補 有調用 不塞 --玩跳到下一順位繼續檢查 等全部都等於0後跳到4
                         4 : (!repBool && !incrBool)
                     }
-                    
                     if(sortLogic[1]){
                         dateName[i].innerText = rep_name;
                         doneKey.push(empname_arr[rep_name_idx]);
