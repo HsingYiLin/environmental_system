@@ -153,6 +153,7 @@
 				$arr_res["status"] = "SAVED";
 			}
 		}
+
 		$times = 0;
 		for($i = 0; $i < count($replace_emp_arr); $i++){
 			if(!empty($replace_emp_arr[$i])){
@@ -160,8 +161,9 @@
 				$incr_bol = (strpos($replace_emp_arr[$i], "調用"));
 				$replace_name[$i] = mb_substr($replace_emp_arr[$i], 0, -2);
 				if($replcae_bol != false){ //代替
+					$txt_arr[$i] = (strpos($txt_arr[$i], "代") != false)?$txt_arr[$i] : $txt_arr[$i]."代";
 					$sql_update_replace_emp[$i] = "INSERT INTO rep (`empname`, `rep_date`, `rep_name`, `rep_done`)";
-					$sql_update_replace_emp[$i] .= " VALUES("."'$replace_name[$i]'".", "."'$year-$mon'".", "."'$txt_arr[$i]代'".", '0')";
+					$sql_update_replace_emp[$i] .= " VALUES("."'$replace_name[$i]'".", "."'$year-$mon'".", "."'$txt_arr[$i]'".", '0')";
 				}else if($incr_bol != false){//調用
 					$sql_update_replace_emp[$i] = "INSERT INTO incr (`incr_name`, `incr_mon`, `incr_done`)";
 					$sql_update_replace_emp[$i] .= " VALUES("."'$replace_name[$i]'".", "."'$year-$mon'".", '0')";
@@ -171,6 +173,7 @@
 				} 
 			}		
 		}
+
 		for($i = 0; $i < count($doneKey); $i++){
 			if(!empty($doneKey[$i]) && !empty($replaceDone)){
 				$sql_update_done[$i] = "UPDATE rep SET `rep_done` = "."'$year-$mon'"." WHERE `empname` = "."'$doneKey[$i]'"." AND `rep_name` = "."'$replaceDone[$i]'"; 
@@ -180,6 +183,16 @@
 			}
 		}
 
+		$repTorep = $object["repTorep"];
+		if(count($repTorep) > 0){
+			$arr_res["repTorep"] = $repTorep;
+			for($k=0; $k < count($repTorep); $k++){
+				$sql_update_rep_to_rep[$k] = "UPDATE rep SET `rep_done` = '0' WHERE `rep_name` = "."'$repTorep[$k]'"." AND `rep_done` = "."'$year-$mon'"." LIMIT 1";
+				if(mysqli_query($mydb_link, $sql_update_rep_to_rep[$k]) == TRUE){
+					$arr_res["status"] = "SAVED";
+				}
+			}
+		}
 
 		$lastEmp = $object["lastEmp"];
 		$mon = $object["mon"]*1;

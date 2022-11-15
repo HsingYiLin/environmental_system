@@ -106,11 +106,16 @@ var actionDB = function(params) {
             var calender_arr = Array();
             var txt_arr = Array();
             var replace_emp_arr = Array();
+            var repTorep_arr = Array();
             for (var i = 0; i < table_days; i++) {
                 calender_arr.push((year+ "/" +dateSortCls[i].innerText).split('/').join('-'));
                 txt_arr.push(dateName[i].innerText);
                 punish_arr.push(datePunish[i].innerText);
                 replace_emp_arr.push(dateReplace[i].innerText);
+                //代替代替的人
+                if(dateReplace[i].innerText.substr(-2, 1) == dateName[i].innerText.substr(-1, 1)){
+                    repTorep_arr.push(dateName[i].innerText);
+                }
             }
             seq_toSend = {
                 pload: "create",
@@ -125,8 +130,10 @@ var actionDB = function(params) {
                 mon: mon,
                 year: year,
                 dataIncr: dataIncr,
-                emp_name: arr_data.emp_name
-            }  
+                emp_name: arr_data.emp_name,
+                repTorep: repTorep_arr
+            }
+            // replaceDone = [];  
             httpReqFun(seq_toSend);
             break;
         case "delete":
