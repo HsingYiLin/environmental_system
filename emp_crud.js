@@ -1,13 +1,13 @@
-var emp_chgpage;
-var emp_crud;
 var emp_startDate;
 var emp_name;
 var emp_title;
 var emp_status;
-var add_confirm;
-var up_confirm;
 var sel_confirm;
-var del_confirm;
+var del_val;
+var upd_name;
+var upd_starDate;
+var upd_title;
+var upd_state;
 var emp_stateInfo;
 var emp_tbody;
 var toSend = {};
@@ -18,16 +18,16 @@ const xmlhttp =new XMLHttpRequest();
 
 var emp_crud_init = function () {
     console.log("emp_crud_init");
-    emp_chgpage = document.querySelector("#emp_chgpage");
-    emp_crud = document.getElementById("emp_crud");
+    var emp_chgpage = document.querySelector("#emp_chgpage");
+    var emp_crud = document.getElementById("emp_crud");
+    var add_confirm = document.getElementById("add_confirm");
+    var up_confirm = document.getElementById("up_confirm");
+    var clear_confirm = document.getElementById("clear_confirm");
     emp_startDate = document.getElementById("emp_startDate");
     emp_name = document.getElementById("emp_name");
     emp_title = document.getElementById("emp_title");
     emp_status = document.getElementById("emp_status");
-    add_confirm = document.getElementById("add_confirm");
-    up_confirm = document.getElementById("up_confirm");
     sel_confirm = document.getElementById("sel_confirm");
-    del_confirm = document.getElementById("del_confirm");
     emp_stateInfo = document.getElementById("emp_stateInfo");
     emp_stateInfo.style.color = "#CE0000";
     emp_tbody = document.getElementById("emp_tbody");
@@ -37,7 +37,7 @@ var emp_crud_init = function () {
     add_confirm.addEventListener("click", function(){actionDB("add");});
     sel_confirm.addEventListener("click", function(){actionDB("select");});
     up_confirm.addEventListener("click", function(){actionDB("update")});
-    del_confirm.addEventListener("click", function(){actionDB("delete")});
+    clear_confirm.addEventListener("click", clearInput);
 }
 
 var actionDB = function(params) {
@@ -92,15 +92,15 @@ var actionDB = function(params) {
             }
             break;
         case "delete":
-            if(emp_name.value != ""){
+            // if(emp_name.value != ""){
                 toSend ={
                     pload: "delete",
-                    emp_name: emp_name.value,
+                    emp_name: del_val,
                 };   
                 httpReqFun(toSend);
-            }else{
-                emp_stateInfo.innerText = info_tw("NAME NOT BE EMPTY");
-            }
+            // }else{
+            //     emp_stateInfo.innerText = info_tw("NAME NOT BE EMPTY");
+            // }
     }
 }
 
@@ -144,11 +144,12 @@ var httpReqFun = function (param){
 
 var parseAllData = function (initData){
     emp_tableHTML = "";
-    emp_tbody.innerHTML = "<tr class=first_tr><td>到職日</td><td>員工</td><td>職稱</td><td>狀態</td></tr>";
+    emp_tbody.innerHTML = "<tr class=first_tr><td>到職日</td><td>員工</td><td>職稱</td><td>狀態</td><td></td><td></td></tr>";
     if(initData["status"] != "update fail" && initData["status"] != "no data" && initData["status"] != "duplicate"){
         var data_size = Object.keys(initData["emp_name"]).length;
         for(var j = 1; j <= data_size; j++){
-            emp_tableHTML += "<tr class = datatr><td>"+initData.startdate[j]+"</td><td>"+initData.emp_name[j]+"</td><td>"+initData.title[j]+"</td><td>"+initData.state[j]+"</td></tr>";
+            emp_tableHTML += "<tr class = datatr><td>"+initData.startdate[j]+"</td><td>"+initData.emp_name[j]+"</td><td>"+initData.title[j]+"</td><td>"+initData.state[j]+"</td>";
+            emp_tableHTML += "<td><button type='button' onclick='upd(this)'>選取</button></td><td><button type='button' onclick='del(this)'>刪除</button></td></tr>"
         }
         emp_tbody.innerHTML += emp_tableHTML;
         getAllElement();
@@ -177,4 +178,25 @@ var getAllElement = function (){
             this.style.backgroundColor = "#FFFFFF";
         })
     }
+}
+
+var del = function (obj){
+    var del_str = obj.parentNode.parentNode.innerText;
+    var del_td_arr = del_str.split(/\t/);
+    del_val = del_td_arr[1];
+    actionDB("delete");
+}
+
+var upd = function (obj){
+    var upd_str = obj.parentNode.parentNode.innerText;
+    var upd_td_arr = upd_str.split(/\t/);
+    upd_starDate = upd_td_arr[0];
+    upd_name = upd_td_arr[1];
+    upd_title = upd_td_arr[2];
+    upd_state = upd_td_arr[3];
+    upd_state = (upd_state == "在職")? true : false;
+    emp_startDate.value = upd_starDate;
+    emp_name.value = upd_name;
+    emp_title.value = upd_title;
+    emp_status.checked = upd_state;
 }
