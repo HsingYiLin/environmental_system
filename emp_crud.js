@@ -124,7 +124,7 @@ var httpReqFun = function (param){
                     clearInput();
                     break;
                 case "success!":
-                case "select success":
+                // case "select success":
                     emp_stateInfo.innerText = info_tw("SUCCESS");
                     parseAllData(arr_data);
                     break;

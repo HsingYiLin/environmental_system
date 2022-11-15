@@ -55,7 +55,6 @@
 		} else {
 			$arr_res["status"] = "add fail";
 			// $arr_res["error"] = $mydb_link->error;
-            // $arr_res["sql"] = $sql_add;		
 		}
 		echo json_encode($arr_res);
 		mysqli_close($mydb_link);
@@ -75,7 +74,7 @@
 				$arr_res["startdate"][$i]=$row['startdate'];	
 				$i++;		
 			}
-			$arr_res["status"] = "select success";
+			$arr_res["status"] = "success!";
 		}else{
 			$arr_res["status"] = "no data";
 		}

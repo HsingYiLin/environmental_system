@@ -140,7 +140,8 @@
 			if(mysqli_query($mydb_link, $sql_insert[$i]) == TRUE){
 				$arr_res["status"][$i] = "SAVED";
 			} else {
-				$arr_res["status"] = "add fail";	
+				$arr_res["status"] = "add fail";
+				$arr_res["error"] = mysqli_error($mydb_link);	
 				die();
 				mysqli_close($mydb_link);
 			}
@@ -214,7 +215,7 @@
 		$sql_incr_update = "UPDATE incr SET `incr_done` = 0 WHERE `incr_done` >= "."'$year-$mon'";
 
 		if(mysqli_query($mydb_link, $sql_delete_sequence))$arr_res["status"] = "DEL SUCCESS";
-		// if(mysqli_query($mydb_link, $sql_delete_punish))$arr_res["status"] = "delete success";
+		// if(mysqli_query($mydb_link, $sql_delete_punish))$arr_res["status"] = ""DEL SUCCESS";
 		if(mysqli_query($mydb_link, $sql_delete_replace))$arr_res["status"] = "DEL SUCCESS";
 		if(mysqli_query($mydb_link, $sql_delete_incr))$arr_res["status"] = "DEL SUCCESS";
 		if(mysqli_query($mydb_link, $sql_update_lastIndex) == TRUE)$arr_res["status"] = "DEL SUCCESS";

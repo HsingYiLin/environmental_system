@@ -125,7 +125,6 @@
 				$arr_res["times"][$i] = $row['times'];
 				$arr_res["odds"][$i] = $row['odds'];
 				$arr_res["pun_done"][$i] = $row['pun_done'];
-
 				$i++;		
 			}
 			$arr_res["status"] = "select success";
@@ -144,7 +143,7 @@
 			$arr_res["status"] = "update success";
 		}else{
 			$arr_res["status"] = "update fail";
-			$arr_res["error"] =mysqli_error($mydb_link);
+			$arr_res["error"] = mysqli_error($mydb_link);
 		}
 		echo json_encode($arr_res);
 		mysqli_close($mydb_link);

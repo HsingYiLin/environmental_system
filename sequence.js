@@ -13,9 +13,6 @@ var nationHoliday;
 var seq_delete;
 var seq_stateInfo;
 var seq_tbody;
-var seq_Url = "http://localhost:8080/CleanSystem/sequence.php";
-const xmlhttp =new XMLHttpRequest();
-var seq_toSend = {};
 var dateSortCls;
 var dateName;
 var datePunish;
@@ -34,9 +31,13 @@ var dataIncr = Array();
 var increase_arr;
 var arr_data;
 var emp_data_size;
-var dateSortTimeStamp, startText, startTimeStamp;
+var dateSortTimeStamp;
+var startText;
+var startTimeStamp;
 var setting_arr = ["六","日","清潔公司","剪輯組","元旦","春節","228連假","清明連假","勞動節","端午連假","中秋連假","國慶連假","放假",]
-
+const seq_Url = "http://localhost:8080/CleanSystem/sequence.php";
+const xmlhttp =new XMLHttpRequest();
+var seq_toSend = {};
 
 var sequence_init = function(){
     console.log("sequence_init");
@@ -141,7 +142,6 @@ var actionDB = function(params) {
 }
 
 var httpReqFun = function (param){
-    // var arr_data;
     jsonString = JSON.stringify(param);
     xmlhttp.open("POST",seq_Url);
     xmlhttp.setRequestHeader("Content-Type","application/json");
@@ -241,7 +241,6 @@ var sortData = function(data){
                 var repBool = false;
                 var incrBool = false;
                 var rep_name = "";
-                var incr_name = "";
                 var rep_name_idx = undefined;
                 var incr_name_idx = undefined;
                 if(empname_arr !=undefined){
