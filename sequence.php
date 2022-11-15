@@ -25,10 +25,8 @@
 		if(!$isCorrect){//如果前個月未排值日生，無法判斷這個月的第一個是誰
 			$sql_lastSequence = "SELECT * FROM sequence WHERE `calender` LIKE "."'$lastMon%'";
 			$result_lastSequence = mysqli_query($mydb_link, $sql_lastSequence);
-			if (mysqli_num_rows($result_lastSequence) > 0){
-				$arr_res["status"] = "last sequence data exist";
-			}else{
-				$arr_res["status"] = "last sequence no data";
+			if (mysqli_num_rows($result_lastSequence) == 0){
+				$arr_res["status"] = "UNSCHEDULED";
 				echo json_encode($arr_res);
 				die();
 				mysqli_close($mydb_link);
@@ -45,9 +43,9 @@
 				$arr_res["replace_emp"][$i] = $row['replace_emp'];
 				$i++;
 			}
-			$arr_res["status"] = "sequence data exist";
+			$arr_res["status"] = "LIST EXISIT";
 		}else{
-			$arr_res["status"] = "sequence no data";
+			$arr_res["status"] = "FORM NOT BE EMPTY";
 		}
 		echo json_encode($arr_res);
 		mysqli_close($mydb_link);
@@ -75,9 +73,9 @@
 				$arr_res["lastIndex"][$i] = $row['lastIndex'];
 				$i++;
 			}
-			$arr_res["status"] = "emp success";
+			$arr_res["status"] = "GENER SUCCESS";
 		}else{
-			$arr_res["status"] = "emp no data";
+			$arr_res["status"] = "EMP NO DATA";
 			die();
 			mysqli_close($mydb_link);
 		}
@@ -90,9 +88,9 @@
 				$arr_res["pun_date"][$i] = $row['pun_date'];
 				$i++;
 			}
-			$arr_res["status"] = "pun success";
+			$arr_res["status"] = "GENER SUCCESS";
 		}else{
-			$arr_res["status"] = "pun no data";
+			$arr_res["status"] = "GENER SUCCESS";
 		}
 		$i=1;
 		if(mysqli_num_rows($result_rep) > 0){
@@ -102,9 +100,9 @@
 				$arr_res["rep_name"][$i] = $row['rep_name'];
 				$i++;
 			}
-			$arr_res["status"] = "rep success";
+			$arr_res["status"] = "GENER SUCCESS";
 		}else{
-			$arr_res["status"] = "rep no data";
+			$arr_res["status"] = "GENER SUCCESS";
 		}
 		$i=1;
 		$arr_res["asdasd"] = mysqli_num_rows($result_incr);
@@ -115,9 +113,9 @@
 				$arr_res["incr_done"][$i] = $row['incr_done'];
 				$i++;
 			}
-			$arr_res["status"] = "incr success";
+			$arr_res["status"] = "GENER SUCCESS";
 		}else{
-			$arr_res["status"] = "incr no data";
+			$arr_res["status"] = "GENER SUCCESS";
 		}
 		
 		echo json_encode($arr_res);
@@ -140,16 +138,18 @@
 			$sql_insert[$i] = "INSERT INTO sequence (`calender`, `txt`, `punish`, `replace_emp`)";
 			$sql_insert[$i] .= " VALUES( "."'$calender_arr[$i]'".", "."'$txt_arr[$i]'".", "."'$punish_arr[$i]'".", "."'$replace_emp_arr[$i]'".")";
 			if(mysqli_query($mydb_link, $sql_insert[$i]) == TRUE){
-				$arr_res["status"][$i] = "add success";
+				$arr_res["status"][$i] = "SAVED";
 			} else {
 				$arr_res["status"] = "add fail";	
+				die();
+				mysqli_close($mydb_link);
 			}
 		}	
 
 		for($i = 0; $i < count($dataIncr); $i++){
 			$sql_update_incr_emp[$i] = "UPDATE incr SET `incr_done` = "."'$year-$mon'"." WHERE `incr_name` = "."'$dataIncr[$i]'"." AND `incr_done` = '0' LIMIT 1";
 			if(mysqli_query($mydb_link, $sql_update_incr_emp[$i]) == TRUE){
-				$arr_res["status"] = "update incr success";
+				$arr_res["status"] = "SAVED";
 			}
 		}
 		$times = 0;
@@ -166,7 +166,7 @@
 					$sql_update_replace_emp[$i] .= " VALUES("."'$replace_name[$i]'".", "."'$year-$mon'".", '0')";
 				}
 				if(mysqli_query($mydb_link, $sql_update_replace_emp[$i]) === TRUE){
-					$arr_res["status"] = "update replace success";
+					$arr_res["status"] = "SAVED";
 				} 
 			}		
 		}
@@ -174,7 +174,7 @@
 			if(!empty($doneKey[$i]) && !empty($replaceDone)){
 				$sql_update_done[$i] = "UPDATE rep SET `rep_done` = "."'$year-$mon'"." WHERE `empname` = "."'$doneKey[$i]'"." AND `rep_name` = "."'$replaceDone[$i]'"; 
 				if(mysqli_query($mydb_link, $sql_update_done[$i]) == TRUE){
-					$arr_res["status"] = "update replace success";
+					$arr_res["status"] = "SAVED";
 				} 
 			}
 		}
@@ -184,7 +184,7 @@
 		$mon = $object["mon"]*1;
 		$sql_update_last_ind = "UPDATE employee SET `lastIndex` = "."'$year-$mon'". " WHERE `emp_name` = "."'$lastEmp'";
 		if(mysqli_query($mydb_link, $sql_update_last_ind) == TRUE){
-			$arr_res["status"] = "update emp success";
+			$arr_res["status"] = "SAVED";
 		}
 		
 		if(!empty($object["punish_date_arr"])){
@@ -192,7 +192,7 @@
 			for ($j=0; $j < count($punish_date_arr); $j++) { 
 				$sql_update_punish_done[$j] = "UPDATE punish SET `pun_done` = "."'$year-$mon'"." WHERE `name` = "."'$punish_date_arr[$j]'"." AND `pun_done` = 0 LIMIT 1";
 				if(mysqli_query($mydb_link, $sql_update_punish_done[$j]) == TRUE){
-					$arr_res["status"] = "update punish success";
+					$arr_res["status"] = "SAVED";
 				}
 			}
 		}	
@@ -212,15 +212,15 @@
 		$sql_update_punish = "UPDATE punish SET `pun_done` = 0 WHERE `pun_done` >= "."'$year-$mon'";
 		$sql_replace_update = "UPDATE rep SET `rep_done` = 0 WHERE `rep_done` >= "."'$year-$mon'";
 		$sql_incr_update = "UPDATE incr SET `incr_done` = 0 WHERE `incr_done` >= "."'$year-$mon'";
-		
-		if(mysqli_query($mydb_link, $sql_delete_sequence))$arr_res["status"] = "delete success";
+
+		if(mysqli_query($mydb_link, $sql_delete_sequence))$arr_res["status"] = "DEL SUCCESS";
 		// if(mysqli_query($mydb_link, $sql_delete_punish))$arr_res["status"] = "delete success";
-		if(mysqli_query($mydb_link, $sql_delete_replace))$arr_res["status"] = "delete success";
-		if(mysqli_query($mydb_link, $sql_delete_incr))$arr_res["status"] = "delete success";
-		if(mysqli_query($mydb_link, $sql_update_lastIndex) == TRUE)$arr_res["status"] = "update success";
-		if(mysqli_query($mydb_link, $sql_update_punish) == TRUE)$arr_res["status"] = "update success";
-		if(mysqli_query($mydb_link, $sql_replace_update) == TRUE)$arr_res["status"] = "update success";		
-		if(mysqli_query($mydb_link, $sql_incr_update) == TRUE)$arr_res["status"] = "update success";
+		if(mysqli_query($mydb_link, $sql_delete_replace))$arr_res["status"] = "DEL SUCCESS";
+		if(mysqli_query($mydb_link, $sql_delete_incr))$arr_res["status"] = "DEL SUCCESS";
+		if(mysqli_query($mydb_link, $sql_update_lastIndex) == TRUE)$arr_res["status"] = "DEL SUCCESS";
+		if(mysqli_query($mydb_link, $sql_update_punish) == TRUE)$arr_res["status"] = "DEL SUCCESS";
+		if(mysqli_query($mydb_link, $sql_replace_update) == TRUE)$arr_res["status"] = "DEL SUCCESS";		
+		if(mysqli_query($mydb_link, $sql_incr_update) == TRUE)$arr_res["status"] = "DEL SUCCESS";
 		echo json_encode($arr_res);
 		mysqli_close($mydb_link);
 

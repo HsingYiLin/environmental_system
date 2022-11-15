@@ -16,6 +16,8 @@
     array["STARTDATE AND NAME NOT BE EMPTY"] = "到職日或名字不得為空";
     array["LESS THAN ONE MONTH"] = "未滿一個月";
     array["DELETE"] = "會連該月及該月後的月份都刪除，如有設定代替、調用、開關設定請先記錄起來";
-  
+    array["EMP NO DATA"] = "請先往員工增修表新增員工";
+    array["DEL SUCCESS"] = "請先往員工增修表新增員工";
+
     return array[str];
 }

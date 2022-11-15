@@ -111,7 +111,6 @@ var actionDB = function(params) {
                 punish_arr.push(datePunish[i].innerText);
                 replace_emp_arr.push(dateReplace[i].innerText);
             }
-            // console.log(dataIncr);
             seq_toSend = {
                 pload: "create",
                 calender_arr: calender_arr,
@@ -130,8 +129,6 @@ var actionDB = function(params) {
             httpReqFun(seq_toSend);
             break;
         case "delete":
-            console.log("delete");
-            console.log(dataIncr);
             seq_toSend = {
                 pload: "delete",
                 monVal : monList.value,
@@ -154,40 +151,24 @@ var httpReqFun = function (param){
             
             console.log("arr_data",arr_data);            
             switch(arr_data["status"]){
-                case "emp success":
-                case "pun success":
-                case "rep success":
-                case "incr success":
-                case "pun no data":
-                case "rep no data":
-                case "incr no data":
+                case "GENER SUCCESS":
                     year = monList.value.substring(0,4);
                     mon = monList.value.substring(5,7);
                     dynamicTable(year, mon);
                     sortData(arr_data);
-                    seq_stateInfo.innerText = info_tw("GENER SUCCESS");
                     break;
-                case "sequence data exist":
+                case "LIST EXISIT":
                     parseTable(arr_data);
-                    seq_stateInfo.innerText = info_tw("LIST EXISIT");
                     pre_confirm.remove();                    
                     break;
-                case "sequence no data":
+                case "FORM NOT BE EMPTY":
                     isPreEdit = (monList.value != "" && clean_comp.value != "")? true:false;
-                    seq_stateInfo.innerText = info_tw("FORM NOT BE EMPTY");
                     createTable(isPreEdit);
                     break;
-                case "last sequence no data":
-                    seq_stateInfo.innerText = info_tw("UNSCHEDULED");
-                    break;
-                case "delete success":
-                case "update success":
+                case "DEL SUCCESS":
                     window.location.reload();
                     break;
-                case "update emp success":
-                case "update punish success":
-                case "update replace success":
-                case "update incr success":
+                case "SAVED":
                     sequence_init();
                     seq_stateInfo.innerText = info_tw("SAVED");
                     pre_confirm.style.display = "none";
@@ -197,14 +178,18 @@ var httpReqFun = function (param){
                         if(areYuSur)actionDB("delete")
                     });
                     break;
+                case "EMP NO DATA":
+                case "UNSCHEDULED":
+                    break;
             }
+            seq_stateInfo.innerText = info_tw(arr_data["status"]);
+
         }
     }
     xmlhttp.send(jsonString);
 }
 
 var sortData = function(data){
-    console.log("sortData");
     if(data.empname != undefined){
         var empname_arr = Object.values(data.empname);
         var rep_name_arr = Object.values(data.rep_name);
@@ -298,7 +283,6 @@ var sortData = function(data){
                     }else if(sortLogic[2]){
                         dateName[i].innerText = rep_name;
                         doneKey.push(empname_arr[rep_name_idx]);
-                        // console.log("doneKey",doneKey);
                         replaceDone.push(rep_name_arr[rep_name_idx]);
                         empname_arr.splice(rep_name_idx, 1);
                         rep_name_arr.splice(rep_name_idx, 1);
@@ -462,7 +446,6 @@ var req_val = function (){
                 }
             }
         }else if(modifySituation[2] && mustDo[2]){
-            console.log("222");
             nameTxt.innerText = seq_holiday.value;
             nameTxt.style.backgroundColor = "#FFC1E0";
             replaceTxt.innerText = "";
