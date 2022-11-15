@@ -192,7 +192,10 @@ var httpReqFun = function (param){
                     seq_stateInfo.innerText = info_tw("SAVED");
                     pre_confirm.style.display = "none";
                     seq_delete.style.display = "";
-                    seq_delete.addEventListener("click", function () {actionDB("delete")});
+                    seq_delete.addEventListener("click", function () {
+                        var areYuSur = confirm(info_tw("DELETE"))
+                        if(areYuSur)actionDB("delete")
+                    });
                     break;
             }
         }
@@ -222,7 +225,9 @@ var sortData = function(data){
     
     //上個月輪到哪個人
     for(var n = 1; n <= emp_data_size; n++){
-        if(data.lastIndex[n]*1 +1 == mon){
+        var lastIndex = (data.lastIndex[n]).substring(5,7)*1;
+        var lastMon = ( mon*1-1 == 0)? 12 : mon-1;
+        if(lastIndex == lastMon){
             emp_data_ind = ((n+1) > emp_data_size)?1 :(n+1);
             break;
         }
@@ -394,7 +399,10 @@ var parseTable = function (data){
         }
     }
     seq_delete.style.display = "";
-    seq_delete.addEventListener("click", function () {actionDB("delete");} )  
+    seq_delete.addEventListener("click", function () {
+        var areYuSur = confirm(info_tw("DELETE"));
+        if(areYuSur)actionDB("delete"); 
+    } )  
 }
 
 var parseOptionList = function(){
