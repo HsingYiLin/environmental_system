@@ -9,7 +9,6 @@
     array["DATE OF THE MON"] = "請輸入這個月的日期";
     array["WRONG DATE"] = "日期錯誤";
     array["NAME NOT BE EMPTY"] = "名字不得為空";
-    array["NAME AND DATE NOT BE EMPTY"] = "名字和日期不得為空";
     array["SUCCESS"] = "成功";
     array["NO DATA"] = "無資料";
     array["DUPLICATE"] = "資料重複";

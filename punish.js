@@ -1,40 +1,35 @@
-var pun_chgpage;
-var pun_punish;
 var pun_calender;
 var pun_name;
 var pun_txt;
-var pun_default;
-var pun_sel_confirm;
-var pun_ad_confirm;
-var pun_up_confirm;
-var pun_del_confirm;
 var pun_stateInfo;
 var pun_tbody;
+var del_name;
+var del_pun_calender;
 var pun_toSend ={};
 var pun_url = "http://localhost:8080/CleanSystem/punish.php";
 const xmlhttp =new XMLHttpRequest();
 
 var pun_init = function (){
     console.log("pun_init");
-    pun_chgpage = document.querySelector("#pun_chgpage");
-    pun_punish = document.getElementById("pun_punish");
+    var pun_chgpage = document.querySelector("#pun_chgpage");
+    var pun_punish = document.getElementById("pun_punish");
     pun_calender = document.getElementById("pun_calender");
     pun_name = document.getElementById("pun_name");
     pun_txt = document.getElementById("pun_txt");
-    pun_sel_confirm = document.getElementById("pun_sel_confirm");
-    pun_ad_confirm = document.getElementById("pun_ad_confirm");
-    pun_up_confirm = document.getElementById("pun_up_confirm");
-    pun_del_confirm = document.getElementById("pun_del_confirm");
+    var pun_sel_confirm = document.getElementById("pun_sel_confirm");
+    var pun_ad_confirm = document.getElementById("pun_ad_confirm");
+    var pun_up_confirm = document.getElementById("pun_up_confirm");
     pun_stateInfo = document.getElementById("pun_stateInfo");
     pun_stateInfo.style.color = "#CE0000";
     pun_tbody = document.getElementById("pun_tbody");
+    var pun_clear = document.getElementById("pun_clear");
     actionDB("init");
     pun_punish.setAttribute("selected", true);
     pun_chgpage.addEventListener("change", pun_changePage, false);
     pun_ad_confirm.addEventListener("click", function(){actionDB("add");});
     pun_sel_confirm.addEventListener("click", function(){actionDB("select");});
     pun_up_confirm.addEventListener("click", function(){actionDB("update")});
-    pun_del_confirm.addEventListener("click", function(){actionDB("delete")});
+    pun_clear.addEventListener("click", clearInput);
 }
 
 var actionDB = function(params) {
@@ -85,16 +80,12 @@ var actionDB = function(params) {
             }
             break;
         case "delete":
-            if(pun_name.value != "" && pun_calender.value!=""){
-                pun_toSend ={
-                    pload: "delete",
-                    name: pun_name.value,
-                    date: pun_calender.value
-                };   
-                httpReqFun(pun_toSend);
-            }else{
-                pun_stateInfo.innerText = info_tw("NAME AND DATE NOT BE EMPTY");
-            }
+            pun_toSend ={
+                pload: "delete",
+                name: del_name,
+                date: del_pun_calender
+            };   
+            httpReqFun(pun_toSend);
             break;
     }
 }
@@ -137,7 +128,7 @@ var httpReqFun = function (param){
 }
 
 var parseAllData = function (initData){
-    pun_tbody.innerHTML = "<tr class=first_tr><td>受罰日期</td><td>值日生</td><td>懲罰原因</td><td>次數</td><td>罰金</td><td>倍率</td><td>進度</td></tr>";
+    pun_tbody.innerHTML = "<tr class=first_tr><td>受罰日期</td><td>值日生</td><td>懲罰原因</td><td>次數</td><td>罰金</td><td>倍率</td><td>進度</td><td></td><td></td></tr>";
     pun_tableHTML = "";
     var pun_done = "";
         var data_size = Object.keys(initData["name"]).length;
@@ -149,11 +140,12 @@ var parseAllData = function (initData){
             //3.Ex:c.(6/16 7/7 8/24 9/8) & d.(8/24 9/8 10/7)，d為最後一筆，必須結清，d.沒包括到7/6(7/8基準日)，所以c須結清....大於。
             if(initData.times[j] >= initData.times[j+1] || j == data_size){
                 pun_tableHTML += "<tr class = data_pun_tr  style = 'background-color :#FF7575';><td>"+initData.date[j]+"</td><td>"+initData.name[j]+"</td>";
-                pun_tableHTML += "<td>"+initData.punishtxt[j]+"</td><td>"+initData.times[j]+"</td><td>"+initData.fine[j]+"</td><td>"+initData.odds[j]+"</td><td>"+ pun_done +"</td></tr>";
+                pun_tableHTML += "<td>"+initData.punishtxt[j]+"</td><td>"+initData.times[j]+"</td><td>"+initData.fine[j]+"</td><td>"+initData.odds[j]+"</td><td>"+ pun_done +"</td>";
             }else{
                 pun_tableHTML += "<tr class = data_pun_tr><td>"+initData.date[j]+"</td><td>"+initData.name[j]+"</td>";
-                pun_tableHTML += "<td>"+initData.punishtxt[j]+"</td><td>"+initData.times[j]+"</td><td>"+initData.fine[j]+"</td><td>"+initData.odds[j]+"</td><td>"+ pun_done +"</td></tr>";
+                pun_tableHTML += "<td>"+initData.punishtxt[j]+"</td><td>"+initData.times[j]+"</td><td>"+initData.fine[j]+"</td><td>"+initData.odds[j]+"</td><td>"+ pun_done +"</td>";
             }
+            pun_tableHTML += "<td><button type='button' onclick='upd(this)'>選取</button></td><td><button type='button' onclick='del(this)'>刪除</button></td></tr>"
         }
         pun_tbody.innerHTML += pun_tableHTML;
 }
@@ -167,5 +159,24 @@ var clearInput = function (){
     pun_calender.value = "";
     pun_name.value = "";
     pun_default.setAttribute("selected", true);
-    pun_txt.checked = false;
+    pun_txt.value = "";
+}
+
+var del = function (obj){
+    var del_str = obj.parentNode.parentNode.innerText;
+    var del_td_arr = del_str.split(/\t/);
+    del_pun_calender = del_td_arr[0];
+    del_name = del_td_arr[1];
+    actionDB("delete");
+}
+
+var upd = function (obj){
+    var upd_str = obj.parentNode.parentNode.innerText;
+    var upd_td_arr = upd_str.split(/\t/);
+    var upd_pun_calender = upd_td_arr[0];
+    var upd_name = upd_td_arr[1];
+    var upd_punishtxt = upd_td_arr[2];
+    pun_calender.value = upd_pun_calender;
+    pun_name.value = upd_name;
+    pun_txt.value = upd_punishtxt;
 }

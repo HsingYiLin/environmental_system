@@ -92,15 +92,12 @@ var actionDB = function(params) {
             }
             break;
         case "delete":
-            // if(emp_name.value != ""){
-                toSend ={
-                    pload: "delete",
-                    emp_name: del_val,
-                };   
-                httpReqFun(toSend);
-            // }else{
-            //     emp_stateInfo.innerText = info_tw("NAME NOT BE EMPTY");
-            // }
+            toSend ={
+                pload: "delete",
+                emp_name: del_val,
+            };   
+            httpReqFun(toSend);
+            break;
     }
 }
 
