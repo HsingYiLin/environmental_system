@@ -141,12 +141,12 @@ var httpReqFun = function (param){
 
 var parseAllData = function (initData){
     emp_tableHTML = "";
-    emp_tbody.innerHTML = "<tr class=first_tr><td>到職日</td><td>員工</td><td>職稱</td><td>狀態</td><td></td><td></td></tr>";
+    emp_tbody.innerHTML = "<tr class=first_tr><td>到職日</td><td>員工</td><td>職稱</td><td>狀態</td><td></td></tr>";
     if(initData["status"] != "update fail" && initData["status"] != "no data" && initData["status"] != "duplicate"){
         var data_size = Object.keys(initData["emp_name"]).length;
         for(var j = 1; j <= data_size; j++){
             emp_tableHTML += "<tr class = datatr><td>"+initData.startdate[j]+"</td><td>"+initData.emp_name[j]+"</td><td>"+initData.title[j]+"</td><td>"+initData.state[j]+"</td>";
-            emp_tableHTML += "<td><button type='button' onclick='upd(this)'>選取</button></td><td><button type='button' onclick='del(this)'>刪除</button></td></tr>"
+            emp_tableHTML += "<td style='width:110px';><button type='button' onclick='upd(this)'>選取</button>&nbsp&nbsp<button type='button' onclick='del(this)'>刪除</button></td></tr>"
         }
         emp_tbody.innerHTML += emp_tableHTML;
         getAllElement();

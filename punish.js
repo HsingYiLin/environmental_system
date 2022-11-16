@@ -128,7 +128,7 @@ var httpReqFun = function (param){
 }
 
 var parseAllData = function (initData){
-    pun_tbody.innerHTML = "<tr class=first_tr><td>受罰日期</td><td>值日生</td><td>懲罰原因</td><td>次數</td><td>罰金</td><td>倍率</td><td>進度</td><td></td><td></td></tr>";
+    pun_tbody.innerHTML = "<tr class=first_tr><td>受罰日期</td><td>值日生</td><td>懲罰原因</td><td>次數</td><td>罰金</td><td>倍率</td><td>進度</td><td></td></tr>";
     pun_tableHTML = "";
     var pun_done = "";
         var data_size = Object.keys(initData["name"]).length;
@@ -145,7 +145,7 @@ var parseAllData = function (initData){
                 pun_tableHTML += "<tr class = data_pun_tr><td>"+initData.date[j]+"</td><td>"+initData.name[j]+"</td>";
                 pun_tableHTML += "<td>"+initData.punishtxt[j]+"</td><td>"+initData.times[j]+"</td><td>"+initData.fine[j]+"</td><td>"+initData.odds[j]+"</td><td>"+ pun_done +"</td>";
             }
-            pun_tableHTML += "<td><button type='button' onclick='upd(this)'>選取</button></td><td><button type='button' onclick='del(this)'>刪除</button></td></tr>"
+            pun_tableHTML += "<td style='width:110px'><button type='button' onclick='upd(this)'>選取</button>&nbsp&nbsp<button type='button' onclick='del(this)'>刪除</button></td></tr>"
         }
         pun_tbody.innerHTML += pun_tableHTML;
 }
