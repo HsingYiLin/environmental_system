@@ -135,10 +135,10 @@ var parseAllData = function (initData){
         for(var j = 1; j <= data_size; j++){
             pun_done = (initData.pun_done[j] != 0)?"完成":"";
             //以次數判斷，要付清哪一欄的錢。
-            //1.EX: a.(5/7 6/16 7/6) & b.(6/16 7/6 8/24)，a.5/7 b沒包括到，須結清。b.後面還有筆數，待清 ....等於。
-            //2.最後一筆，需結清，不確定後面還有每有筆數....最大長度。
-            //3.Ex:c.(6/16 7/7 8/24 9/8) & d.(8/24 9/8 10/7)，d為最後一筆，必須結清，d.沒包括到7/6(7/8基準日)，所以c須結清....大於。
-            if(initData.times[j] >= initData.times[j+1] || j == data_size){
+            //1.EX: a(5/7 6/16 7/6) & b(6/16 7/6 8/24)，a.5/7 b沒包括到，須結清。b後面還有筆數，待清 ....等於。
+            //2.最後一筆，需結清，不確定後面還有沒有筆數....最大長度。
+            //3.Ex:c(6/16 7/7 8/24 9/8) & d(8/24 9/8 10/7)，d為最後一筆，必須結清，d沒包括到7/6(7/8基準日)，所以c須結清....大於。
+            if(initData.times[j]*1 >= initData.times[j+1]*1 || j == data_size){
                 pun_tableHTML += "<tr class = data_pun_tr  style = 'background-color :#FF7575';><td>"+initData.date[j]+"</td><td>"+initData.name[j]+"</td>";
                 pun_tableHTML += "<td>"+initData.punishtxt[j]+"</td><td>"+initData.times[j]+"</td><td>"+initData.fine[j]+"</td><td>"+initData.odds[j]+"</td><td>"+ pun_done +"</td>";
             }else{

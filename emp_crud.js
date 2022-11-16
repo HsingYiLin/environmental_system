@@ -4,10 +4,6 @@ var emp_title;
 var emp_status;
 var sel_confirm;
 var del_val;
-var upd_name;
-var upd_starDate;
-var upd_title;
-var upd_state;
 var emp_stateInfo;
 var emp_tbody;
 var toSend = {};
@@ -121,7 +117,6 @@ var httpReqFun = function (param){
                     clearInput();
                     break;
                 case "success!":
-                // case "select success":
                     emp_stateInfo.innerText = info_tw("SUCCESS");
                     parseAllData(arr_data);
                     break;
@@ -187,10 +182,10 @@ var del = function (obj){
 var upd = function (obj){
     var upd_str = obj.parentNode.parentNode.innerText;
     var upd_td_arr = upd_str.split(/\t/);
-    upd_starDate = upd_td_arr[0];
-    upd_name = upd_td_arr[1];
-    upd_title = upd_td_arr[2];
-    upd_state = upd_td_arr[3];
+    var upd_starDate = upd_td_arr[0];
+    var upd_name = upd_td_arr[1];
+    var upd_title = upd_td_arr[2];
+    var upd_state = upd_td_arr[3];
     upd_state = (upd_state == "在職")? true : false;
     emp_startDate.value = upd_starDate;
     emp_name.value = upd_name;

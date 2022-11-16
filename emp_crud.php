@@ -17,7 +17,7 @@
   	$arr_res =Array();
 	
 	if($object["pload"] == "init"){
-		$sql_init = "SELECT * FROM employee ORDER BY `title`, `startdate` DESC";
+		$sql_init = "SELECT * FROM employee WHERE `del` != 'D' ORDER BY `title`, `startdate` DESC";
 		$result = mysqli_query($mydb_link, $sql_init);
 		$i=1;
 		if ($result->num_rows > 0) {
@@ -40,7 +40,7 @@
     	$emp_name = $object["emp_name"];
     	$title = $object["title"];
    	 	$state = $object["state"];
-		$sql_pre_add = "SELECT `emp_name` FROM employee WHERE `emp_name` =" ."'$emp_name'";
+		$sql_pre_add = "SELECT `emp_name` FROM employee WHERE `emp_name` =" ."'$emp_name'"." AND `del` != 'D'";
 		$result_add = mysqli_query($mydb_link, $sql_pre_add);
 		if (mysqli_num_rows($result_add) > 0) {
 			$arr_res["status"] = "duplicate";
@@ -62,7 +62,7 @@
 	}else if($object["pload"] == "select"){
 		$emp_name = $object["emp_name"];
 		$date = $object["date"];
-		$sql_select = "SELECT * FROM employee WHERE `emp_name` =" ."'$emp_name'" . " AND `startDate` = "."'$date'";
+		$sql_select = "SELECT * FROM employee WHERE `emp_name` =" ."'$emp_name'" . " AND `startDate` = "."'$date'"." AND `del` != 'D'";
 		$sql_select .= " OR `emp_name` = "."'$emp_name'"." OR `startDate` = "."'$date'";
 		$result_select = mysqli_query($mydb_link, $sql_select);
 		$i=1;
@@ -86,20 +86,20 @@
     	$emp_name = $object["emp_name"];
     	$title = $object["title"];
    	 	$state = $object["state"];
-		$sql_update = "UPDATE employee SET `title` =" ."'$title'"." ,`state` =" ."'$state'" . " ,`startDate` =" . "'$startDate'" . "WHERE `emp_name` =" ."'$emp_name'";
-
+		$sql_update = "UPDATE employee SET `title` =" ."'$title'"." ,`state` =" ."'$state'" . " ,`startDate` =" . "'$startDate'";
+		$sql_update .= "WHERE `emp_name` =" ."'$emp_name'"." AND `del` != 'D'";
 		if(mysqli_query($mydb_link, $sql_update) && $mydb_link->affected_rows > 0){
 			$arr_res["status"] = "update success";
 		}else{
 			$arr_res["status"] = "update fail";
-			// $arr_res["error"] =mysqli_error($mydb_link);
+			$arr_res["error"] =mysqli_error($mydb_link);
 		}
 		echo json_encode($arr_res);
 		mysqli_close($mydb_link);
 
 	}else if($object["pload"] == "delete"){
 		$emp_name = $object["emp_name"];
-		$sql_pre_delete = "SELECT `emp_name` FROM employee WHERE `emp_name` =" ."'$emp_name'";
+		$sql_pre_delete = "SELECT `emp_name` FROM employee WHERE `emp_name` =" ."'$emp_name'"." AND `del` != 'D'";
 		$result_pre_delete = mysqli_query($mydb_link, $sql_pre_delete);
 		if (mysqli_num_rows($result_pre_delete) == 0) {
 			$arr_res["status"] = "no data";
@@ -107,7 +107,8 @@
 			die();
 			mysqli_close($mydb_link);
 		} 
-		$sql_delete_emp = "DELETE FROM employee WHERE `emp_name` =" ."'$emp_name'";
+		// $sql_delete_emp = "DELETE FROM employee WHERE `emp_name` =" ."'$emp_name'";
+		$sql_delete_emp = "UPDATE employee SET `del` = 'D' WHERE `emp_name` =" ."'$emp_name'";
 		$sql_delete_pun = "DELETE FROM punish WHERE `name` =" ."'$emp_name'";
 		if(mysqli_query($mydb_link, $sql_delete_emp)){
 			if (mysqli_num_rows($result_pre_delete) > 0) {

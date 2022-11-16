@@ -56,9 +56,9 @@
 		$year_str = substr($mon, 0, 4);
 		$month_days  = cal_days_in_month(CAL_GREGORIAN, date($mon_str), date($year_str));
 		$max_date = $year_str . $mon_str . $month_days;
-		$sql_employee = "SELECT * FROM employee WHERE `title` = '其他' AND `state` = '在職'";
+		$sql_employee = "SELECT * FROM employee WHERE `title` = '其他' AND `state` = '在職' AND `del` != 'D'";
 		$sql_employee .= " AND "."'$max_date'". " >= DATE_ADD(`startdate`, INTERVAL 1 MONTH) ORDER BY `startdate` DESC";
-		$sql_punish = "SELECT `name`, `punishtxt`, `pun_date` FROM punish WHERE  `pun_done` = 0  AND `pun_date` < "."'$mon"."-1' ORDER BY `pun_date` ASC";
+		$sql_punish = "SELECT `name`, `punishtxt`, `pun_date` FROM punish WHERE  `pun_done` = 0  AND `pun_del` != 'D' AND `pun_date` < "."'$mon"."-1' ORDER BY `pun_date` ASC";
 		$sql_rep = "SELECT * FROM rep WHERE `rep_done` = 0 AND "."'$mon'"." > `rep_date`";
 		$sql_incr = "SELECT * FROM incr WHERE `incr_mon` < "."'$mon'"." AND `incr_done` = 0";
 		$result_employee = mysqli_query($mydb_link, $sql_employee);
@@ -196,7 +196,7 @@
 
 		$lastEmp = $object["lastEmp"];
 		$mon = $object["mon"]*1;
-		$sql_update_last_ind = "UPDATE employee SET `lastIndex` = "."'$year-$mon'". " WHERE `emp_name` = "."'$lastEmp'";
+		$sql_update_last_ind = "UPDATE employee SET `lastIndex` = "."'$year-$mon'". " WHERE `emp_name` = "."'$lastEmp'"." AND `del != 'D'";
 		if(mysqli_query($mydb_link, $sql_update_last_ind) == TRUE){
 			$arr_res["status"] = "SAVED";
 		}
@@ -204,7 +204,7 @@
 		if(!empty($object["punish_date_arr"])){
 			$punish_date_arr = $object["punish_date_arr"];
 			for ($j=0; $j < count($punish_date_arr); $j++) { 
-				$sql_update_punish_done[$j] = "UPDATE punish SET `pun_done` = "."'$year-$mon'"." WHERE `name` = "."'$punish_date_arr[$j]'"." AND `pun_done` = 0 LIMIT 1";
+				$sql_update_punish_done[$j] = "UPDATE punish SET `pun_done` = "."'$year-$mon'"." WHERE `name` = "."'$punish_date_arr[$j]'"." AND `pun_done` = 0 AND `pun_del` != 'D' LIMIT 1";
 				if(mysqli_query($mydb_link, $sql_update_punish_done[$j]) == TRUE){
 					$arr_res["status"] = "SAVED";
 				}
@@ -222,8 +222,8 @@
 		// $sql_delete_punish = "DELETE FROM punish WHERE `pun_date` >= "."'$year-$mon-1'";
 		$sql_delete_replace = "DELETE FROM rep WHERE `rep_date` >= "."'$year-$mon'";
 		$sql_delete_incr = "DELETE FROM incr WHERE incr_mon >= "."'$year-$mon'";
-		$sql_update_lastIndex = "UPDATE employee SET `lastIndex` = 0 WHERE `lastIndex` >= "."'$year-$mon'";
-		$sql_update_punish = "UPDATE punish SET `pun_done` = 0 WHERE `pun_done` >= "."'$year-$mon'";
+		$sql_update_lastIndex = "UPDATE employee SET `lastIndex` = 0 WHERE `lastIndex` >= "."'$year-$mon'"." AND `del` != 'D'";
+		$sql_update_punish = "UPDATE punish SET `pun_done` = 0 WHERE `pun_done` >= "."'$year-$mon'"." AND `pun_del` != 'D'";
 		$sql_replace_update = "UPDATE rep SET `rep_done` = 0 WHERE `rep_done` >= "."'$year-$mon'";
 		$sql_incr_update = "UPDATE incr SET `incr_done` = 0 WHERE `incr_done` >= "."'$year-$mon'";
 
