@@ -196,7 +196,8 @@
 
 		$lastEmp = $object["lastEmp"];
 		$mon = $object["mon"]*1;
-		$sql_update_last_ind = "UPDATE employee SET `lastIndex` = "."'$year-$mon'". " WHERE `emp_name` = "."'$lastEmp'"." AND `del != 'D'";
+		$sql_update_last_ind = "UPDATE employee SET `lastIndex` = "."'$year-$mon'". " WHERE `emp_name` = "."'$lastEmp'"." AND `del` != 'D'";
+		$arr_res["sql_update_last_ind"] = $sql_update_last_ind;
 		if(mysqli_query($mydb_link, $sql_update_last_ind) == TRUE){
 			$arr_res["status"] = "SAVED";
 		}

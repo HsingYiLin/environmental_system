@@ -194,7 +194,6 @@ var httpReqFun = function (param){
                     break;
             }
             seq_stateInfo.innerText = info_tw(arr_data["status"]);
-
         }
     }
     xmlhttp.send(jsonString);
@@ -250,7 +249,7 @@ var sortData = function(data){
         dateSortTimeStamp = new Date((year+ "/" +dateSortCls[i].innerText).split('/').join('-')).getTime();//表格日期時間戳
         //排序
         if(emptyColumn && datePunish[i].innerText == ""){
-            for(emp_data_ind; emp_data_ind <= emp_data_size; emp_data_ind++){  
+            for(emp_data_ind; emp_data_ind <= emp_data_size; emp_data_ind++){
                 startText = new Date(data.startdate[emp_data_ind]); 
                 startTimeStamp = startText.setMonth(startText.getMonth() + 1);//員工報到時間戳
                 var repBool = false;
@@ -304,7 +303,7 @@ var sortData = function(data){
                     }else if(sortLogic[3]){
                         dataIncr.push(increase_arr[incr_name_idx]);
                         increase_arr.splice(incr_name_idx, 1);
-                        if(emp_data_ind == emp_data_size)emp_data_ind = 1;
+                        if(emp_data_ind == emp_data_size)emp_data_ind = 0; 
                         continue;
 
                     }else if(sortLogic[4]){
@@ -425,12 +424,12 @@ var parseOptionList = function(){
 var req_val = function (){
     var rep_empname = arr_data.emp_name;
     var numTd = seq_calender.value.substring(8, 10)*1;
-    var calenderDate = seq_calender.value.substring(0, 7)
+    var calenderDate = seq_calender.value.substring(0, 7);
     var replaceTxt =  dateReplace[numTd-1];
     var nameTxt = dateName[numTd-1];
     var puntxt = datePunish[numTd-1];
-    var satur = new Date(seq_calender.value).getDay()
-    var sun = new Date(seq_calender.value).getDay()
+    var satur = new Date(seq_calender.value).getDay();
+    var sun = new Date(seq_calender.value).getDay();
     var dayType = (satur == 6 || sun == 0)?"holiday": "work";
     if(monList.value == calenderDate){
         var modifySituation = {
@@ -500,7 +499,7 @@ var req_val = function (){
     }else{
         seq_stateInfo.innerText = info_tw("DATE OF THE MON");
     }
-    setTimeout(function(){seq_stateInfo.innerText = ""}, 3000 )
+    setTimeout(function(){seq_stateInfo.innerText = ""}, 3000 );
 }
 
 var clearInput = function (){
