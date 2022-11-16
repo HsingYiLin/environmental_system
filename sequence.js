@@ -69,7 +69,6 @@ var createTable = function(isPreEdit){
         seq_edit.style.display = "";
         pre_edit.style.display = "none";
         btn_id.style.display = "";     
-        console.log(btn_id);
         var seq_sequence = document.getElementById("seq_sequence");
         var seq_modify = document.getElementById("seq_modify");
         var seq_save = document.getElementById("seq_save");
@@ -236,6 +235,10 @@ var sortData = function(data){
             emptyColumn = (setting_arr[ind] != dateName[i].innerText)?true:false;
             if(!emptyColumn)break;
         }
+        if(emptyColumn){
+            dateName[i].innerText = "";
+            datePunish[i].innerText = "";
+        }
         //處罰
         if(emptyColumn && pun_data_size > 0 && pun_data_size >= pun_data_ind ){
             dateName[i].innerText = data.name[pun_data_ind];
@@ -328,7 +331,7 @@ var dynamicTable = function (year, mon){
     for(var i =1; i<=table_days; i++){
         dateSort = mon+"/"+i;
         tableHTML += "<tr><td class = dateSortCls>"+dateSort+"</td><td class = dateName></td><td class = datePunish></td><td class = dateReplace></td>"
-        tableHTML += "<td style='width:50px'><button type='button' onclick='upd(this)'>選取</button></td></tr>"
+        tableHTML += "<td style='width:48px'><button type='button' onclick='upd(this)'>選取</button></td></tr>"
     }
     seq_tbody.innerHTML += tableHTML;
 
@@ -426,7 +429,9 @@ var req_val = function (){
     var replaceTxt =  dateReplace[numTd-1];
     var nameTxt = dateName[numTd-1];
     var puntxt = datePunish[numTd-1];
-    var dayType = (new Date(seq_calender.value).getDay() == 6 || new Date(seq_calender.value).getDay() == 0)?"holiday": "work";
+    var satur = new Date(seq_calender.value).getDay()
+    var sun = new Date(seq_calender.value).getDay()
+    var dayType = (satur == 6 || sun == 0)?"holiday": "work";
     if(monList.value == calenderDate){
         var modifySituation = {
             1: ("work" == dayType && "work" == on_off.value),
@@ -440,10 +445,10 @@ var req_val = function (){
             2: (seq_holiday.value != ""),
             3: (seq_replace.value == "")
         }
-
         dateSortTimeStamp = new Date(seq_calender.value).getTime();//表格日期時間戳
-        if(modifySituation[1] && mustDo[1]){
-            nameTxt.innerText == "";
+        if(modifySituation[1] || mustDo[1]){
+            nameTxt.innerText = "";
+            nameTxt.style.backgroundColor = "#FFFFFF";
             for(var i = 1; i <= emp_data_size; i++){
                 if(seq_replace.value == arr_data.emp_name[i]){
                     startText = new Date(arr_data.startdate[i]); 
@@ -456,6 +461,7 @@ var req_val = function (){
                         seq_stateInfo.innerText = info_tw("LESS THAN ONE MONTH");
                     }
                 }
+                sortData(arr_data); 
             }
         }else if(modifySituation[2] && mustDo[2]){
             nameTxt.innerText = seq_holiday.value;
@@ -481,7 +487,9 @@ var req_val = function (){
             sortData(arr_data); 
         }else if(modifySituation[4] && mustDo[2]){
             nameTxt.style.backgroundColor = "#FFC1E0";
+            if(satur == 6 || sun == 0) nameTxt.style.backgroundColor = "#FFD1A4";
             nameTxt.innerText = seq_holiday.value;
+            puntxt.innerText = "";
             replaceTxt.innerText = "";
             sortData(arr_data);
         }else if(modifySituation[5] && mustDo[3]){
