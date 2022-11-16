@@ -52,16 +52,22 @@
 	
 	}else if($object["pload"] == "init"){
 		$mon = $object["mon"];
+		$tmp_mon = (substr($mon,5,2)*1)-1;
+		$tmp_mon = ($tmp_mon == 0)? 12 : $tmp_mon;
+		$table_mon = ($tmp_mon).'m';
 		$mon_str = substr($mon, 5, 2);
 		$year_str = substr($mon, 0, 4);
 		$month_days  = cal_days_in_month(CAL_GREGORIAN, date($mon_str), date($year_str));
 		$max_date = $year_str . $mon_str . $month_days;
 		$sql_employee = "SELECT * FROM employee WHERE `title` = '其他' AND `state` = '在職' AND `del` != 'D'";
 		$sql_employee .= " AND "."'$max_date'". " >= DATE_ADD(`startdate`, INTERVAL 1 MONTH) ORDER BY `startdate` DESC";
+		$sql_emp_last = "SELECT `emp_name`, `$table_mon` from employee WHERE `title` = '其他' AND `state` = '在職' AND `del` != 'D'";
+		$sql_emp_last .= " AND "."'$max_date'". " >= DATE_ADD(`startdate`, INTERVAL 1 MONTH) ORDER BY `startdate` DESC";
 		$sql_punish = "SELECT `name`, `punishtxt`, `pun_date` FROM punish WHERE  `pun_done` = 0  AND `pun_del` != 'D' AND `pun_date` < "."'$mon"."-1' ORDER BY `pun_date` ASC";
 		$sql_rep = "SELECT * FROM rep WHERE `rep_done` = 0 AND "."'$mon'"." > `rep_date`";
 		$sql_incr = "SELECT * FROM incr WHERE `incr_mon` < "."'$mon'"." AND `incr_done` = 0";
 		$result_employee = mysqli_query($mydb_link, $sql_employee);
+		$result_emp_last = mysqli_query($mydb_link, $sql_emp_last);
 		$result_punish = mysqli_query($mydb_link, $sql_punish);
 		$result_rep = mysqli_query($mydb_link, $sql_rep);
 		$result_incr = mysqli_query($mydb_link, $sql_incr);
@@ -70,7 +76,18 @@
 			while($row = mysqli_fetch_array($result_employee)){
 				$arr_res["emp_name"][$i] = $row['emp_name'];
 				$arr_res["startdate"][$i] = $row['startdate'];
-				$arr_res["lastIndex"][$i] = $row['lastIndex'];
+				$i++;
+			}
+			$arr_res["status"] = "GENER SUCCESS";
+		}else{
+			$arr_res["status"] = "EMP NO DATA";
+			die();
+			mysqli_close($mydb_link);
+		}
+		$i=1;
+		if (mysqli_num_rows($result_emp_last) > 0){
+			while($row = mysqli_fetch_array($result_emp_last)){
+				$arr_res["lastIndex"][$i] = $row[$table_mon];
 				$i++;
 			}
 			$arr_res["status"] = "GENER SUCCESS";
@@ -105,7 +122,6 @@
 			$arr_res["status"] = "GENER SUCCESS";
 		}
 		$i=1;
-		$arr_res["asdasd"] = mysqli_num_rows($result_incr);
 		if(mysqli_num_rows($result_incr) > 0){
 			while($row = mysqli_fetch_array($result_incr)){
 				$arr_res["incr_name"][$i] = $row['incr_name'];
@@ -185,7 +201,6 @@
 
 		$repTorep = $object["repTorep"];
 		if(count($repTorep) > 0){
-			$arr_res["repTorep"] = $repTorep;
 			for($k=0; $k < count($repTorep); $k++){
 				$sql_update_rep_to_rep[$k] = "UPDATE rep SET `rep_done` = '0' WHERE `rep_name` = "."'$repTorep[$k]'"." AND `rep_done` = "."'$year-$mon'"." LIMIT 1";
 				if(mysqli_query($mydb_link, $sql_update_rep_to_rep[$k]) == TRUE){
@@ -196,8 +211,12 @@
 
 		$lastEmp = $object["lastEmp"];
 		$mon = $object["mon"]*1;
-		$sql_update_last_ind = "UPDATE employee SET `lastIndex` = "."'$year-$mon'". " WHERE `emp_name` = "."'$lastEmp'"." AND `del` != 'D'";
-		$arr_res["sql_update_last_ind"] = $sql_update_last_ind;
+		$table_mon = $mon.'m';
+		$sql_update_last_ind_empty = "UPDATE employee SET `$table_mon` = '' WHERE `$table_mon` != ''";
+		$sql_update_last_ind = "UPDATE employee SET `$table_mon` = "."'$year-$mon'". " WHERE `emp_name` = "."'$lastEmp'"." AND `del` != 'D'";
+		if(mysqli_query($mydb_link, $sql_update_last_ind_empty) == TRUE){
+			$arr_res["status"] = "SAVED";
+		}
 		if(mysqli_query($mydb_link, $sql_update_last_ind) == TRUE){
 			$arr_res["status"] = "SAVED";
 		}
@@ -218,16 +237,18 @@
 		$mon = $object["mon"];
 		$year = $object["year"];
 		$monVal = $object["monVal"];
+		$table_mon = $mon.'m';
 
 		$sql_delete_sequence = "DELETE FROM sequence WHERE `calender` >= "."'$monVal-01'";
 		// $sql_delete_punish = "DELETE FROM punish WHERE `pun_date` >= "."'$year-$mon-1'";
 		$sql_delete_replace = "DELETE FROM rep WHERE `rep_date` >= "."'$year-$mon'";
 		$sql_delete_incr = "DELETE FROM incr WHERE incr_mon >= "."'$year-$mon'";
-		$sql_update_lastIndex = "UPDATE employee SET `lastIndex` = 0 WHERE `lastIndex` >= "."'$year-$mon'"." AND `del` != 'D'";
+		$sql_update_lastIndex = "UPDATE employee SET `$table_mon` = '' WHERE `$table_mon` != ''";
 		$sql_update_punish = "UPDATE punish SET `pun_done` = 0 WHERE `pun_done` >= "."'$year-$mon'"." AND `pun_del` != 'D'";
 		$sql_replace_update = "UPDATE rep SET `rep_done` = 0 WHERE `rep_done` >= "."'$year-$mon'";
 		$sql_incr_update = "UPDATE incr SET `incr_done` = 0 WHERE `incr_done` >= "."'$year-$mon'";
 
+	
 		if(mysqli_query($mydb_link, $sql_delete_sequence))$arr_res["status"] = "DEL SUCCESS";
 		// if(mysqli_query($mydb_link, $sql_delete_punish))$arr_res["status"] = ""DEL SUCCESS";
 		if(mysqli_query($mydb_link, $sql_delete_replace))$arr_res["status"] = "DEL SUCCESS";
