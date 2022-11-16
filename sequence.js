@@ -23,6 +23,7 @@ var mon = "";
 var year = "";
 var isPreEdit = false;
 var tableHTML="";
+var btn_id;
 var dateSort;
 var punish_date_arr = Array();
 var replaceDone = Array();
@@ -52,19 +53,23 @@ var sequence_init = function(){
     seq_chgpage.addEventListener("change", seq_changePage, false);
     clean_comp = document.getElementById("clean_comp");
     seq_stateInfo = document.getElementById("seq_stateInfo");
+    btn_id = document.getElementById("btn_id");
     seq_stateInfo.style.color = "#CE0000";
     pre_confirm.addEventListener("click", function () {
         (monList.value == "")?seq_stateInfo.innerText = info_tw("FORM NOT BE EMPTY"):actionDB("dataExist");
     }) 
     pre_edit.style.display = "";     
     seq_edit.style.display = "none";
+    btn_id.style.display = "none";
 }
 
 var createTable = function(isPreEdit){
     if(isPreEdit){
         actionDB("init");
         seq_edit.style.display = "";
-        pre_edit.style.display = "none";     
+        pre_edit.style.display = "none";
+        btn_id.style.display = "";     
+        console.log(btn_id);
         var seq_sequence = document.getElementById("seq_sequence");
         var seq_modify = document.getElementById("seq_modify");
         var seq_save = document.getElementById("seq_save");
@@ -133,7 +138,6 @@ var actionDB = function(params) {
                 emp_name: arr_data.emp_name,
                 repTorep: repTorep_arr
             }
-            // replaceDone = [];  
             httpReqFun(seq_toSend);
             break;
         case "delete":
@@ -180,6 +184,7 @@ var httpReqFun = function (param){
                     seq_stateInfo.innerText = info_tw("SAVED");
                     pre_confirm.style.display = "none";
                     seq_delete.style.display = "";
+                    btn_id.style.display = "none";
                     seq_delete.addEventListener("click", function () {
                         var areYuSur = confirm(info_tw("DELETE"))
                         if(areYuSur)actionDB("delete")
@@ -322,7 +327,8 @@ var dynamicTable = function (year, mon){
     table_days = dateObj.getDate();
     for(var i =1; i<=table_days; i++){
         dateSort = mon+"/"+i;
-        tableHTML +="<tr><td class = dateSortCls>"+dateSort+"</td><td class = dateName></td><td class = datePunish></td><td class = dateReplace></td></tr>"
+        tableHTML += "<tr><td class = dateSortCls>"+dateSort+"</td><td class = dateName></td><td class = datePunish></td><td class = dateReplace></td>"
+        tableHTML += "<td style='width:50px'><button type='button' onclick='upd(this)'>選取</button></td></tr>"
     }
     seq_tbody.innerHTML += tableHTML;
 
@@ -361,7 +367,7 @@ var parseTable = function (data){
     table_days = pun_data_size = Object.keys(data["calender"]).length;
     for(var i=1; i <= table_days; i++){
         tableHTML +="<tr><td class = dateSortCls>"+data.calender[i].substring(5, 10).split("-").join("/")+"</td><td class = dateName>"+data.txt[i]+"</td>";
-        tableHTML +="<td class = datePunish>"+data.punish[i]+"</td><td class = dateReplace>"+data.replace_emp[i]+"</td></tr>";
+        tableHTML +="<td class = datePunish>"+data.punish[i]+"</td><td class = dateReplace>"+data.replace_emp[i]+"</td>";
     }
     seq_tbody.innerHTML += tableHTML;
     dateName = document.getElementsByClassName("dateName");
@@ -494,6 +500,14 @@ var clearInput = function (){
     seq_replace.value = "";
     replace_opt.value = "";
     seq_holiday.value = "";
+}
+
+var upd = function (obj){
+    var upd_str = obj.parentNode.parentNode.innerText;
+    var upd_td_arr = upd_str.split(/\t/);
+    var tmpDate = monList.value.substring(0, 4) + "/" + upd_td_arr[0];
+    var dateFormat =  moment(new Date(tmpDate).getTime()).format("YYYY-MM-DD");
+    seq_calender.value = dateFormat;
 }
 
 var seq_changePage = function (e){
