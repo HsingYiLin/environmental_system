@@ -24,6 +24,7 @@ var year = "";
 var isPreEdit = false;
 var tableHTML="";
 var btn_id;
+var btn_cls;
 var dateSort;
 var punish_date_arr = Array();
 var replaceDone = Array();
@@ -168,10 +169,11 @@ var httpReqFun = function (param){
                     sortData(arr_data);
                     break;
                 case "LIST EXISIT":
+                    seq_delete.style.display = "none";
                     parseTable(arr_data);
                     pre_confirm.remove();                    
                     break;
-                case "FORM NOT BE EMPTY":
+                case "FORM BE EMPTY":
                     isPreEdit = (monList.value != "" && clean_comp.value != "")? true:false;
                     createTable(isPreEdit);
                     break;
@@ -184,6 +186,9 @@ var httpReqFun = function (param){
                     pre_confirm.style.display = "none";
                     seq_delete.style.display = "";
                     btn_id.style.display = "none";
+                    for(var i= 0; i < btn_cls.length; i++){
+                        btn_cls[i].style.display = "none";
+                    }
                     seq_delete.addEventListener("click", function () {
                         var areYuSur = confirm(info_tw("DELETE"))
                         if(areYuSur)actionDB("delete")
@@ -321,7 +326,6 @@ var sortData = function(data){
     last_emp = data.emp_name[emp_data_ind];
 }
 
-
 var dynamicTable = function (year, mon){
     var dateObj = new Date(year,mon,0);
     var cnt = 1; //第一個完整周
@@ -330,10 +334,10 @@ var dynamicTable = function (year, mon){
     for(var i =1; i<=table_days; i++){
         dateSort = mon+"/"+i;
         tableHTML += "<tr><td class = dateSortCls>"+dateSort+"</td><td class = dateName></td><td class = datePunish></td><td class = dateReplace></td>"
-        tableHTML += "<td style='width:48px'><button type='button' onclick='upd(this)'>選取</button></td></tr>"
+        tableHTML += "<td style='width:48px' class = btn_cls><button type='button' onclick='upd(this)'>選取</button></td></tr>"
     }
     seq_tbody.innerHTML += tableHTML;
-
+    btn_cls = document.getElementsByClassName("btn_cls");
     dateSortCls = document.getElementsByClassName("dateSortCls");
     dateName = document.getElementsByClassName("dateName");
     datePunish = document.getElementsByClassName("datePunish"); 
@@ -354,7 +358,6 @@ var dynamicTable = function (year, mon){
                 dateName[i].style.backgroundColor = "#E0E0E0";
                 break;
         }
-
         if(mon % 2 !=0 && dateJudgeDate.getDay() == 1 && cnt == 1){
             for(var j =i; j < i+6; j++){
                 if(dateName[j].innerText == "")dateName[j].innerText = "剪輯組";             
@@ -396,11 +399,15 @@ var parseTable = function (data){
                 dateName[i].style.backgroundColor = "#FFC1E0";
         }
     }
-    seq_delete.style.display = "";
-    seq_delete.addEventListener("click", function () {
+    var lastCalender = (data["lastCalender"][1]).substring(0, 7);
+    if(monList.value == lastCalender){
+        seq_delete.style.display = "";
+        seq_delete.addEventListener("click", function () {
         var areYuSur = confirm(info_tw("DELETE"));
         if(areYuSur)actionDB("delete"); 
     } )  
+    }
+    
 }
 
 var parseOptionList = function(){
@@ -422,7 +429,6 @@ var parseOptionList = function(){
 }
 
 var req_val = function (){
-    var rep_empname = arr_data.emp_name;
     var numTd = seq_calender.value.substring(8, 10)*1;
     var calenderDate = seq_calender.value.substring(0, 7);
     var replaceTxt =  dateReplace[numTd-1];

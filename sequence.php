@@ -20,6 +20,7 @@
 		$monVal = $object["monVal"];
 		$lastMonStamp = strtotime('-1 month', strtotime($monVal));
 		$lastMon = date('Y-m', $lastMonStamp);
+		$arr_res["lastMon"] = $lastMon;
 		$isCorrect = false;
 		$isCorrect = ($monVal == "2022-10")? true : false;
 		if(!$isCorrect){//如果前個月未排值日生，無法判斷這個月的第一個是誰
@@ -32,6 +33,17 @@
 				mysqli_close($mydb_link);
 			}
 		}
+		$sql_del_btn = "SELECT `calender` FROM sequence  ORDER BY `calender` DESC LIMIT 1";
+		$result_del_btn = mysqli_query($mydb_link, $sql_del_btn);
+		$i=1;
+		if (mysqli_num_rows($result_del_btn) > 0){
+			while($row = mysqli_fetch_array($result_del_btn)){
+				$arr_res["lastCalender"][$i] = $row['calender'];
+				$i++;
+			}
+			$arr_res["status"] = "LAST EXISIT";
+		}
+
 		$sql_sequence = "SELECT * FROM sequence WHERE `calender` LIKE "."'$monVal%'";
 		$result_sequence = mysqli_query($mydb_link, $sql_sequence);
 		$i=1;
@@ -45,7 +57,7 @@
 			}
 			$arr_res["status"] = "LIST EXISIT";
 		}else{
-			$arr_res["status"] = "FORM NOT BE EMPTY";
+			$arr_res["status"] = "FORM BE EMPTY";
 		}
 		echo json_encode($arr_res);
 		mysqli_close($mydb_link);
@@ -239,14 +251,14 @@
 		$monVal = $object["monVal"];
 		$table_mon = $mon.'m';
 
-		$sql_delete_sequence = "DELETE FROM sequence WHERE `calender` >= "."'$monVal-01'";
+		$sql_delete_sequence = "DELETE FROM sequence WHERE `calender` LIKE "."'$monVal%'";
 		// $sql_delete_punish = "DELETE FROM punish WHERE `pun_date` >= "."'$year-$mon-1'";
-		$sql_delete_replace = "DELETE FROM rep WHERE `rep_date` >= "."'$year-$mon'";
-		$sql_delete_incr = "DELETE FROM incr WHERE incr_mon >= "."'$year-$mon'";
+		$sql_delete_replace = "DELETE FROM rep WHERE `rep_date` = "."'$year-$mon'";
+		$sql_delete_incr = "DELETE FROM incr WHERE incr_mon = "."'$year-$mon'";
 		$sql_update_lastIndex = "UPDATE employee SET `$table_mon` = '' WHERE `$table_mon` != ''";
-		$sql_update_punish = "UPDATE punish SET `pun_done` = 0 WHERE `pun_done` >= "."'$year-$mon'"." AND `pun_del` != 'D'";
-		$sql_replace_update = "UPDATE rep SET `rep_done` = 0 WHERE `rep_done` >= "."'$year-$mon'";
-		$sql_incr_update = "UPDATE incr SET `incr_done` = 0 WHERE `incr_done` >= "."'$year-$mon'";
+		$sql_update_punish = "UPDATE punish SET `pun_done` = 0 WHERE `pun_done` = "."'$year-$mon'"." AND `pun_del` != 'D'";
+		$sql_replace_update = "UPDATE rep SET `rep_done` = 0 WHERE `rep_done` = "."'$year-$mon'";
+		$sql_incr_update = "UPDATE incr SET `incr_done` = 0 WHERE `incr_done` = "."'$year-$mon'";
 
 	
 		if(mysqli_query($mydb_link, $sql_delete_sequence))$arr_res["status"] = "DEL SUCCESS";
