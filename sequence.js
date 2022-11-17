@@ -57,7 +57,7 @@ var sequence_init = function(){
     btn_id = document.getElementById("btn_id");
     seq_stateInfo.style.color = "#CE0000";
     pre_confirm.addEventListener("click", function () {
-        (monList.value == "")?seq_stateInfo.innerText = info_tw("FORM NOT BE EMPTY"):actionDB("dataExist");
+        (monList.value == "")?seq_stateInfo.innerText = info_tw("FORM BE EMPTY"):actionDB("dataExist");
     }) 
     pre_edit.style.display = "";     
     seq_edit.style.display = "none";

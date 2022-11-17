@@ -50,7 +50,7 @@ var actionDB = function(params) {
                 };   
                 httpReqFun(pun_toSend);
             }else{
-                pun_stateInfo.innerText = info_tw("FORM NOT BE EMPTY") + "||" + info_tw("WRONG DATE");
+                pun_stateInfo.innerText = info_tw("FORM BE EMPTY") + "||" + info_tw("WRONG DATE");
             }
             break;
         case "select":
@@ -76,7 +76,7 @@ var actionDB = function(params) {
                 };   
                 httpReqFun(pun_toSend);
             }else{
-                pun_stateInfo.innerText = info_tw("NAME NOT BE EMPTY");
+                pun_stateInfo.innerText = info_tw("NAME BE EMPTY");
             }
             break;
         case "delete":

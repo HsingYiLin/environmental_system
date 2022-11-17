@@ -56,7 +56,7 @@ var actionDB = function(params) {
                 };   
                 httpReqFun(toSend);
             }else{
-                emp_stateInfo.innerText = info_tw("STARTDATE AND NAME NOT BE EMPTY");
+                emp_stateInfo.innerText = info_tw("STARTDATE AND NAME BE EMPTY");
             }
             break;
         case "select":
@@ -84,7 +84,7 @@ var actionDB = function(params) {
                 };   
                 httpReqFun(toSend);
             }else{
-                emp_stateInfo.innerText = info_tw("NAME NOT BE EMPTY");
+                emp_stateInfo.innerText = info_tw("NAME BE EMPTY");
             }
             break;
         case "delete":
