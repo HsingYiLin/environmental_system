@@ -69,7 +69,7 @@
 		}
 
 		//起始罰金
-		$init_fine = 10;
+		$init_fine = 300;
 		//計算此筆員工前三個月有幾筆
 		$sql_cnt_add = "SELECT COUNT(`name`) as cnt FROM punish";
 		$sql_cnt_add .= " WHERE `name`= "."'$name'"." AND `pun_date` > DATE_SUB("."'$date'".", INTERVAL 3 MONTH) AND `pun_date` < "."'$date'";
@@ -166,7 +166,7 @@
 		}
 
 		//起始罰金
-		$init_fine = 10;
+		$init_fine = 300;
 		$sql_cnt_update = "SELECT `pun_date`, `fine`, `times`, `odds` FROM punish";
 		$sql_cnt_update .= "  WHERE `name` = "."'$name'" . " AND `pun_date` >" ."'$date'" . " AND `pun_date` < DATE_ADD("."'$date'".", INTERVAL 3 MONTH)";
 		$result_cnt_update = mysqli_query($mydb_link, $sql_cnt_update);
