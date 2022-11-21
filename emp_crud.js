@@ -14,6 +14,8 @@ const xmlhttp =new XMLHttpRequest();
 
 var emp_crud_init = function () {
     console.log("emp_crud_init");
+    actionDB("init");
+
     var emp_chgpage = document.querySelector("#emp_chgpage");
     var emp_crud = document.getElementById("emp_crud");
     var add_confirm = document.getElementById("add_confirm");
@@ -27,9 +29,8 @@ var emp_crud_init = function () {
     emp_stateInfo = document.getElementById("emp_stateInfo");
     emp_stateInfo.style.color = "#CE0000";
     emp_tbody = document.getElementById("emp_tbody");
-    actionDB("init");
     emp_crud.setAttribute("selected", true);
-    emp_chgpage.addEventListener("change", emp_changePage, false);
+    // emp_chgpage.addEventListener("change", emp_changePage, false);
     add_confirm.addEventListener("click", function(){actionDB("add");});
     sel_confirm.addEventListener("click", function(){actionDB("select");});
     up_confirm.addEventListener("click", function(){actionDB("update")});
@@ -136,15 +137,15 @@ var httpReqFun = function (param){
 
 var parseAllData = function (initData){
     emp_tableHTML = "";
-    emp_tbody.innerHTML = "<tr class=first_tr><td>到職日</td><td>員工</td><td>職稱</td><td>狀態</td><td></td></tr>";
+    emp_tbody.innerHTML = "<tr class = 'row table-success justify-content-center'><td class = 'col-3'>到職日</td><td class = 'col-2'>員工</td><td class = 'col-1'>職稱</td><td class = 'col-1'>狀態</td><td class = 'col-2'></td></tr>";
     if(initData["status"] != "update fail" && initData["status"] != "no data" && initData["status"] != "duplicate"){
         var data_size = Object.keys(initData["emp_name"]).length;
         for(var j = 1; j <= data_size; j++){
-            emp_tableHTML += "<tr class = datatr><td>"+initData.startdate[j]+"</td><td>"+initData.emp_name[j]+"</td><td>"+initData.title[j]+"</td><td>"+initData.state[j]+"</td>";
-            emp_tableHTML += "<td style='width:110px';><button type='button' onclick='upd(this)'>選取</button>&nbsp&nbsp<button type='button' onclick='del(this)'>刪除</button></td></tr>"
+            emp_tableHTML += "<tr class = 'row justify-content-center'><td class = 'col-3'>"+initData.startdate[j]+"</td><td class = 'col-2'>"+initData.emp_name[j]+"</td><td class = 'col-1'>"+initData.title[j]+"</td><td class = 'col-1'>"+initData.state[j]+"</td>";
+            emp_tableHTML += "<td class = 'col-2'><button class='btn btn-outline-success' type='button' onclick='upd(this)'>選取</button>"
+            emp_tableHTML += "&nbsp&nbsp<button type='button' class='btn btn-outline-success' data-bs-toggle='modal' data-bs-target='#exampleModal' onclick='del(this)'>刪除</button></td></tr>"
         }
         emp_tbody.innerHTML += emp_tableHTML;
-        getAllElement();
     }
 }
 
@@ -160,28 +161,21 @@ var clearInput = function (){
     emp_status.checked = false;
 }
 
-var getAllElement = function (){
-    var datatrCls = document.getElementsByClassName("datatr");
-    for(var i = 0; i < datatrCls.length; i++) {
-        datatrCls[i].addEventListener("mouseover", function(){
-            this.style.backgroundColor = "#BEBEBE";
-        })
-        datatrCls[i].addEventListener("mouseout", function(){
-            this.style.backgroundColor = "#FFFFFF";
-        })
-    }
-}
-
 var del = function (obj){
     var del_str = obj.parentNode.parentNode.innerText;
-    var del_td_arr = del_str.split(/\t/);
+    var del_td_arr = del_str.split(/\n/);
+    var modalOK = document.getElementById("modalOK");
+    var modalText = document.getElementById("modalText");
     del_val = del_td_arr[1];
-    actionDB("delete");
+    modalText.innerText = del_td_arr[0]+", "+del_td_arr[1];
+    modalOK.addEventListener("click",function(){
+        actionDB("delete");
+    })
 }
 
 var upd = function (obj){
     var upd_str = obj.parentNode.parentNode.innerText;
-    var upd_td_arr = upd_str.split(/\t/);
+    var upd_td_arr = upd_str.split(/\n/);
     var upd_starDate = upd_td_arr[0];
     var upd_name = upd_td_arr[1];
     var upd_title = upd_td_arr[2];

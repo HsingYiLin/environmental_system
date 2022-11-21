@@ -1,0 +1,32 @@
+/* .sys_tb{
+    width: 80%; */
+    /* height: 200px; */
+    /* border: 3px; */
+    /* color: #7cc0b5; */
+    /* border-style: groove;
+    border-collapse: collapse;
+} */
+
+/* .first_tr{
+    background-color: cadetblue;
+} */
+
+/* .sys_tb > tr, td{
+    border: 1;
+    border-style: groove;
+    color: #1b1717;
+} */
+
+.bg-color{
+    background-color: 	#FCFCFC;
+}
+.nav-color{
+    background-color: 	#02C874;
+}
+
+.black{
+    color: #FCFCFC	;
+}
+
+
+

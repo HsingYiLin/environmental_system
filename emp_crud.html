@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>整潔系統</title>
     <head>
-        <link rel="stylesheet" href="onduty.css">
+        <!-- <link rel="stylesheet" href="css/bootstrap.min.css"> -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="all.css">
         <script
             src="https://code.jquery.com/jquery-3.6.1.js"
             integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
@@ -15,36 +17,81 @@
         <script src="emp_crud.js"></script>
         <script src="info_tw.js"></script>
     </head>
-<body onload = emp_crud_init()>
-    <div id="">
-        <select name="" id="emp_chgpage">
-            <option id="emp_sequence" value="sequence" >值日生表</option>
-            <option id="emp_punish" value="punish" >懲罰項目表</option>
-            <option id="emp_crud" value="emp_del" >員工增修表</option>
-        </select><br><br>
+<body onload = emp_crud_init() class="bg-color">
+    <div id="" class="container bg-success ">
+        <nav class="nav justify-content-center">
+            <a class="nav-link black" href="sequence.html" id="emp_sequence">值日生表</a>
+            <a class="nav-link black" href="punish.html"   id="emp_punish">懲罰項目表</a>
+            <a class="nav-link black" href="emp_crud.html" id="emp_crud">員工增修表</a>
+        </nav>
+    </div>
+    
+    <div class="container">
+        <div class= "row gx-3 gy-2  mt-2 d-flex justify-content-center">
+            <div class="col-sm-3">
+                <input type="date" class="form-control" for="startDate" id="emp_startDate" value="" min="01-01" max="12-31">
+                </div>
+                <div class="col-sm-3">
+                <div class="input-group">
+                    <div class="input-group-text">員工</div>
+                    <input type="text" class="form-control" id="emp_name" placeholder="">
+                </div>
+                </div>
+                <div class="col-sm-3">
+                <select class="form-select" id="emp_title">
+                    <option id="director" value="主管">主管</option>
+                    <option value="工程師">工程師</option>
+                    <option value="特殊">特殊</option>
+                    <option value="剪輯組 ">剪輯組</option>
+                    <option value="其他">其他</option>
+                </select>
+                </div>
+                <div class="col-auto">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="emp_status">
+                    <label class="form-check-label" for="status">在職</label>
+                </div>
+                </div> 
+        </div>
+        <div class="row gx-3 gy-2 mt-2 mb-2 justify-content-center">
+            <div class="col-sm-4">
+                <input type="submit" id="sel_confirm" class=" btn btn-success mt-1" value="查詢">
+                <input type="submit" id="add_confirm" class=" btn btn-success mt-1" value="新增">
+                <input type="submit" id="up_confirm" class=" btn btn-success mt-1" value="修改">
+                <input type="submit" id="clear_confirm" class=" btn btn-success mt-1" value="清空">
+            </div>
+        </div>  
     </div>
 
-    <span>到職日:</span>
-    <input type="date" id="emp_startDate" value="" min="01-01" max="12-31"><br>
-    <span>員工:</span>
-    <input type="text" id="emp_name"><br>
-    <span>職稱:</span>&nbsp&nbsp&nbsp&nbsp
-    <select name="" id="emp_title">
-        <option id="director" value="主管">主管</option>
-        <option value="工程師">工程師</option>
-        <option value="特殊">特殊</option>
-        <option value="剪輯組 ">剪輯組</option>
-        <option value="其他">其他</option>
-    </select><br>
-    <span>狀態:</span>&nbsp&nbsp&nbsp
-    <input type="checkbox" id="emp_status" value=""><label>在職</label><br>
-    <input type="submit" id="sel_confirm" value="查詢">
-    <input type="submit" id="add_confirm" value="新增">
-    <input type="submit" id="up_confirm" value="修改">
-    <input type="submit" id="clear_confirm" value="清空">
+    <div class="row justify-content-center">
+        <div class="col-9">
+            <span id="emp_stateInfo" class="text-success fs-5"></span>
+        </div>
+    </div>
+    <div class="">
+        <table id="emp_tbody" class="sys_tb table table-striped  col-11"></table>
+    </div>
 
-    <span id="emp_stateInfo"></span>
- 
-    <table id="emp_tbody" class="sys_tb"></table>
-</body>
+        
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">確定刪除嗎?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modalText">
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="modalOK">確認</button>
+            </div>
+            </div>
+        </div>
+        </div>
+        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
 </html>
