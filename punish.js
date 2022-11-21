@@ -11,7 +11,7 @@ const xmlhttp =new XMLHttpRequest();
 
 var pun_init = function (){
     console.log("pun_init");
-    var pun_chgpage = document.querySelector("#pun_chgpage");
+    // var pun_chgpage = document.querySelector("#pun_chgpage");
     var pun_punish = document.getElementById("pun_punish");
     pun_calender = document.getElementById("pun_calender");
     pun_name = document.getElementById("pun_name");
@@ -24,8 +24,8 @@ var pun_init = function (){
     pun_tbody = document.getElementById("pun_tbody");
     var pun_clear = document.getElementById("pun_clear");
     actionDB("init");
-    pun_punish.setAttribute("selected", true);
-    pun_chgpage.addEventListener("change", pun_changePage, false);
+    // pun_punish.setAttribute("selected", true);
+    // pun_chgpage.addEventListener("change", pun_changePage, false);
     pun_ad_confirm.addEventListener("click", function(){actionDB("add");});
     pun_sel_confirm.addEventListener("click", function(){actionDB("select");});
     pun_up_confirm.addEventListener("click", function(){actionDB("update")});
@@ -128,7 +128,7 @@ var httpReqFun = function (param){
 }
 
 var parseAllData = function (initData){
-    pun_tbody.innerHTML = "<tr class=first_tr><td>受罰日期</td><td>值日生</td><td>懲罰原因</td><td>次數</td><td>罰金</td><td>倍率</td><td>進度</td><td></td></tr>";
+    pun_tbody.innerHTML = "<tr class=' table-success justify-content-center'><td>受罰日期</td><td>值日生</td><td>懲罰原因</td><td>次數</td><td>罰金</td><td>倍率</td><td>進度</td><td></td></tr>";
     pun_tableHTML = "";
     var pun_done = "";
         var data_size = Object.keys(initData["name"]).length;
@@ -139,13 +139,15 @@ var parseAllData = function (initData){
             //2.最後一筆，需結清，不確定後面還有沒有筆數....最大長度。
             //3.Ex:c(6/16 7/7 8/24 9/8) & d(8/24 9/8 10/7)，d為最後一筆，必須結清，d沒包括到7/6(7/8基準日)，所以c須結清....大於。
             if(initData.times[j]*1 >= initData.times[j+1]*1 || j == data_size){
-                pun_tableHTML += "<tr class = data_pun_tr  style = 'background-color :#FF7575';><td>"+initData.date[j]+"</td><td>"+initData.name[j]+"</td>";
+                pun_tableHTML += "<tr class='justify-content-center' style='background-color :#FF7575';><td>"+initData.date[j]+"</td><td>"+initData.name[j]+"</td>";
                 pun_tableHTML += "<td>"+initData.punishtxt[j]+"</td><td>"+initData.times[j]+"</td><td>"+initData.fine[j]+"</td><td>"+initData.odds[j]+"</td><td>"+ pun_done +"</td>";
             }else{
-                pun_tableHTML += "<tr class = data_pun_tr><td>"+initData.date[j]+"</td><td>"+initData.name[j]+"</td>";
+                pun_tableHTML += "<tr class='justify-content-center'><td>"+initData.date[j]+"</td><td>"+initData.name[j]+"</td>";
                 pun_tableHTML += "<td>"+initData.punishtxt[j]+"</td><td>"+initData.times[j]+"</td><td>"+initData.fine[j]+"</td><td>"+initData.odds[j]+"</td><td>"+ pun_done +"</td>";
             }
-            pun_tableHTML += "<td style='width:110px'><button type='button' onclick='upd(this)'>選取</button>&nbsp&nbsp<button type='button' onclick='del(this)'>刪除</button></td></tr>"
+            pun_tableHTML += "<td style='width:110px'><button type='button' class='btn btn-outline-success mb-1' onclick='upd(this)'>選取</button>"
+            pun_tableHTML += "&nbsp&nbsp<button type='button' class='btn btn-outline-success'  data-bs-toggle='modal' data-bs-target='#exampleModal' onclick='del(this)'>刪除</button></td></tr>"
+
         }
         pun_tbody.innerHTML += pun_tableHTML;
 }
@@ -165,9 +167,14 @@ var clearInput = function (){
 var del = function (obj){
     var del_str = obj.parentNode.parentNode.innerText;
     var del_td_arr = del_str.split(/\t/);
+    var modalPunOK = document.getElementById("modalPunOK");
+    var modalPunText = document.getElementById("modalPunText");
     del_pun_calender = del_td_arr[0];
     del_name = del_td_arr[1];
-    actionDB("delete");
+    modalPunText.innerText = del_td_arr[0]+", "+del_td_arr[1]+", "+del_td_arr[2]
+    modalPunOK.addEventListener("click",function(){
+        actionDB("delete");
+    })
 }
 
 var upd = function (obj){

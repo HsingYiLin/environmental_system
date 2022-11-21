@@ -137,12 +137,12 @@ var httpReqFun = function (param){
 
 var parseAllData = function (initData){
     emp_tableHTML = "";
-    emp_tbody.innerHTML = "<tr class = 'row table-success justify-content-center'><td class = 'col-3'>到職日</td><td class = 'col-2'>員工</td><td class = 'col-1'>職稱</td><td class = 'col-1'>狀態</td><td class = 'col-2'></td></tr>";
+    emp_tbody.innerHTML = "<tr class='row table-success justify-content-center'><td class='col-3'>到職日</td><td class='col-2'>員工</td><td class='col-1'>職稱</td><td class='col-1'>狀態</td><td class='col-2'></td></tr>";
     if(initData["status"] != "update fail" && initData["status"] != "no data" && initData["status"] != "duplicate"){
         var data_size = Object.keys(initData["emp_name"]).length;
         for(var j = 1; j <= data_size; j++){
-            emp_tableHTML += "<tr class = 'row justify-content-center'><td class = 'col-3'>"+initData.startdate[j]+"</td><td class = 'col-2'>"+initData.emp_name[j]+"</td><td class = 'col-1'>"+initData.title[j]+"</td><td class = 'col-1'>"+initData.state[j]+"</td>";
-            emp_tableHTML += "<td class = 'col-2'><button class='btn btn-outline-success' type='button' onclick='upd(this)'>選取</button>"
+            emp_tableHTML += "<tr class = 'row justify-content-center'><td class='col-3'>"+initData.startdate[j]+"</td><td class='col-2'>"+initData.emp_name[j]+"</td><td class='col-1'>"+initData.title[j]+"</td><td class='col-1'>"+initData.state[j]+"</td>";
+            emp_tableHTML += "<td class='col-2'><button class='btn btn-outline-success' type='button' onclick='upd(this)'>選取</button>"
             emp_tableHTML += "&nbsp&nbsp<button type='button' class='btn btn-outline-success' data-bs-toggle='modal' data-bs-target='#exampleModal' onclick='del(this)'>刪除</button></td></tr>"
         }
         emp_tbody.innerHTML += emp_tableHTML;
