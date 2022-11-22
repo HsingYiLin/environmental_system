@@ -42,7 +42,6 @@ const xmlhttp =new XMLHttpRequest();
 var seq_toSend = {};
 
 var sequence_init = function(){
-    console.log("sequence_init");
     pre_edit = document.getElementById("pre_edit");
     monList = document.getElementById("monList");
     clean_comp = document.getElementById("clean_comp");
@@ -139,7 +138,6 @@ var actionDB = function(params) {
             httpReqFun(seq_toSend);
             break;
         case "delete":
-            console.log("delete");
             seq_toSend = {
                 pload: "delete",
                 monVal : monList.value,
@@ -325,7 +323,6 @@ var sortData = function(data){
 }
 
 var dynamicTable = function (year, mon){
-    console.log("dynamicTable");
     var dateObj = new Date(year,mon,0);
     var cnt = 1; //第一個完整周
     var dateJudgeDate;
@@ -445,57 +442,52 @@ var req_val = function (){
         var mustDo = {
             1: (seq_replace.value != "" && nameTxt.innerText != seq_replace.value && nameTxt.innerText.substr(0,nameTxt.innerText.length-1) != seq_replace.value && replace_opt.value != "" ),
             2: (seq_holiday.value != ""),
-            3: (seq_replace.value == "")
+            3: (seq_replace.value == ""),
+            4: (nameTxt.innerText != "剪輯組" && nameTxt.innerText != "清潔公司")
         }
         dateSortTimeStamp = new Date(seq_calender.value).getTime();//表格日期時間戳
-        // var a =nameTxt.innerText.substr(0,nameTxt.innerText.length-1)
-        // console.log(a );
-        if(modifySituation[1] && mustDo[1]){
-            console.log( mustDo[1]);
-            console.log(nameTxt.innerText);
-            console.log("111");
+        if(modifySituation[1] && mustDo["4"]){
             nameTxt.innerText = "";
-            // nameTxt.style.backgroundColor = "#FFFFFF";
+            nameTxt.style.removeProperty("background-color");
             for(var i = 1; i <= emp_data_size; i++){
                 if(seq_replace.value == arr_data.emp_name[i]){
                     startText = new Date(arr_data.startdate[i]); 
                     startTimeStamp = startText.setMonth(startText.getMonth() + 1);
-                    if(dateSortTimeStamp > startTimeStamp){ 
+                    if(dateSortTimeStamp > startTimeStamp && mustDo[1]){ 
                         replaceTxt.innerText = seq_replace.value + replace_opt.value;
                         sortData(arr_data); 
                         break;
                     }else{
-                        seq_stateInfo.innerText = info_tw("LESS THAN ONE MONTH");
+                        seq_stateInfo.innerText = info_tw("WRONG FORMAT");
+                        break;
                     }
                 }
-                sortData(arr_data); 
             }
+            sortData(arr_data); 
         }else if(modifySituation[2] && mustDo[2]){
-            console.log("222");
             nameTxt.innerText = seq_holiday.value;
             nameTxt.style.backgroundColor = "#FFC1E0";
+            if(seq_holiday.value == "清潔公司")nameTxt.style.backgroundColor = "#ADADAD";
             replaceTxt.innerText = "";
             puntxt.innerText = "";
             sortData(arr_data);
         }else if(modifySituation[3]){
-            console.log("333");
             nameTxt.innerText = "";
             nameTxt.style.backgroundColor = "#66B3FF";
             for(var i = 1; i <= emp_data_size; i++){
                 if(seq_replace.value == arr_data.emp_name[i]){
                     startText = new Date(arr_data.startdate[i]); 
                     startTimeStamp = startText.setMonth(startText.getMonth() + 1);
-                    if(dateSortTimeStamp > startTimeStamp){ 
+                    if(dateSortTimeStamp > startTimeStamp && mustDo[1] ){ 
                         replaceTxt.innerText = seq_replace.value + replace_opt.value;
                         break;
                     }else{
-                        seq_stateInfo.innerText = info_tw("LESS THAN ONE MONTH");
+                        seq_stateInfo.innerText = info_tw("WRONG FORMAT");
                     }
                 }
             }
             sortData(arr_data); 
         }else if(modifySituation[4] && mustDo[2]){
-            console.log("444");
             nameTxt.style.backgroundColor = "#FFC1E0";
             if(satur == 6 || sun == 0) nameTxt.style.backgroundColor = "#FF9D6F";
             nameTxt.innerText = seq_holiday.value;
@@ -503,10 +495,8 @@ var req_val = function (){
             replaceTxt.innerText = "";
             sortData(arr_data);
         }else if(modifySituation[5] && mustDo[3]){
-            console.log("555");
             replaceTxt.innerText = "";
         }else{
-            console.log("666");
             seq_stateInfo.innerText = info_tw("WRONG FORMAT");
         }
     }else{
@@ -535,7 +525,6 @@ var delSeq = function (){
     var modalText = document.getElementById("modalText");
     modalText.innerText = info_tw("DELETE");
     modalOK.addEventListener("click",function(){
-        console.log("modalOK");
         actionDB("delete");
     })
 }

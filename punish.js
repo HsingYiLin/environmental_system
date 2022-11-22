@@ -10,7 +10,6 @@ var pun_url = "http://localhost:8080/CleanSystem/punish.php";
 const xmlhttp =new XMLHttpRequest();
 
 var pun_init = function (){
-    console.log("pun_init");
     pun_calender = document.getElementById("pun_calender");
     pun_name = document.getElementById("pun_name");
     pun_txt = document.getElementById("pun_txt");
@@ -97,7 +96,6 @@ var httpReqFun = function (param){
             setTimeout(function(){
                 pun_stateInfo.innerText = "";
             },5000);
-            // console.log("arr_data",arr_data); 
             switch(arr_data["status"]){
             case "add success":
             case "update success":

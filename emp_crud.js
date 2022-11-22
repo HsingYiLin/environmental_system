@@ -13,7 +13,6 @@ var emp_tableHTML = "";
 const xmlhttp =new XMLHttpRequest();
 
 var emp_crud_init = function () {
-    console.log("emp_crud_init");
     actionDB("init");
     // var emp_chgpage = document.querySelector("#emp_chgpage");
     var emp_crud = document.getElementById("emp_crud");
