@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>整潔系統</title>
+    <title>員工增修表</title>
     <head>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="all.css">
@@ -21,12 +21,12 @@
         <nav class="nav justify-content-center">
             <a class="nav-link black" href="sequence.html" id="emp_sequence">值日生表</a>
             <a class="nav-link black" href="punish.html"   id="emp_punish">懲罰項目表</a>
-            <a class="nav-link black" href="emp_crud.html" id="emp_crud">員工增修表</a>
+            <a class="nav-link black text-warning" href="emp_crud.html" id="emp_crud">員工增修表</a>
         </nav>
     </div>
     
     <div class="container">
-        <div class= "row gx-3 gy-2  mt-2 d-flex justify-content-center">
+        <div class= "row gx-3 gy-2 mt-2 d-flex justify-content-center">
             <div class="col-sm-4">
                 <input type="date" class="form-control" for="startDate" id="emp_startDate" value="" min="01-01" max="12-31">
             </div>
@@ -58,19 +58,16 @@
                 <input type="submit" id="clear_confirm" class=" btn btn-success btn-sm" value="清空">
             </div>
         </div>  
-    </div>
 
-    <div class="row justify-content-center">
-        <div class="col-9">
-            <span id="emp_stateInfo" class="text-success fs-6 mt-3"></span>
+        <div class="">
+            <span id="emp_stateInfo" class="text-success fs-6 mt-1"></span>
+        </div>
+
+        <div class="">
+            <table id="emp_tbody" class="table table-striped col-11 mt-1"></table>
         </div>
     </div>
 
-    <div class="">
-        <table id="emp_tbody" class="sys_tb table table-striped col-11 mt-1"></table>
-    </div>
-
-        
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="">
         <div class="modal-dialog">

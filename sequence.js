@@ -43,7 +43,6 @@ var seq_toSend = {};
 
 var sequence_init = function(){
     console.log("sequence_init");
-    // var seq_chgpage = document.querySelector("#seq_chgpage");
     pre_edit = document.getElementById("pre_edit");
     monList = document.getElementById("monList");
     clean_comp = document.getElementById("clean_comp");
@@ -51,7 +50,6 @@ var sequence_init = function(){
     pre_confirm  = document.getElementById("pre_confirm");
     seq_tbody = document.getElementById("seq_tbody");
     seq_delete = document.getElementById("seq_delete");
-    // seq_chgpage.addEventListener("change", seq_changePage, false);
     clean_comp = document.getElementById("clean_comp");
     seq_stateInfo = document.getElementById("seq_stateInfo");
     btn_id = document.getElementById("btn_id");
@@ -202,16 +200,6 @@ var httpReqFun = function (param){
         }
     }
     xmlhttp.send(jsonString);
-}
-
-var delSeq = function (){
-    var modalOK = document.getElementById("modalOK");
-    var modalText = document.getElementById("modalText");
-    modalText.innerText = info_tw("DELETE");
-    modalOK.addEventListener("click",function(){
-        console.log("modalOK");
-        actionDB("delete");
-    })
 }
 
 var sortData = function(data){
@@ -417,7 +405,6 @@ var parseTable = function (data){
             delSeq();
         })  
     }
-    
 }
 
 var parseOptionList = function(){
@@ -456,14 +443,19 @@ var req_val = function (){
             5: ("" == on_off.value)
         }
         var mustDo = {
-            1: (seq_replace.value != "" && nameTxt.innerText != seq_replace.value && replace_opt.value != "" ),
+            1: (seq_replace.value != "" && nameTxt.innerText != seq_replace.value && nameTxt.innerText.substr(0,nameTxt.innerText.length-1) != seq_replace.value && replace_opt.value != "" ),
             2: (seq_holiday.value != ""),
             3: (seq_replace.value == "")
         }
         dateSortTimeStamp = new Date(seq_calender.value).getTime();//表格日期時間戳
-        if(modifySituation[1] || mustDo[1]){
+        // var a =nameTxt.innerText.substr(0,nameTxt.innerText.length-1)
+        // console.log(a );
+        if(modifySituation[1] && mustDo[1]){
+            console.log( mustDo[1]);
+            console.log(nameTxt.innerText);
+            console.log("111");
             nameTxt.innerText = "";
-            nameTxt.style.backgroundColor = "#FFFFFF";
+            // nameTxt.style.backgroundColor = "#FFFFFF";
             for(var i = 1; i <= emp_data_size; i++){
                 if(seq_replace.value == arr_data.emp_name[i]){
                     startText = new Date(arr_data.startdate[i]); 
@@ -479,12 +471,14 @@ var req_val = function (){
                 sortData(arr_data); 
             }
         }else if(modifySituation[2] && mustDo[2]){
+            console.log("222");
             nameTxt.innerText = seq_holiday.value;
             nameTxt.style.backgroundColor = "#FFC1E0";
             replaceTxt.innerText = "";
             puntxt.innerText = "";
             sortData(arr_data);
         }else if(modifySituation[3]){
+            console.log("333");
             nameTxt.innerText = "";
             nameTxt.style.backgroundColor = "#66B3FF";
             for(var i = 1; i <= emp_data_size; i++){
@@ -501,6 +495,7 @@ var req_val = function (){
             }
             sortData(arr_data); 
         }else if(modifySituation[4] && mustDo[2]){
+            console.log("444");
             nameTxt.style.backgroundColor = "#FFC1E0";
             if(satur == 6 || sun == 0) nameTxt.style.backgroundColor = "#FF9D6F";
             nameTxt.innerText = seq_holiday.value;
@@ -508,8 +503,10 @@ var req_val = function (){
             replaceTxt.innerText = "";
             sortData(arr_data);
         }else if(modifySituation[5] && mustDo[3]){
+            console.log("555");
             replaceTxt.innerText = "";
         }else{
+            console.log("666");
             seq_stateInfo.innerText = info_tw("WRONG FORMAT");
         }
     }else{
@@ -531,6 +528,16 @@ var upd = function (obj){
     var tmpDate = monList.value.substring(0, 4) + "/" + upd_td_arr[0];
     var dateFormat =  moment(new Date(tmpDate).getTime()).format("YYYY-MM-DD");
     seq_calender.value = dateFormat;
+}
+
+var delSeq = function (){
+    var modalOK = document.getElementById("modalOK");
+    var modalText = document.getElementById("modalText");
+    modalText.innerText = info_tw("DELETE");
+    modalOK.addEventListener("click",function(){
+        console.log("modalOK");
+        actionDB("delete");
+    })
 }
 
 var seq_changePage = function (e){

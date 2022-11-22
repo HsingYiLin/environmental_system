@@ -6,9 +6,10 @@
     color: #FCFCFC	;
 }
 
-.hgt{
-    height: 25%;
+.nav > a:hover{
+    color: #E1E100	;
 }
 
-
-
+/* .nav > a > .active{
+    color: #E1E100	;
+} */

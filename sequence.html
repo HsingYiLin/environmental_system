@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>整潔系統</title>
+    <title>值日生表</title>
     <head>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="all.css">
@@ -23,13 +23,13 @@
     
     <div id="" class="container bg-success ">
         <nav class="nav justify-content-center">
-            <a class="nav-link black" href="sequence.html" id="seq_sequence">值日生表</a>
+            <a class="nav-link black text-warning" href="sequence.html" id="seq_sequence">值日生表</a>
             <a class="nav-link black" href="punish.html"   id="seq_punish">懲罰項目表</a>
             <a class="nav-link black" href="emp_crud.html" id="seq_emp_crud">員工增修表</a>
         </nav>
     </div>
     <div id="pre_edit" class="container mt-3">
-        <div class="row">
+        <div class="row gx-3 gy-2 mt-2 d-flex justify-content-center">
             <div class="">
                 <span>值日生表月份:</span>
                 <input type="month" class="form-control" for="calender" id="monList" value="" min="2022-11" max="2024-01" value="">
@@ -91,7 +91,7 @@
             </div>
         </div>
 
-        <div id="workDateForm" class="row" style="display: none;">  
+        <div id="workDateForm" class="row gx-3 gy-2 justify-content-center" style="display: none;">  
             <div class="col-sm-6">
                 <div class="input-group">
                     <div class="input-group-text">候補</div>
@@ -117,35 +117,27 @@
         </div>
     </div>
 
-    <div class="container">
-        <div class="row justify-content-left">
-            <div class="col-9 mt-2">
-                <span id="seq_stateInfo" class="text-success fs-6"></span>
+        <div class="container">
+            <div class="row justify-content-left">
+                <div class="col-9 mt-2">
+                    <span id="seq_stateInfo" class="text-success fs-6"></span>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-2">
-                <span id="seq_stateInfo" class="text-success fs-5"></span>
+        <div class="container">
+            <div class="row">
+                <table id="seq_tbody" class="table table-striped col-11 mt-1">
+                    <tr class='table-success justify-content-center'>
+                        <td class="col-2">日期</td>
+                        <td class="col-2">值日生</td>
+                        <td class="col-4">懲罰</td>
+                        <td class="col-2">候補</td>
+                        <td id="btn_id"  class="col-2"></td>
+                    </tr>
+                </table>
             </div>
         </div>
-    </div>
-
-    <div class="container">
-        <div class="row">
-            <table id="seq_tbody" class="sys_tb table table-striped col-11 mt-1">
-                <tr class='table-success justify-content-center'>
-                    <td class="col-2">日期</td>
-                    <td class="col-2">值日生</td>
-                    <td class="col-4">懲罰</td>
-                    <td class="col-2">候補</td>
-                    <td id="btn_id"  class="col-2"></td>
-                </tr>
-            </table>
-        </div>
-    </div>
 
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">

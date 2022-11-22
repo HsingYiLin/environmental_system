@@ -11,8 +11,6 @@ const xmlhttp =new XMLHttpRequest();
 
 var pun_init = function (){
     console.log("pun_init");
-    // var pun_chgpage = document.querySelector("#pun_chgpage");
-    var pun_punish = document.getElementById("pun_punish");
     pun_calender = document.getElementById("pun_calender");
     pun_name = document.getElementById("pun_name");
     pun_txt = document.getElementById("pun_txt");
@@ -24,8 +22,6 @@ var pun_init = function (){
     pun_tbody = document.getElementById("pun_tbody");
     var pun_clear = document.getElementById("pun_clear");
     actionDB("init");
-    // pun_punish.setAttribute("selected", true);
-    // pun_chgpage.addEventListener("change", pun_changePage, false);
     pun_ad_confirm.addEventListener("click", function(){actionDB("add");});
     pun_sel_confirm.addEventListener("click", function(){actionDB("select");});
     pun_up_confirm.addEventListener("click", function(){actionDB("update")});
