@@ -141,6 +141,7 @@ var actionDB = function(params) {
             httpReqFun(seq_toSend);
             break;
         case "delete":
+            console.log("delete");
             seq_toSend = {
                 pload: "delete",
                 monVal : monList.value,
@@ -190,8 +191,7 @@ var httpReqFun = function (param){
                         btn_cls[i].style.display = "none";
                     }
                     seq_delete.addEventListener("click", function () {
-                        var areYuSur = confirm(info_tw("DELETE"))
-                        if(areYuSur)actionDB("delete")
+                        delSeq();
                     });
                     break;
                 case "EMP NO DATA":
@@ -202,6 +202,16 @@ var httpReqFun = function (param){
         }
     }
     xmlhttp.send(jsonString);
+}
+
+var delSeq = function (){
+    var modalOK = document.getElementById("modalOK");
+    var modalText = document.getElementById("modalText");
+    modalText.innerText = info_tw("DELETE");
+    modalOK.addEventListener("click",function(){
+        console.log("modalOK");
+        actionDB("delete");
+    })
 }
 
 var sortData = function(data){
@@ -404,9 +414,8 @@ var parseTable = function (data){
     if(monList.value == lastCalender){
         seq_delete.style.display = "";
         seq_delete.addEventListener("click", function () {
-        var areYuSur = confirm(info_tw("DELETE"));
-        if(areYuSur)actionDB("delete"); 
-    } )  
+            delSeq();
+        })  
     }
     
 }
