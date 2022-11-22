@@ -160,7 +160,6 @@
 		$doneKey = $object["doneKey"];
 		$replaceDone = $object["replaceDone"];
 		$dataIncr = $object["dataIncr"];
-		$emp_name = $object["emp_name"];//沒用到
 
 		for ($i=0; $i < count($calender_arr); $i++) { 
 			$sql_insert[$i] = "INSERT INTO sequence (`calender`, `txt`, `punish`, `replace_emp`)";
@@ -232,27 +231,28 @@
 		if(mysqli_query($mydb_link, $sql_update_last_ind) == TRUE){
 			$arr_res["status"] = "SAVED";
 		}
+		
 		$isInvalid_name_arr = Array();
 		$isInvalid_date_arr = Array();
 		$txt_arr = $object["txt_arr"];
 		if(!empty($object["punish_date_arr"])){
 			for($i=0; $i<count($calender_arr); $i++){
-				if(!empty($punish_arr[$i]) && !empty($replace_emp_arr[$i])){
+				if(!empty($punish_arr[$i]) && !empty($replace_emp_arr[$i]) && mb_substr($replace_emp_arr[$i],-2,2) == '代替' ){
 					array_push($isInvalid_name_arr, $txt_arr[$i]);
 					array_push($isInvalid_date_arr, substr($punish_arr[$i],0,2)."-".substr($punish_arr[$i],3,2));
 				}
 			}
-
+			
 			$punish_date_arr = $object["punish_date_arr"];
 			for ($j=0; $j < count($punish_date_arr); $j++) { 
-				$sql_update_punish_done[$j] = "UPDATE punish SET `pun_done` = "."'$year-$mon'"." WHERE `name` = "."'$punish_date_arr[$j]'"." AND `pun_done` = 0 AND `pun_del` != 'D' LIMIT 1";
+				$sql_update_punish_done[$j] = "UPDATE punish SET `pun_done` = "."'$year-$mon'"." WHERE `name` = "."'$punish_date_arr[$j]'"." AND `pun_del` != 'D' AND `pun_done` = 0 AND `pun_del` != 'D' LIMIT 1";
 				if(mysqli_query($mydb_link, $sql_update_punish_done[$j]) == TRUE){
 					$arr_res["status"] = "SAVED";
 				}
 			}
 			if(!empty($isInvalid_name_arr) && !empty($isInvalid_date_arr)){
 				for ($i=0; $i<count($isInvalid_name_arr) ; $i++) { 
-					$sql_update_punish_invalid[$i] =  "UPDATE punish SET `pun_done` = '0' WHERE `name` = "."'$isInvalid_name_arr[$i]'"." AND `pun_date` LIKE "."'%$isInvalid_date_arr[$i]'"." LIMIT 1";
+					$sql_update_punish_invalid[$i] =  "UPDATE punish SET `pun_done` = '0' WHERE `name` = "."'$isInvalid_name_arr[$i]'"." AND `pun_del` != 'D' AND `pun_date` LIKE "."'%$isInvalid_date_arr[$i]'"." LIMIT 1";
 					if(mysqli_query($mydb_link, $sql_update_punish_invalid[$i]) == TRUE){
 						$arr_res["status"] = "SAVED";
 					}
@@ -269,17 +269,15 @@
 		$table_mon = $mon.'m';
 
 		$sql_delete_sequence = "DELETE FROM sequence WHERE `calender` LIKE "."'$monVal%'";
-		// $sql_delete_punish = "DELETE FROM punish WHERE `pun_date` >= "."'$year-$mon-1'";
 		$sql_delete_replace = "DELETE FROM rep WHERE `rep_date` = "."'$year-$mon'";
 		$sql_delete_incr = "DELETE FROM incr WHERE incr_mon = "."'$year-$mon'";
 		$sql_update_lastIndex = "UPDATE employee SET `$table_mon` = '' WHERE `$table_mon` != ''";
-		$sql_update_punish = "UPDATE punish SET `pun_done` = 0 WHERE `pun_done` = "."'$year-$mon'"." AND `pun_del` != 'D'";
+		$sql_update_punish = "UPDATE punish SET `pun_done` = 0 WHERE `pun_done` = "."'$year-$mon'"." AND `pun_del` != 'D' AND `pun_del` != 'D'";
 		$sql_replace_update = "UPDATE rep SET `rep_done` = 0 WHERE `rep_done` = "."'$year-$mon'";
 		$sql_incr_update = "UPDATE incr SET `incr_done` = 0 WHERE `incr_done` = "."'$year-$mon'";
 
 	
 		if(mysqli_query($mydb_link, $sql_delete_sequence))$arr_res["status"] = "DEL SUCCESS";
-		// if(mysqli_query($mydb_link, $sql_delete_punish))$arr_res["status"] = ""DEL SUCCESS";
 		if(mysqli_query($mydb_link, $sql_delete_replace))$arr_res["status"] = "DEL SUCCESS";
 		if(mysqli_query($mydb_link, $sql_delete_incr))$arr_res["status"] = "DEL SUCCESS";
 		if(mysqli_query($mydb_link, $sql_update_lastIndex) == TRUE)$arr_res["status"] = "DEL SUCCESS";
