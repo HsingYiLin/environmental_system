@@ -43,7 +43,7 @@ var seq_toSend = {};
 
 var sequence_init = function(){
     console.log("sequence_init");
-    var seq_chgpage = document.querySelector("#seq_chgpage");
+    // var seq_chgpage = document.querySelector("#seq_chgpage");
     pre_edit = document.getElementById("pre_edit");
     monList = document.getElementById("monList");
     clean_comp = document.getElementById("clean_comp");
@@ -51,7 +51,7 @@ var sequence_init = function(){
     pre_confirm  = document.getElementById("pre_confirm");
     seq_tbody = document.getElementById("seq_tbody");
     seq_delete = document.getElementById("seq_delete");
-    seq_chgpage.addEventListener("change", seq_changePage, false);
+    // seq_chgpage.addEventListener("change", seq_changePage, false);
     clean_comp = document.getElementById("clean_comp");
     seq_stateInfo = document.getElementById("seq_stateInfo");
     btn_id = document.getElementById("btn_id");
@@ -327,14 +327,15 @@ var sortData = function(data){
 }
 
 var dynamicTable = function (year, mon){
+    console.log("dynamicTable");
     var dateObj = new Date(year,mon,0);
     var cnt = 1; //第一個完整周
     var dateJudgeDate;
     table_days = dateObj.getDate();
     for(var i =1; i<=table_days; i++){
         dateSort = mon+"/"+i;
-        tableHTML += "<tr><td class = dateSortCls>"+dateSort+"</td><td class = dateName></td><td class = datePunish></td><td class = dateReplace></td>"
-        tableHTML += "<td style='width:48px' class = btn_cls><button type='button' onclick='upd(this)'>選取</button></td></tr>"
+        tableHTML += "<tr class='justify-content-center'><td class='dateSortCls col-2'>"+dateSort+"</td><td class='dateName col-2'></td><td class='datePunish col-4'></td><td class='dateReplace col-2'></td>"
+        tableHTML += "<td style='width:48px' class='btn_cls col-2'><button type='button' class='btn btn-sm btn-outline-success' onclick='upd(this)'>選取</button></td></tr>"
     }
     seq_tbody.innerHTML += tableHTML;
     btn_cls = document.getElementsByClassName("btn_cls");
@@ -347,15 +348,15 @@ var dynamicTable = function (year, mon){
         switch(dateJudgeDate.getDay()){
             case 0:
                 dateName[i].innerText = "日";
-                dateName[i].style.backgroundColor = "#FFD1A4";
+                dateName[i].style.backgroundColor = "#FF9D6F";
                 break;
             case 6:
                 dateName[i].innerText = "六";
-                dateName[i].style.backgroundColor = "#FFD1A4";
+                dateName[i].style.backgroundColor = "#FF9D6F";
                 break;
             case clean_comp.value * 1:
                 dateName[i].innerText = "清潔公司";
-                dateName[i].style.backgroundColor = "#E0E0E0";
+                dateName[i].style.backgroundColor = "#ADADAD";
                 break;
         }
         if(mon % 2 !=0 && dateJudgeDate.getDay() == 1 && cnt == 1){
@@ -371,21 +372,21 @@ var dynamicTable = function (year, mon){
 var parseTable = function (data){
     table_days = pun_data_size = Object.keys(data["calender"]).length;
     for(var i=1; i <= table_days; i++){
-        tableHTML +="<tr><td class = dateSortCls>"+data.calender[i].substring(5, 10).split("-").join("/")+"</td><td class = dateName>"+data.txt[i]+"</td>";
-        tableHTML +="<td class = datePunish>"+data.punish[i]+"</td><td class = dateReplace>"+data.replace_emp[i]+"</td>";
+        tableHTML +="<tr class='justify-content-center h-25'><td class='dateSortCls'>"+data.calender[i].substring(5, 10).split("-").join("/")+"</td><td class='dateName'>"+data.txt[i]+"</td>";
+        tableHTML +="<td class='datePunish'>"+data.punish[i]+"</td><td class='dateReplace'>"+data.replace_emp[i]+"</td>";
     }
     seq_tbody.innerHTML += tableHTML;
     dateName = document.getElementsByClassName("dateName");
     for(var i=0; i < table_days; i++){
         switch(dateName[i].innerText){
             case "日":
-                dateName[i].style.backgroundColor = "#FFD1A4";
+                dateName[i].style.backgroundColor = "#FF9D6F";
                 break;
             case "六":
-                dateName[i].style.backgroundColor = "#FFD1A4";
+                dateName[i].style.backgroundColor = "#FF9D6F";
                 break;
             case "清潔公司":
-                dateName[i].style.backgroundColor = "#E0E0E0";
+                dateName[i].style.backgroundColor = "#ADADAD";
                 break;
             case "元旦":
             case "春節":
@@ -492,7 +493,7 @@ var req_val = function (){
             sortData(arr_data); 
         }else if(modifySituation[4] && mustDo[2]){
             nameTxt.style.backgroundColor = "#FFC1E0";
-            if(satur == 6 || sun == 0) nameTxt.style.backgroundColor = "#FFD1A4";
+            if(satur == 6 || sun == 0) nameTxt.style.backgroundColor = "#FF9D6F";
             nameTxt.innerText = seq_holiday.value;
             puntxt.innerText = "";
             replaceTxt.innerText = "";

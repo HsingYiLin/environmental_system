@@ -15,8 +15,7 @@ const xmlhttp =new XMLHttpRequest();
 var emp_crud_init = function () {
     console.log("emp_crud_init");
     actionDB("init");
-
-    var emp_chgpage = document.querySelector("#emp_chgpage");
+    // var emp_chgpage = document.querySelector("#emp_chgpage");
     var emp_crud = document.getElementById("emp_crud");
     var add_confirm = document.getElementById("add_confirm");
     var up_confirm = document.getElementById("up_confirm");
@@ -142,8 +141,8 @@ var parseAllData = function (initData){
         var data_size = Object.keys(initData["emp_name"]).length;
         for(var j = 1; j <= data_size; j++){
             emp_tableHTML += "<tr class = 'row justify-content-center'><td class='col-3'>"+initData.startdate[j]+"</td><td class='col-2'>"+initData.emp_name[j]+"</td><td class='col-1'>"+initData.title[j]+"</td><td class='col-1'>"+initData.state[j]+"</td>";
-            emp_tableHTML += "<td class='col-2'><button class='btn btn-outline-success' type='button' onclick='upd(this)'>選取</button>"
-            emp_tableHTML += "&nbsp&nbsp<button type='button' class='btn btn-outline-success' data-bs-toggle='modal' data-bs-target='#exampleModal' onclick='del(this)'>刪除</button></td></tr>"
+            emp_tableHTML += "<td class='col-2'><button class='btn btn-outline-success btn-sm' type='button' onclick='updInner(this)'>選取</button>"
+            emp_tableHTML += "&nbsp&nbsp<button type='button' class='btn btn-outline-success btn-sm' data-bs-toggle='modal' data-bs-target='#exampleModal' onclick='del(this)'>刪除</button></td></tr>"
         }
         emp_tbody.innerHTML += emp_tableHTML;
     }
@@ -173,7 +172,7 @@ var del = function (obj){
     })
 }
 
-var upd = function (obj){
+var updInner = function (obj){
     var upd_str = obj.parentNode.parentNode.innerText;
     var upd_td_arr = upd_str.split(/\n/);
     var upd_starDate = upd_td_arr[0];
