@@ -2,8 +2,8 @@
     background-color: 	#F0F0F0;
 }
 
-.black{
-    color: #FCFCFC	;
+.white{
+    color: #E8FFF5	;
 }
 
 .nav > a:hover{
@@ -12,4 +12,8 @@
 
 .tb-bg{
     background-color: #FCFCFC;
+}
+
+.brand-color{
+    color: #FFFFFF;
 }

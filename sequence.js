@@ -81,7 +81,6 @@ var createTable = function(isPreEdit){
         workDateForm = document.getElementById("workDateForm");
         nationHoliday = document.getElementById("nationHoliday");
         on_off.addEventListener("change", parseOptionList, false);
-        seq_sequence.setAttribute("selected", true);
         seq_modify.addEventListener("click", req_val);
         seq_save.style.display = "";
         seq_save.addEventListener("click", function(){actionDB("create")});
@@ -361,7 +360,7 @@ var dynamicTable = function (year, mon){
             for(var j =i; j < i+6; j++){
                 if(dateName[j].innerText == ""){
                     dateName[j].innerText = "剪輯組"; 
-                    dateName[j].style.backgroundColor = "#BEBEBE";
+                    dateName[j].style.backgroundColor = "#ADADAD";
                 }      
             }
             cnt ++;
@@ -401,7 +400,7 @@ var parseTable = function (data){
                 dateName[i].style.backgroundColor = "#FFD9EC";
                 break;
             case "剪輯組":
-                dateName[i].style.backgroundColor = "#BEBEBE";
+                dateName[i].style.backgroundColor = "#ADADAD";
                 break;
         }
     }

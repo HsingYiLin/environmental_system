@@ -14,8 +14,6 @@ const xmlhttp =new XMLHttpRequest();
 
 var emp_crud_init = function () {
     actionDB("init");
-    // var emp_chgpage = document.querySelector("#emp_chgpage");
-    var emp_crud = document.getElementById("emp_crud");
     var add_confirm = document.getElementById("add_confirm");
     var up_confirm = document.getElementById("up_confirm");
     var clear_confirm = document.getElementById("clear_confirm");
@@ -27,8 +25,6 @@ var emp_crud_init = function () {
     emp_stateInfo = document.getElementById("emp_stateInfo");
     emp_stateInfo.style.color = "#CE0000";
     emp_tbody = document.getElementById("emp_tbody");
-    emp_crud.setAttribute("selected", true);
-    // emp_chgpage.addEventListener("change", emp_changePage, false);
     add_confirm.addEventListener("click", function(){actionDB("add");});
     sel_confirm.addEventListener("click", function(){actionDB("select");});
     up_confirm.addEventListener("click", function(){actionDB("update")});
