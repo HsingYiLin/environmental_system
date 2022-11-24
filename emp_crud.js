@@ -140,8 +140,8 @@ var parseAllData = function (initData){
         var data_size = Object.keys(initData["emp_name"]).length;
         for(var j = 1; j <= data_size; j++){
             emp_tableHTML += "<tr class = 'justify-content-center'><td class=''>"+initData.startdate[j]+"</td><td class=''>"+initData.emp_name[j]+"</td><td class=''>"+initData.title[j]+"</td><td class=''>"+initData.state[j]+"</td>";
-            emp_tableHTML += "<td class=''><button class='btn btn-outline-success btn-sm' type='button' onclick='updInner(this)'>選取</button>"
-            emp_tableHTML += "&nbsp&nbsp<button type='button' class='btn btn-outline-success btn-sm' data-bs-toggle='modal' data-bs-target='#exampleModal' onclick='del(this)'>刪除</button></td></tr>"
+            emp_tableHTML += "<td class=''><button class='btn btn-outline-success btn-sm fw-bold' type='button' onclick='updInner(this)'>選取</button>"
+            emp_tableHTML += "&nbsp&nbsp<button type='button' class='btn btn-outline-success btn-sm fw-bold' data-bs-toggle='modal' data-bs-target='#exampleModal' onclick='del(this)'>刪除</button></td></tr>"
         }
         emp_tbody.innerHTML += emp_tableHTML;
     }

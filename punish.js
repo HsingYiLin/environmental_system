@@ -139,8 +139,8 @@ var parseAllData = function (initData){
                 pun_tableHTML += "<tr class='justify-content-center'><td>"+initData.date[j]+"</td><td>"+initData.name[j]+"</td>";
                 pun_tableHTML += "<td>"+initData.punishtxt[j]+"</td><td>"+initData.times[j]+"</td><td>"+initData.fine[j]+"</td><td>"+initData.odds[j]+"</td><td>"+ pun_done +"</td>";
             }
-            pun_tableHTML += "<td style='width:110px'><button type='button' class='btn btn-outline-success btn-sm mb-1' onclick='upd(this)'>選取</button>"
-            pun_tableHTML += "&nbsp&nbsp<button type='button' class='btn btn-outline-success btn-sm' data-bs-toggle='modal' data-bs-target='#exampleModal' onclick='del(this)'>刪除</button></td></tr>"
+            pun_tableHTML += "<td style='width:110px'><button type='button' class='btn btn-outline-success btn-sm fw-bold' onclick='upd(this)'>選取</button>"
+            pun_tableHTML += "&nbsp&nbsp<button type='button' class='btn btn-outline-success btn-sm fw-bold' data-bs-toggle='modal' data-bs-target='#exampleModal' onclick='del(this)'>刪除</button></td></tr>"
 
         }
         pun_tbody.innerHTML += pun_tableHTML;

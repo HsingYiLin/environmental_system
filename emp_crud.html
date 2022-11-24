@@ -19,25 +19,25 @@
 <body onload = emp_crud_init() class="bg-color">
     <div id="" class="container bg-success ">
         <nav class="nav justify-content-center">
-            <a class="nav-link black" href="sequence.html" id="emp_sequence">值日生表</a>
-            <a class="nav-link black" href="punish.html"   id="emp_punish">懲罰項目表</a>
-            <a class="nav-link black text-warning" href="emp_crud.html" id="emp_crud">員工增修表</a>
+            <a class="nav-link black fw-bold" href="sequence.html" id="emp_sequence">值日生表</a>
+            <a class="nav-link black fw-bold" href="punish.html"   id="emp_punish">懲罰項目表</a>
+            <a class="nav-link black fw-bold text-warning" href="emp_crud.html" id="emp_crud">員工增修表</a>
         </nav>
     </div>
     
     <div class="container">
         <div class= "row gx-3 gy-2 mt-2 d-flex justify-content-center">
             <div class="col-sm-4">
-                <input type="date" class="form-control" for="startDate" id="emp_startDate" value="" min="01-01" max="12-31">
+                <input type="date" class="form-control fw-bold" for="startDate" id="emp_startDate" value="" min="01-01" max="12-31">
             </div>
             <div class="col-sm-3">
                 <div class="input-group">
-                    <div class="input-group-text">員工</div>
-                    <input type="text" class="form-control" id="emp_name" placeholder="">
+                    <div class="input-group-text fw-bold">員工</div>
+                    <input type="text" class="form-control fw-bold" id="emp_name" placeholder="">
                 </div>
             </div>
             <div class="col-sm-3">
-                <select class="form-select" id="emp_title">
+                <select class="form-select fw-bold" id="emp_title">
                     <option id="director" value="主管">主管</option>
                     <option value="工程師">工程師</option>
                     <option value="特殊">特殊</option>
@@ -48,7 +48,7 @@
             <div class="col-sm-2">
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="emp_status">
-                    <label class="form-check-label" for="status">在職</label>
+                    <label class="form-check-label fw-bold" for="status">在職</label>
                 </div>
             </div> 
             <div class="">
@@ -60,11 +60,11 @@
         </div>  
 
         <div class="">
-            <span id="emp_stateInfo" class="text-success fs-6 mt-1"></span>
+            <span id="emp_stateInfo" class="text-success fw-bold fs-6 mt-1"></span>
         </div>
 
         <div class="">
-            <table id="emp_tbody" class="table table-striped col-11 mt-1"></table>
+            <table id="emp_tbody" class="table table-striped fw-bold col-11 mt-1"></table>
         </div>
     </div>
 

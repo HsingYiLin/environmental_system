@@ -11,6 +11,7 @@ var on_off;
 var workDateForm;
 var nationHoliday;
 var seq_delete;
+var btnSave;
 var seq_stateInfo;
 var seq_tbody;
 var dateSortCls;
@@ -36,7 +37,7 @@ var emp_data_size;
 var dateSortTimeStamp;
 var startText;
 var startTimeStamp;
-var setting_arr = ["六","日","清潔公司","剪輯組","元旦","春節","228連假","清明連假","勞動節","端午連假","中秋連假","國慶連假","放假",]
+var setting_arr = ["六","日","清潔公司","剪輯組","元旦連假","春節","228連假","清明連假","勞動節","端午連假","中秋連假","國慶連假","放假",]
 const seq_Url = "http://localhost:8080/CleanSystem/sequence.php";
 const xmlhttp =new XMLHttpRequest();
 var seq_toSend = {};
@@ -49,6 +50,7 @@ var sequence_init = function(){
     pre_confirm  = document.getElementById("pre_confirm");
     seq_tbody = document.getElementById("seq_tbody");
     seq_delete = document.getElementById("seq_delete");
+    btnSave = document.getElementById("btnSave");
     clean_comp = document.getElementById("clean_comp");
     seq_stateInfo = document.getElementById("seq_stateInfo");
     btn_id = document.getElementById("btn_id");
@@ -167,6 +169,7 @@ var httpReqFun = function (param){
                     break;
                 case "LIST EXISIT":
                     seq_delete.style.display = "none";
+                    btnSave.style.display = "none";
                     parseTable(arr_data);
                     pre_confirm.remove();                    
                     break;
@@ -182,13 +185,13 @@ var httpReqFun = function (param){
                     seq_stateInfo.innerText = info_tw("SAVED");
                     pre_confirm.style.display = "none";
                     seq_delete.style.display = "";
+                    btnSave.style.display = "";
                     btn_id.style.display = "none";
                     for(var i= 0; i < btn_cls.length; i++){
                         btn_cls[i].style.display = "none";
                     }
-                    seq_delete.addEventListener("click", function () {
-                        delSeq();
-                    });
+                    seq_delete.addEventListener("click", delSeq);
+                    btnSave.addEventListener("click", screenshot)
                     break;
                 case "EMP NO DATA":
                 case "UNSCHEDULED":
@@ -330,7 +333,7 @@ var dynamicTable = function (year, mon){
     for(var i =1; i<=table_days; i++){
         dateSort = mon+"/"+i;
         tableHTML += "<tr class='justify-content-center'><td class='dateSortCls col-2'>"+dateSort+"</td><td class='dateName col-2'></td><td class='datePunish col-4'></td><td class='dateReplace col-2'></td>"
-        tableHTML += "<td style='width:48px' class='btn_cls col-2'><button type='button' class='btn btn-sm btn-outline-success' onclick='upd(this)'>選取</button></td></tr>"
+        tableHTML += "<td style='width:48px' class='btn_cls col-2'><button type='button' class='btn btn-sm btn-outline-success fw-bold' onclick='upd(this)'>選取</button></td></tr>"
     }
     seq_tbody.innerHTML += tableHTML;
     btn_cls = document.getElementsByClassName("btn_cls");
@@ -343,20 +346,23 @@ var dynamicTable = function (year, mon){
         switch(dateJudgeDate.getDay()){
             case 0:
                 dateName[i].innerText = "日";
-                dateName[i].style.backgroundColor = "#FF9D6F";
+                dateName[i].style.backgroundColor = "#FFCBB3";
                 break;
             case 6:
                 dateName[i].innerText = "六";
-                dateName[i].style.backgroundColor = "#FF9D6F";
+                dateName[i].style.backgroundColor = "#FFCBB3";
                 break;
             case clean_comp.value * 1:
                 dateName[i].innerText = "清潔公司";
-                dateName[i].style.backgroundColor = "#ADADAD";
+                dateName[i].style.backgroundColor = "#D0D0D0";
                 break;
         }
         if(mon % 2 !=0 && dateJudgeDate.getDay() == 1 && cnt == 1){
             for(var j =i; j < i+6; j++){
-                if(dateName[j].innerText == "")dateName[j].innerText = "剪輯組";             
+                if(dateName[j].innerText == ""){
+                    dateName[j].innerText = "剪輯組"; 
+                    dateName[j].style.backgroundColor = "#BEBEBE";
+                }      
             }
             cnt ++;
         }
@@ -375,15 +381,15 @@ var parseTable = function (data){
     for(var i=0; i < table_days; i++){
         switch(dateName[i].innerText){
             case "日":
-                dateName[i].style.backgroundColor = "#FF9D6F";
+                dateName[i].style.backgroundColor = "#FFCBB3";
                 break;
             case "六":
-                dateName[i].style.backgroundColor = "#FF9D6F";
+                dateName[i].style.backgroundColor = "#FFCBB3";
                 break;
             case "清潔公司":
-                dateName[i].style.backgroundColor = "#ADADAD";
+                dateName[i].style.backgroundColor = "#D0D0D0";
                 break;
-            case "元旦":
+            case "元旦連假":
             case "春節":
             case "228連假":
             case "清明連假":
@@ -392,15 +398,19 @@ var parseTable = function (data){
             case "中秋連假":
             case "國慶連假":
             case "放假":
-                dateName[i].style.backgroundColor = "#FFC1E0";
+                dateName[i].style.backgroundColor = "#FFD9EC";
+                break;
+            case "剪輯組":
+                dateName[i].style.backgroundColor = "#BEBEBE";
+                break;
         }
     }
     var lastCalender = (data["lastCalender"][1]).substring(0, 7);
     if(monList.value == lastCalender){
         seq_delete.style.display = "";
-        seq_delete.addEventListener("click", function () {
-            delSeq();
-        })  
+        btnSave.style.display = "";
+        seq_delete.addEventListener("click", delSeq)  
+        btnSave.addEventListener("click", screenshot)
     }
 }
 
@@ -466,14 +476,14 @@ var req_val = function (){
             sortData(arr_data); 
         }else if(modifySituation[2] && mustDo[2]){
             nameTxt.innerText = seq_holiday.value;
-            nameTxt.style.backgroundColor = "#FFC1E0";
-            if(seq_holiday.value == "清潔公司")nameTxt.style.backgroundColor = "#ADADAD";
+            nameTxt.style.backgroundColor = "#FFD9EC";
+            if(seq_holiday.value == "清潔公司")nameTxt.style.backgroundColor = "#D0D0D0";
             replaceTxt.innerText = "";
             puntxt.innerText = "";
             sortData(arr_data);
         }else if(modifySituation[3]){
             nameTxt.innerText = "";
-            nameTxt.style.backgroundColor = "#66B3FF";
+            nameTxt.style.backgroundColor = "#ACD6FF";
             for(var i = 1; i <= emp_data_size; i++){
                 if(seq_replace.value == arr_data.emp_name[i]){
                     startText = new Date(arr_data.startdate[i]); 
@@ -488,8 +498,8 @@ var req_val = function (){
             }
             sortData(arr_data); 
         }else if(modifySituation[4] && mustDo[2]){
-            nameTxt.style.backgroundColor = "#FFC1E0";
-            if(satur == 6 || sun == 0) nameTxt.style.backgroundColor = "#FF9D6F";
+            nameTxt.style.backgroundColor = "#FFD9EC";
+            if(satur == 6 || sun == 0) nameTxt.style.backgroundColor = "#FFCBB3";
             nameTxt.innerText = seq_holiday.value;
             puntxt.innerText = "";
             replaceTxt.innerText = "";
@@ -531,4 +541,14 @@ var delSeq = function (){
 
 var seq_changePage = function (e){
     window.location.replace("C:/xampp/htdocs/CleanSystem/"+this.value+".html");
+}
+
+function screenshot(){
+    html2canvas(document.getElementById('chart3')).then(function(canvas) {
+        // document.body.appendChild(canvas);
+        var a = document.createElement('a');
+        a.href = canvas.toDataURL("image/jpeg").replace("image/jpeg", "image/octet-stream");
+        a.download = new Date()+'image.jpg';
+        a.click();
+    });
 }

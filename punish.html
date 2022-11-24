@@ -15,25 +15,25 @@
 <body onload = pun_init() class="bg-color">
     <div id="" class="container bg-success ">
         <nav class="nav justify-content-center">
-            <a class="nav-link black" href="sequence.html" id="pun_sequence">值日生表</a>
-            <a class="nav-link black text-warning" href="punish.html" id="pun_sequence">懲罰項目表</a>
-            <a class="nav-link black" href="emp_crud.html" id="pun_sequence">員工增修表</a>
+            <a class="nav-link black fw-bold" href="sequence.html" id="pun_sequence">值日生表</a>
+            <a class="nav-link black fw-bold text-warning" href="punish.html" id="pun_sequence">懲罰項目表</a>
+            <a class="nav-link black fw-bold" href="emp_crud.html" id="pun_sequence">員工增修表</a>
         </nav>
     </div>
 
     <div class="container">
         <div class= "row gx-3 gy-2 mt-2 d-flex justify-content-center">
             <div class="col-sm-4">
-                <input type="date" class="form-control" for="pun_date" id="pun_calender" value="" min="01-01" max="12-31">
+                <input type="date" class="form-control fw-bold" for="pun_date" id="pun_calender" value="" min="01-01" max="12-31">
             </div>
             <div class="col-sm-4">
                 <div class="input-group">
-                    <div class="input-group-text">值日生</div>
-                    <input type="text" class="form-control" id="pun_name" placeholder="">
+                    <div class="input-group-text fw-bold">值日生</div>
+                    <input type="text" class="form-control fw-bold" id="pun_name" placeholder="">
                 </div>
             </div>
             <div class="col-sm-4">
-                <select class="form-select" id="pun_txt">
+                <select class="form-select fw-bold" id="pun_txt">
                     <option id="pun_default" value="">懲罰原因</option>
                     <option value="值日生未打掃">值日生未打掃</option>
                     <option value="組員離職未告知">組員離職未告知</option>
@@ -50,11 +50,11 @@
         
 
         <div class="">
-            <span id="pun_stateInfo" class="text-success fs-6 mt-3"></span>
+            <span id="pun_stateInfo" class="text-success fw-bold fs-6 mt-3"></span>
         </div>
         
         <div class="">
-            <table id="pun_tbody" class="table table-striped col-11"></table>
+            <table id="pun_tbody" class="table table-striped fw-bold col-11"></table>
         </div>
     </div>
 
