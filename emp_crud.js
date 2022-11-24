@@ -161,7 +161,7 @@ var del = function (obj){
     var modalOK = document.getElementById("modalOK");
     var modalText = document.getElementById("modalText");
     del_val = del_td_arr[1];
-    modalText.innerText = del_td_arr[0]+", "+del_td_arr[1];
+    modalText.innerText = del_td_arr[0]+", "+del_td_arr[1]+", "+del_td_arr[2]+", "+del_td_arr[3];
     modalOK.addEventListener("click",function(){
         actionDB("delete");
     })

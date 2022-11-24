@@ -49,7 +49,7 @@
 			mysqli_close($mydb_link);
 		} 
 
-		$sql_add = "INSERT INTO employee (`emp_name`, `title`, `state`, `startDate`,`lastIndex`) VALUES (" ."'$emp_name'". "," ."'$title'". "," ."'$state'". "," ."'$startDate'". ", 0)";
+		$sql_add = "INSERT INTO employee (`emp_name`, `title`, `state`, `startDate`) VALUES (" ."'$emp_name'". "," ."'$title'". "," ."'$state'". "," ."'$startDate'".")";
 		if($mydb_link->query($sql_add) === TRUE){
 			$arr_res["status"] = "add success";
 		} else {

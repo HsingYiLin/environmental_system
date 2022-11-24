@@ -17,6 +17,6 @@
     array["DELETE"] = "刪除值日生表前，如果該月有代替、調用、開關設定，請先自行記錄!";
     array["EMP NO DATA"] = "請先往員工增修表新增員工";
     array["DEL SUCCESS"] = "刪除成功";
-
+    array["UPDATE FAIL"] = "修改失敗(日期無法修改)"
     return array[str];
 }

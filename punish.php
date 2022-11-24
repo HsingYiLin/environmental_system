@@ -58,8 +58,8 @@
 			}
 		}
 		
-		//日期不能重複
-		$sql_duplicate = "SELECT `name`, `pun_date` FROM punish WHERE `name` = "."'$name'" ." AND `pun_del` != 'D' AND `pun_date` = "."'$date'". " OR `pun_date` = "."'$date'";
+		//不能重複(日期、名字同時一樣)
+		$sql_duplicate = "SELECT `name`, `pun_date` FROM punish WHERE `name` = "."'$name'" ." AND `pun_del` != 'D' AND `pun_date` = "."'$date'";
 		$result_duplicate = mysqli_query($mydb_link, $sql_duplicate);
 		if (mysqli_num_rows($result_duplicate) > 0) {
             $arr_res["status"] = "date duplicate";
@@ -112,8 +112,7 @@
 	}else if($object["pload"] == "select"){
 		$name = $object["name"];
 		$date = $object["date"];
-		$sql_select = "SELECT * FROM punish WHERE `name` =" ."'$name'"." AND `pun_del` != 'D' AND `pun_date` = "."'$date'";
-		$sql_select .= " OR `name` = "."'$name'"." OR `pun_date` = "."'$date'"." ORDER BY `name`,`pun_date` ASC";
+		$sql_select = "SELECT * FROM punish WHERE (`name` =" ."'$name' OR `pun_date` = "."'$date'".") AND `pun_del` != 'D' ORDER BY `name`,`pun_date` ASC";
 		$result_select = mysqli_query($mydb_link, $sql_select);
 		$i=1;
 		if ($result_select->num_rows > 0) {

@@ -115,6 +115,8 @@ var httpReqFun = function (param){
             case "date duplicate":
                 pun_stateInfo.innerText = info_tw("DUPLICATE");
                 break;
+            case "update fail":
+                pun_stateInfo.innerText = info_tw("UPDATE FAIL");
             }  
         }
     }
