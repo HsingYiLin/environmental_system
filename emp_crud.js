@@ -2,33 +2,27 @@ var emp_startDate;
 var emp_name;
 var emp_title;
 var emp_status;
-var sel_confirm;
 var del_val;
 var emp_stateInfo;
 var emp_tbody;
 var toSend = {};
 var emp_url = "http://localhost:8080/CleanSystem/emp_crud.php";
 var jsonString;
-var emp_tableHTML = "";
 const xmlhttp =new XMLHttpRequest();
 
 var emp_crud_init = function () {
     actionDB("init");
-    var add_confirm = document.getElementById("add_confirm");
-    var up_confirm = document.getElementById("up_confirm");
-    var clear_confirm = document.getElementById("clear_confirm");
-    emp_startDate = document.getElementById("emp_startDate");
-    emp_name = document.getElementById("emp_name");
-    emp_title = document.getElementById("emp_title");
+    emp_startDate = $("#emp_startDate");
+    emp_name = $("#emp_name");
+    emp_title = $("#emp_title");
     emp_status = document.getElementById("emp_status");
-    sel_confirm = document.getElementById("sel_confirm");
-    emp_stateInfo = document.getElementById("emp_stateInfo");
-    emp_stateInfo.style.color = "#CE0000";
+    emp_stateInfo = $("#emp_stateInfo");
+    emp_stateInfo.css("color", "#CE0000")
     emp_tbody = document.getElementById("emp_tbody");
-    add_confirm.addEventListener("click", function(){actionDB("add");});
-    sel_confirm.addEventListener("click", function(){actionDB("select");});
-    up_confirm.addEventListener("click", function(){actionDB("update")});
-    clear_confirm.addEventListener("click", clearInput);
+    $("#add_confirm").click(function(){actionDB("add")});
+    $("#up_confirm").click(function(){actionDB("update")});
+    $("#sel_confirm").click(function(){actionDB("select")});
+    $("#clear_confirm").click(function(){clearInput()});
 }
 
 var actionDB = function(params) {
@@ -41,25 +35,25 @@ var actionDB = function(params) {
             break;
         case "add":
             var state = emp_status.checked?"在職":"離職";
-            if(emp_startDate.value != "" && emp_name.value != "" && new Date(emp_startDate.value) < nowDate){
+            if(emp_startDate.val() != "" && emp_name.val() != "" && new Date(emp_startDate.val()) < nowDate && emp_title.val() != ""){
                 toSend ={
                     pload: "add",
-                    startDate: emp_startDate.value,
-                    emp_name: emp_name.value,
-                    title: emp_title.value,
+                    startDate: emp_startDate.val(),
+                    emp_name: emp_name.val(),
+                    title: emp_title.val(),
                     state: state
                 };   
                 httpReqFun(toSend);
             }else{
-                emp_stateInfo.innerText = info_tw("STARTDATE AND NAME BE EMPTY");
+                emp_stateInfo.text(info_tw("STARTDATE AND NAME BE EMPTY"));
             }
             break;
         case "select":
-            if(emp_name.value != "" || emp_startDate.value != ""){
+            if(emp_name.val() != "" || emp_startDate.val() != ""){
                 toSend ={
                     pload: "select",
-                    emp_name: emp_name.value,
-                    date: emp_startDate.value
+                    emp_name: emp_name.val(),
+                    date: emp_startDate.val()
                 };
                 httpReqFun(toSend);
             }else{
@@ -69,17 +63,18 @@ var actionDB = function(params) {
             break;
         case "update":
             var state = emp_status.checked?"在職":"離職";
-            if(emp_name.value != ""){
+            console.log(emp_title.val());
+            if(emp_name.val() != "" && emp_title.val() != null){
                 toSend ={
                     pload: "update",
-                    startDate: emp_startDate.value,
-                    emp_name: emp_name.value,
-                    title: emp_title.value,
+                    startDate: emp_startDate.val(),
+                    emp_name: emp_name.val(),
+                    title: emp_title.val(),
                     state: state
                 };   
                 httpReqFun(toSend);
             }else{
-                emp_stateInfo.innerText = info_tw("NAME BE EMPTY");
+                emp_stateInfo.text(info_tw("NAME BE EMPTY") + "||" + info_tw("TITLE BE EMPTY"));
             }
             break;
         case "delete":
@@ -101,7 +96,7 @@ var httpReqFun = function (param){
         if(xmlhttp.readyState === 4 && xmlhttp.status == 200){
             arr_data = JSON.parse(xmlhttp.responseText);
             setTimeout(function(){
-                emp_stateInfo.innerText = "";
+                emp_stateInfo.text("");
             },5000);
               
             switch(arr_data["status"]){
@@ -112,15 +107,15 @@ var httpReqFun = function (param){
                     clearInput();
                     break;
                 case "success!":
-                    emp_stateInfo.innerText = info_tw("SUCCESS");
+                    emp_stateInfo.text(info_tw("SUCCESS"));
                     parseAllData(arr_data);
                     break;
                 case "no data":
-                    emp_stateInfo.innerText = info_tw("NO DATA");
+                    emp_stateInfo.text(info_tw("NO DATA"));
                     break;
                 case "update fail":
                 case "duplicate":
-                    emp_stateInfo.innerText = info_tw("DUPLICATE");
+                    emp_stateInfo.text(info_tw("DUPLICATE"));
                     parseAllData(arr_data);
                     break;
             }  
@@ -130,7 +125,7 @@ var httpReqFun = function (param){
 }
 
 var parseAllData = function (initData){
-    emp_tableHTML = "";
+    var emp_tableHTML = "";
     emp_tbody.innerHTML = "<tr class='table-success justify-content-center'><td class='col-3'>到職日</td><td class='col-2'>員工</td><td class='col-2'>職稱</td><td class='col-2'>狀態</td><td class='col-3'></td></tr>";
     if(initData["status"] != "update fail" && initData["status"] != "no data" && initData["status"] != "duplicate"){
         var data_size = Object.keys(initData["emp_name"]).length;
@@ -148,23 +143,20 @@ var emp_changePage = function (e) {
 }
 
 var clearInput = function (){
-    emp_startDate.value = "";
-    emp_name.value = "";
-    var director = document.getElementById("director");
-    director.setAttribute("selected", true);
+    emp_startDate.val("");
+    emp_name.val("");
+    emp_title.val("");
     emp_status.checked = false;
 }
 
 var del = function (obj){
     var del_str = obj.parentNode.parentNode.innerText;
     var del_td_arr = del_str.split(/\t/);
-    var modalOK = document.getElementById("modalOK");
-    var modalText = document.getElementById("modalText");
+    var modalOK = $("#modalOK");
+    var modalText = $("#modalText");
     del_val = del_td_arr[1];
-    modalText.innerText = del_td_arr[0]+", "+del_td_arr[1]+", "+del_td_arr[2]+", "+del_td_arr[3];
-    modalOK.addEventListener("click",function(){
-        actionDB("delete");
-    })
+    modalText.text(del_td_arr[0]+", "+del_td_arr[1]+", "+del_td_arr[2]+", "+del_td_arr[3]);
+    modalOK.click(function(){actionDB("delete")});
 }
 
 var updInner = function (obj){
@@ -175,8 +167,8 @@ var updInner = function (obj){
     var upd_title = upd_td_arr[2];
     var upd_state = upd_td_arr[3];
     upd_state = (upd_state == "在職")? true : false;
-    emp_startDate.value = upd_starDate;
-    emp_name.value = upd_name;
-    emp_title.value = upd_title;
+    emp_startDate.val(upd_starDate);
+    emp_name.val(upd_name);
+    emp_title.val(upd_title);
     emp_status.checked = upd_state;
 }
