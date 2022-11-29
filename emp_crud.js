@@ -64,7 +64,7 @@ var actionDB = function(params) {
         case "update":
             var state = emp_status.checked?"在職":"離職";
             console.log(emp_title.val());
-            if(emp_name.val() != "" && emp_title.val() != null){
+            if(emp_name.val() != ""  && emp_title.val() != ""){
                 toSend ={
                     pload: "update",
                     startDate: emp_startDate.val(),
@@ -130,7 +130,7 @@ var parseAllData = function (initData){
     if(initData["status"] != "update fail" && initData["status"] != "no data" && initData["status"] != "duplicate"){
         var data_size = Object.keys(initData["emp_name"]).length;
         for(var j = 1; j <= data_size; j++){
-            emp_tableHTML += "<tr class = 'justify-content-center'><td class=''>"+initData.startdate[j]+"</td><td class=''>"+initData.emp_name[j]+"</td><td class=''>"+initData.title[j]+"</td><td class=''>"+initData.state[j]+"</td>";
+            emp_tableHTML += "<tr class='justify-content-center'><td class=''>"+initData.startdate[j]+"</td><td class=''>"+initData.emp_name[j]+"</td><td class=''>"+initData.title[j]+"</td><td class=''>"+initData.state[j]+"</td>";
             emp_tableHTML += "<td class=''><button class='btn btn-outline-success btn-sm fw-bold' type='button' onclick='updInner(this)'>選取</button>"
             emp_tableHTML += "&nbsp&nbsp<button type='button' class='btn btn-outline-success btn-sm fw-bold' data-bs-toggle='modal' data-bs-target='#exampleModal' onclick='del(this)'>刪除</button></td></tr>"
         }
