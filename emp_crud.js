@@ -49,11 +49,12 @@ var actionDB = function(params) {
             }
             break;
         case "select":
-            if(emp_name.val() != "" || emp_startDate.val() != ""){
+            if(emp_name.val() != "" || emp_startDate.val() != "" || emp_title.val() != ""){
                 toSend ={
                     pload: "select",
                     emp_name: emp_name.val(),
-                    date: emp_startDate.val()
+                    date: emp_startDate.val(),
+                    title: emp_title.val()
                 };
                 httpReqFun(toSend);
             }else{

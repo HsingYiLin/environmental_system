@@ -62,7 +62,8 @@
 	}else if($object["pload"] == "select"){
 		$emp_name = $object["emp_name"];
 		$date = $object["date"];
-		$sql_select = "SELECT * FROM employee WHERE (`emp_name` =" ."'$emp_name'" . " OR `startDate` = "."'$date'".") AND `del` != 'D'";
+		$title = $object["title"];
+		$sql_select = "SELECT * FROM employee WHERE (`emp_name` =" ."'$emp_name'" . " OR `startDate` = "."'$date'". " OR `title` = "."'$title'".") AND `del` != 'D'";
 		$result_select = mysqli_query($mydb_link, $sql_select);
 		$i=1;
 		if ($result_select->num_rows > 0) {
