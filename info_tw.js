@@ -5,7 +5,7 @@
     array["FORM BE EMPTY"] = "表格不得為空";
     array["UNSCHEDULED"] = "上個月未排值日生";
     array["SAVED"] = "已儲存";
-    array["WRONG FORMAT"] = "格式錯誤!";
+    array["WRONG FORMAT"] = "資料格式錯誤!";
     array["DATE OF THE MON"] = "請輸入這個月的日期";
     array["WRONG DATE"] = "日期錯誤";
     array["NAME BE EMPTY"] = "名字不得為空";

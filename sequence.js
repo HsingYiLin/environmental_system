@@ -5,6 +5,7 @@ var seq_edit;
 var pre_confirm;
 var seq_calender;
 var seq_replace;
+var seq_clean;
 var replace_opt;
 var seq_holiday;
 var on_off;
@@ -76,6 +77,7 @@ var createTable = function(isPreEdit){
         seq_calender = document.getElementById("seq_calender");
         seq_replace = document.getElementById("seq_replace");
         replace_opt = document.getElementById("replace_opt");
+        seq_clean =  document.getElementById("seq_clean");
         seq_holiday = document.getElementById("seq_holiday");
         on_off = document.getElementById("on_off");
         workDateForm = document.getElementById("workDateForm");
@@ -339,7 +341,7 @@ var dynamicTable = function (year, mon){
     dateSortCls = document.getElementsByClassName("dateSortCls");
     dateName = document.getElementsByClassName("dateName");
     datePunish = document.getElementsByClassName("datePunish"); 
-    dateReplace = document.getElementsByClassName("dateReplace");    
+    dateReplace = document.getElementsByClassName("dateReplace"); 
     for(var i=0; i < table_days; i++){
         dateJudgeDate = new Date(year +"-"+ mon + "-"+ (i+1));
         switch(dateJudgeDate.getDay()){
@@ -365,8 +367,7 @@ var dynamicTable = function (year, mon){
             }
             cnt ++;
         }
-    }
-   
+    } 
 }
 
 var parseTable = function (data){
@@ -449,15 +450,20 @@ var req_val = function (){
             5: ("" == on_off.value)
         }
         var mustDo = {
-            1: (seq_replace.value != "" && nameTxt.innerText != seq_replace.value && nameTxt.innerText.substr(0,nameTxt.innerText.length-1) != seq_replace.value && replace_opt.value != "" ),
+            1: (seq_replace.value != "" && nameTxt.innerText != seq_replace.value && nameTxt.innerText != seq_replace.value && replace_opt.value != "" ),
             2: (seq_holiday.value != ""),
             3: (seq_replace.value == ""),
-            4: (nameTxt.innerText != "剪輯組" && nameTxt.innerText != "清潔公司")
+            4: (nameTxt.innerText != "剪輯組" && nameTxt.innerText != "清潔公司"),
+            5: (seq_clean.value != "")
         }
+
         dateSortTimeStamp = new Date(seq_calender.value).getTime();//表格日期時間戳
-        if(modifySituation[1] && mustDo["4"]){
-            nameTxt.innerText = "";
+        if(modifySituation[1] && mustDo[4]){
             nameTxt.style.removeProperty("background-color");
+            if(mustDo["5"]) {
+                nameTxt.innerText = seq_clean.value;
+                nameTxt.style.backgroundColor = (seq_clean.value == "剪輯組")?"#ADADAD":"#D0D0D0";
+            }
             for(var i = 1; i <= emp_data_size; i++){
                 if(seq_replace.value == arr_data.emp_name[i]){
                     startText = new Date(arr_data.startdate[i]); 

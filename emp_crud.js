@@ -45,7 +45,7 @@ var actionDB = function(params) {
                 };   
                 httpReqFun(toSend);
             }else{
-                emp_stateInfo.text(info_tw("STARTDATE AND NAME BE EMPTY"));
+                emp_stateInfo.text(info_tw("STARTDATE AND NAME BE EMPTY") + "||" + info_tw("WRONG DATE"));
             }
             break;
         case "select":
@@ -64,8 +64,7 @@ var actionDB = function(params) {
             break;
         case "update":
             var state = emp_status.checked?"在職":"離職";
-            console.log(emp_title.val());
-            if(emp_name.val() != ""  && emp_title.val() != ""){
+            if(emp_name.val() != ""  && new Date(emp_startDate.val()) < nowDate && emp_title.val() != ""){
                 toSend ={
                     pload: "update",
                     startDate: emp_startDate.val(),
@@ -75,7 +74,7 @@ var actionDB = function(params) {
                 };   
                 httpReqFun(toSend);
             }else{
-                emp_stateInfo.text(info_tw("NAME BE EMPTY") + "||" + info_tw("TITLE BE EMPTY"));
+                emp_stateInfo.text(info_tw("NAME BE EMPTY") + "||" + info_tw("TITLE BE EMPTY") + "||" + info_tw("WRONG DATE"));
             }
             break;
         case "delete":
