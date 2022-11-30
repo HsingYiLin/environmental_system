@@ -206,7 +206,7 @@ var sortData = function(data){
         }
         //處罰
         if(emptyColumn && pun_data_size > 0 && pun_data_size >= pun_data_ind ){
-            dateName.eq(i).text() = data.name[pun_data_ind];
+            dateName.eq(i).text(data.name[pun_data_ind]);
             punish_date_arr.push(data.name[pun_data_ind]);
             datePunish.eq(i).text(data.pun_date[pun_data_ind].substring(5,7) + "/" + data.pun_date[pun_data_ind].substring(8,10) + data.punishtxt[pun_data_ind]);           
             pun_data_ind ++;
@@ -412,12 +412,11 @@ var req_val = function (){
         dateSortTimeStamp = new Date($("#seq_calender").val()).getTime();//表格日期時間戳
         if(modifySituation[1] && mustDo[4]){
             nameTxt.text("");
+            puntxt.text("");
+            replaceTxt.text("");
             nameTxt.css("backgroundColor","");
             if(mustDo["5"]) {
-                console.log("555");
-                nameTxt.text($("#seq_clean").val());
-                puntxt.text("");
-                replaceTxt.text("");
+                nameTxt.text($("#seq_clean").val()); 
                 var clipBg = ($("#seq_clean").val() == "剪輯組")?"#ADADAD":"#D0D0D0";
                 nameTxt.css("backgroundColor",clipBg);
             }else{
@@ -447,6 +446,8 @@ var req_val = function (){
             sortData(arr_data);
         }else if(modifySituation[3]){
             nameTxt.text("");
+            puntxt.text("");
+            replaceTxt.text("");
             nameTxt.css("backgroundColor","#ACD6FF");
             for(var i = 1; i <= emp_data_size; i++){
                 if(seq_replace.value == arr_data.emp_name[i]){
@@ -455,8 +456,6 @@ var req_val = function (){
                     if(dateSortTimeStamp > startTimeStamp && mustDo[1] ){ 
                         replaceTxt.text(seq_replace.value + $("#replace_opt").val());
                         break;
-                    }else{
-                        $("#seq_stateInfo").text(info_tw("WRONG FORMAT"));
                     }
                 }
             }
