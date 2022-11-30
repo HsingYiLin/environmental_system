@@ -112,6 +112,7 @@ var httpReqFun = function (param){
                     break;
                 case "no data":
                     emp_stateInfo.text(info_tw("NO DATA"));
+                    parseAllData(arr_data);
                     break;
                 case "update fail":
                 case "duplicate":
@@ -134,8 +135,8 @@ var parseAllData = function (initData){
             emp_tableHTML += "<td class=''><button class='btn btn-outline-success btn-sm fw-bold' type='button' onclick='updInner(this)'>選取</button>"
             emp_tableHTML += "&nbsp&nbsp<button type='button' class='btn btn-outline-success btn-sm fw-bold' data-bs-toggle='modal' data-bs-target='#exampleModal' onclick='del(this)'>刪除</button></td></tr>"
         }
-        emp_tbody.innerHTML += emp_tableHTML;
     }
+    emp_tbody.innerHTML += emp_tableHTML;
 }
 
 var emp_changePage = function (e) {

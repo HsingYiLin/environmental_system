@@ -33,7 +33,7 @@ var sequence_init = function(){
     pre_confirm = $("#pre_confirm");
     seq_tbody = document.getElementById("seq_tbody");
     pre_confirm.click(function () {
-        (monList.val() == "")?$("#seq_stateInfo").text(info_tw("FORM BE EMPTY")) : actionDB("dataExist")
+        (monList.val() == "")?$("#seq_stateInfo").text(info_tw("FORM BE EMPTY")) : actionDB("dataExist");
     })
     $("#pre_edit").show();
     $("#seq_edit").hide();
@@ -303,13 +303,13 @@ var dynamicTable = function (year, mon){
         dateJudgeDate = new Date(year +"-"+ mon + "-"+ (i+1));
         switch(dateJudgeDate.getDay()){
             case 0:
-                dateName.eq(i).text("日").css("backgroundColor","#FFCBB3")
+                dateName.eq(i).text("日").css("backgroundColor","#FFCBB3");
                 break;
             case 6:
-                dateName.eq(i).text("六").css("backgroundColor","#FFCBB3")
+                dateName.eq(i).text("六").css("backgroundColor","#FFCBB3");
                 break;
             case $("#clean_comp").val() * 1:
-                dateName.eq(i).text("清潔公司").css("backgroundColor","#D0D0D0")
+                dateName.eq(i).text("清潔公司").css("backgroundColor","#D0D0D0");
                 break;
         }
         if(mon % 2 !=0 && dateJudgeDate.getDay() == 1 && cnt == 1){
