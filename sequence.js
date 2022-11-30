@@ -1,19 +1,6 @@
-var pre_edit;
 var monList;
-var clean_comp;
-var seq_edit;
 var pre_confirm;
-var seq_calender;
 var seq_replace;
-var seq_clean;
-var replace_opt;
-var seq_holiday;
-var on_off;
-var workDateForm;
-var nationHoliday;
-var seq_delete;
-var btnSave;
-var seq_stateInfo;
 var seq_tbody;
 var dateSortCls;
 var dateName;
@@ -25,9 +12,7 @@ var mon = "";
 var year = "";
 var isPreEdit = false;
 var tableHTML="";
-var btn_id;
 var btn_cls;
-var dateSort;
 var punish_date_arr = Array();
 var replaceDone = Array();
 var doneKey = Array();
@@ -44,49 +29,28 @@ const xmlhttp =new XMLHttpRequest();
 var seq_toSend = {};
 
 var sequence_init = function(){
-    pre_edit = document.getElementById("pre_edit");
-    monList = document.getElementById("monList");
-    clean_comp = document.getElementById("clean_comp");
-    seq_edit = document.getElementById("seq_edit");
-    pre_confirm  = document.getElementById("pre_confirm");
+    monList = $("#monList");
+    pre_confirm = $("#pre_confirm");
     seq_tbody = document.getElementById("seq_tbody");
-    seq_delete = document.getElementById("seq_delete");
-    btnSave = document.getElementById("btnSave");
-    clean_comp = document.getElementById("clean_comp");
-    seq_stateInfo = document.getElementById("seq_stateInfo");
-    btn_id = document.getElementById("btn_id");
-    seq_stateInfo.style.color = "#CE0000";
-    pre_confirm.addEventListener("click", function () {
-        (monList.value == "")?seq_stateInfo.innerText = info_tw("FORM BE EMPTY"):actionDB("dataExist");
-    }) 
-    pre_edit.style.display = "";     
-    seq_edit.style.display = "none";
-    btn_id.style.display = "none";
+    pre_confirm.click(function () {
+        (monList.val() == "")?$("#seq_stateInfo").text(info_tw("FORM BE EMPTY")) : actionDB("dataExist")
+    })
+    $("#pre_edit").show();
+    $("#seq_edit").hide();
+    $("#btn_id").hide();
 }
 
 var createTable = function(isPreEdit){
     if(isPreEdit){
         actionDB("init");
-        seq_edit.style.display = "";
-        pre_edit.style.display = "none";
-        btn_id.style.display = "";     
-        var seq_sequence = document.getElementById("seq_sequence");
-        var seq_modify = document.getElementById("seq_modify");
-        var seq_save = document.getElementById("seq_save");
-        var seq_clear = document.getElementById("seq_clear");
-        seq_calender = document.getElementById("seq_calender");
+        $("#seq_edit").show();
+        $("#pre_edit").hide();
+        $("#btn_id").show();
         seq_replace = document.getElementById("seq_replace");
-        replace_opt = document.getElementById("replace_opt");
-        seq_clean =  document.getElementById("seq_clean");
-        seq_holiday = document.getElementById("seq_holiday");
-        on_off = document.getElementById("on_off");
-        workDateForm = document.getElementById("workDateForm");
-        nationHoliday = document.getElementById("nationHoliday");
-        on_off.addEventListener("change", parseOptionList, false);
-        seq_modify.addEventListener("click", req_val);
-        seq_save.style.display = "";
-        seq_save.addEventListener("click", function(){actionDB("create")});
-        seq_clear.addEventListener("click",clearInput);
+        $("#on_off").change(function(){parseOptionList()})
+        $("#seq_modify").click(function(){req_val()});
+        $("#seq_save").show().click(function(){actionDB("create")});
+        $("#seq_clear").click(function(){clearInput()});
     }
 }
 
@@ -95,14 +59,14 @@ var actionDB = function(params) {
         case "dataExist":
             seq_toSend ={
                 pload: "dataExist",
-                monVal : monList.value
+                monVal : monList.val()
             }
             httpReqFun(seq_toSend);
             break;
         case "init":
             seq_toSend = {
                 pload: "init",
-                mon: monList.value,
+                mon: monList.val()
             }   
             httpReqFun(seq_toSend);
             break;
@@ -113,13 +77,13 @@ var actionDB = function(params) {
             var replace_emp_arr = Array();
             var repTorep_arr = Array();
             for (var i = 0; i < table_days; i++) {
-                calender_arr.push((year+ "/" +dateSortCls[i].innerText).split('/').join('-'));
-                txt_arr.push(dateName[i].innerText);
-                punish_arr.push(datePunish[i].innerText);
-                replace_emp_arr.push(dateReplace[i].innerText);
+                calender_arr.push((year+ "/" +dateSortCls.eq(i).text()).split('/').join('-'));
+                txt_arr.push(dateName.eq(i).text());
+                punish_arr.push(datePunish.eq(i).text());
+                replace_emp_arr.push(dateReplace.eq(i).text());
                 //代替代替的人
-                if(dateReplace[i].innerText.substr(-2, 1) == dateName[i].innerText.substr(-1, 1)){
-                    repTorep_arr.push(dateName[i].innerText);
+                if(dateReplace.eq(i).text().substr(-2, 1) == dateName.eq(i).text().substr(-1, 1)){
+                    repTorep_arr.push(dateName.eq(i).text());
                 }
             }
             seq_toSend = {
@@ -143,9 +107,7 @@ var actionDB = function(params) {
         case "delete":
             seq_toSend = {
                 pload: "delete",
-                monVal : monList.value,
-                mon: monList.value.substring(5, 7),
-                year: monList.value.substring(0, 4)
+                monVal : monList.val()
             }
             httpReqFun(seq_toSend);
             break;
@@ -159,23 +121,22 @@ var httpReqFun = function (param){
     xmlhttp.onreadystatechange = () => {
         if(xmlhttp.readyState === 4 && xmlhttp.status == 200){
             arr_data = JSON.parse(xmlhttp.responseText);
-            
             console.log("arr_data",arr_data);            
             switch(arr_data["status"]){
                 case "GENER SUCCESS":
-                    year = monList.value.substring(0,4);
-                    mon = monList.value.substring(5,7);
+                    year = monList.val().substring(0,4);
+                    mon = monList.val().substring(5,7);
                     dynamicTable(year, mon);
                     sortData(arr_data);
                     break;
                 case "LIST EXISIT":
-                    seq_delete.style.display = "none";
-                    btnSave.style.display = "none";
+                    $("#seq_delete").hide();
+                    $("#btnSave").hide();
                     parseTable(arr_data);
                     pre_confirm.remove();                    
                     break;
                 case "FORM BE EMPTY":
-                    isPreEdit = (monList.value != "" && clean_comp.value != "")? true:false;
+                    isPreEdit = (monList.val() != "" && $("#clean_comp").val() != "")? true:false;
                     createTable(isPreEdit);
                     break;
                 case "DEL SUCCESS":
@@ -183,22 +144,22 @@ var httpReqFun = function (param){
                     break;
                 case "SAVED":
                     sequence_init();
-                    seq_stateInfo.innerText = info_tw("SAVED");
-                    pre_confirm.style.display = "none";
-                    seq_delete.style.display = "";
-                    btnSave.style.display = "";
-                    btn_id.style.display = "none";
+                    $("#seq_stateInfo").text(info_tw("SAVED"));
+                    pre_confirm.hide();
+                    $("#seq_delete").show();
+                    $("#btnSave").show();
+                    $("#btn_id").hide();
                     for(var i= 0; i < btn_cls.length; i++){
-                        btn_cls[i].style.display = "none";
+                        btn_cls.eq(i).hide();
                     }
-                    seq_delete.addEventListener("click", delSeq);
-                    btnSave.addEventListener("click", screenshot)
+                    $("#seq_delete").click(function(){delSeq()});
+                    $("#btnSave").click(function(){screenshot()});
                     break;
                 case "EMP NO DATA":
                 case "UNSCHEDULED":
                     break;
             }
-            seq_stateInfo.innerText = info_tw(arr_data["status"]);
+            $("#seq_stateInfo").text(info_tw(arr_data["status"]));
         }
     }
     xmlhttp.send(jsonString);
@@ -236,24 +197,24 @@ var sortData = function(data){
     for(var i=0; i < table_days; i++){
         //檢查該欄有無設定值
         for(var ind = 0; ind < setting_arr.length; ind++){
-            emptyColumn = (setting_arr[ind] != dateName[i].innerText)?true:false;
+            emptyColumn = (setting_arr[ind] != dateName.eq(i).text())?true:false;
             if(!emptyColumn)break;
         }
         if(emptyColumn){
-            dateName[i].innerText = "";
-            datePunish[i].innerText = "";
+            dateName.eq(i).text("");
+            datePunish.eq(i).text("");
         }
         //處罰
         if(emptyColumn && pun_data_size > 0 && pun_data_size >= pun_data_ind ){
-            dateName[i].innerText = data.name[pun_data_ind];
+            dateName.eq(i).text() = data.name[pun_data_ind];
             punish_date_arr.push(data.name[pun_data_ind]);
-            datePunish[i].innerText = data.pun_date[pun_data_ind].substring(5,7) + "/" + data.pun_date[pun_data_ind].substring(8,10) + data.punishtxt[pun_data_ind];           
+            datePunish.eq(i).text(data.pun_date[pun_data_ind].substring(5,7) + "/" + data.pun_date[pun_data_ind].substring(8,10) + data.punishtxt[pun_data_ind]);           
             pun_data_ind ++;
         }
         
-        dateSortTimeStamp = new Date((year+ "/" +dateSortCls[i].innerText).split('/').join('-')).getTime();//表格日期時間戳
+        dateSortTimeStamp = new Date((year+ "/" +dateSortCls.eq(i).text()).split('/').join('-')).getTime();//表格日期時間戳
         //排序
-        if(emptyColumn && datePunish[i].innerText == ""){
+        if(emptyColumn && datePunish.eq(i).text() == ""){
             for(emp_data_ind; emp_data_ind <= emp_data_size; emp_data_ind++){
                 startText = new Date(data.startdate[emp_data_ind]); 
                 startTimeStamp = startText.setMonth(startText.getMonth() + 1);//員工報到時間戳
@@ -292,28 +253,24 @@ var sortData = function(data){
                         4 : (!repBool && !incrBool)
                     }
                     if(sortLogic[1]){
-                        dateName[i].innerText = rep_name;
+                        dateName.eq(i).text(rep_name);
                         doneKey.push(empname_arr[rep_name_idx]);
                         replaceDone.push(rep_name_arr[rep_name_idx]);
                         empname_arr.splice(rep_name_idx, 1);
                         rep_name_arr.splice(rep_name_idx, 1);
-
                     }else if(sortLogic[2]){
-                        dateName[i].innerText = rep_name;
+                        dateName.eq(i).text(rep_name)
                         doneKey.push(empname_arr[rep_name_idx]);
                         replaceDone.push(rep_name_arr[rep_name_idx]);
                         empname_arr.splice(rep_name_idx, 1);
                         rep_name_arr.splice(rep_name_idx, 1);
-
                     }else if(sortLogic[3]){
                         dataIncr.push(increase_arr[incr_name_idx]);
                         increase_arr.splice(incr_name_idx, 1);
                         if(emp_data_ind == emp_data_size)emp_data_ind = 0; 
                         continue;
-
                     }else if(sortLogic[4]){
-                        dateName[i].innerText = data.emp_name[emp_data_ind];
-
+                        dateName.eq(i).text(data.emp_name[emp_data_ind])
                     }
                     emp_data_ind ++;
                     if(emp_data_ind > emp_data_size)emp_data_ind = 1;
@@ -332,38 +289,32 @@ var dynamicTable = function (year, mon){
     var dateJudgeDate;
     table_days = dateObj.getDate();
     for(var i =1; i<=table_days; i++){
-        dateSort = mon+"/"+i;
+        var dateSort = mon+"/"+i;
         tableHTML += "<tr class='justify-content-center'><td class='dateSortCls col-2'>"+dateSort+"</td><td class='dateName col-2'></td><td class='datePunish col-4'></td><td class='dateReplace col-2'></td>"
         tableHTML += "<td style='width:48px' class='btn_cls col-2'><button type='button' class='btn btn-sm btn-outline-success fw-bold' onclick='upd(this)'>選取</button></td></tr>"
     }
     seq_tbody.innerHTML += tableHTML;
-    btn_cls = document.getElementsByClassName("btn_cls");
-    dateSortCls = document.getElementsByClassName("dateSortCls");
-    dateName = document.getElementsByClassName("dateName");
-    datePunish = document.getElementsByClassName("datePunish"); 
-    dateReplace = document.getElementsByClassName("dateReplace"); 
+    btn_cls = $(".btn_cls");
+    dateSortCls = $(".dateSortCls");
+    dateName = $(".dateName");
+    datePunish = $(".datePunish"); 
+    dateReplace = $(".dateReplace"); 
     for(var i=0; i < table_days; i++){
         dateJudgeDate = new Date(year +"-"+ mon + "-"+ (i+1));
         switch(dateJudgeDate.getDay()){
             case 0:
-                dateName[i].innerText = "日";
-                dateName[i].style.backgroundColor = "#FFCBB3";
+                dateName.eq(i).text("日").css("backgroundColor","#FFCBB3")
                 break;
             case 6:
-                dateName[i].innerText = "六";
-                dateName[i].style.backgroundColor = "#FFCBB3";
+                dateName.eq(i).text("六").css("backgroundColor","#FFCBB3")
                 break;
-            case clean_comp.value * 1:
-                dateName[i].innerText = "清潔公司";
-                dateName[i].style.backgroundColor = "#D0D0D0";
+            case $("#clean_comp").val() * 1:
+                dateName.eq(i).text("清潔公司").css("backgroundColor","#D0D0D0")
                 break;
         }
         if(mon % 2 !=0 && dateJudgeDate.getDay() == 1 && cnt == 1){
             for(var j =i; j < i+6; j++){
-                if(dateName[j].innerText == ""){
-                    dateName[j].innerText = "剪輯組"; 
-                    dateName[j].style.backgroundColor = "#ADADAD";
-                }      
+                if(dateName.eq(j).text() == "") dateName.eq(j).text("剪輯組").css("backgroundColor","#ADADAD");      
             }
             cnt ++;
         }
@@ -377,17 +328,18 @@ var parseTable = function (data){
         tableHTML +="<td class='datePunish'>"+data.punish[i]+"</td><td class='dateReplace'>"+data.replace_emp[i]+"</td>";
     }
     seq_tbody.innerHTML += tableHTML;
-    dateName = document.getElementsByClassName("dateName");
+    dateName = $(".dateName");
     for(var i=0; i < table_days; i++){
-        switch(dateName[i].innerText){
+        switch(dateName.eq(i).text()){
             case "日":
-                dateName[i].style.backgroundColor = "#FFCBB3";
+                dateName.eq(i).css("backgroundColor","#FFCBB3")
                 break;
             case "六":
-                dateName[i].style.backgroundColor = "#FFCBB3";
+                dateName.eq(i).css("backgroundColor","#FFCBB3")
+
                 break;
             case "清潔公司":
-                dateName[i].style.backgroundColor = "#D0D0D0";
+                dateName.eq(i).css("backgroundColor","#D0D0D0")
                 break;
             case "元旦連假":
             case "春節":
@@ -398,150 +350,155 @@ var parseTable = function (data){
             case "中秋連假":
             case "國慶連假":
             case "放假":
-                dateName[i].style.backgroundColor = "#FFD9EC";
+                dateName.eq(i).css("backgroundColor","#FFD9EC")
                 break;
             case "剪輯組":
-                dateName[i].style.backgroundColor = "#ADADAD";
+                dateName.eq(i).css("backgroundColor","#ADADAD")
                 break;
         }
     }
     var lastCalender = (data["lastCalender"][1]).substring(0, 7);
-    if(monList.value == lastCalender){
-        seq_delete.style.display = "";
-        btnSave.style.display = "";
-        seq_delete.addEventListener("click", delSeq)  
-        btnSave.addEventListener("click", screenshot)
+    if(monList.val() == lastCalender){
+        $("#seq_delete").show();
+        $("#btnSave").show();
+        $("#seq_delete").click(function(){delSeq()})
+        $("#btnSave").click(function(){screenshot()})
     }
 }
 
 var parseOptionList = function(){
     seq_replace.innerHTML = "<option value=></option>";
-    if(this.value == "holiday"){
-        nationHoliday.style.display = "";
-        workDateForm.style.display = "none";
-    }else if(this.value == "work"){
-        nationHoliday.style.display = "none";
-        workDateForm.style.display = "";
+    if($("#on_off").val() == "holiday"){
+        $("#nationHoliday").show();
+        $("#workDateForm").hide();
+    }else if($("#on_off").val() == "work"){
+        $("#nationHoliday").hide();
+        $("#workDateForm").show();
         var empList = arr_data.emp_name;
         for (var i = 1; i <= emp_data_size; i++) {
             seq_replace.innerHTML += "<option value="+empList[i]+">"+ empList[i] +"</option>"
         }
     }else{
-        nationHoliday.style.display = "none";
-        workDateForm.style.display = "none";
+        $("#nationHoliday").hide();
+        $("#workDateForm").hide();
     }
 }
 
 var req_val = function (){
-    var numTd = seq_calender.value.substring(8, 10)*1;
-    var calenderDate = seq_calender.value.substring(0, 7);
-    var replaceTxt =  dateReplace[numTd-1];
-    var nameTxt = dateName[numTd-1];
-    var puntxt = datePunish[numTd-1];
-    var satur = new Date(seq_calender.value).getDay();
-    var sun = new Date(seq_calender.value).getDay();
+    var numTd = $("#seq_calender").val().substring(8, 10)*1;
+    var calenderDate = $("#seq_calender").val().substring(0, 7);
+    var replaceTxt = dateReplace.eq(numTd-1);
+    var nameTxt = dateName.eq(numTd-1);
+    var puntxt = datePunish.eq(numTd-1);
+    var satur = new Date($("#seq_calender").val()).getDay();
+    var sun = new Date($("#seq_calender").val()).getDay();
     var dayType = (satur == 6 || sun == 0)?"holiday": "work";
-    if(monList.value == calenderDate){
+    if(monList.val() == calenderDate){
         var modifySituation = {
-            1: ("work" == dayType && "work" == on_off.value),
-            2: ("work" == dayType && "holiday" == on_off.value),
-            3: ("holiday" == dayType && "work" == on_off.value),
-            4: ("holiday" == dayType && "holiday" == on_off.value),
-            5: ("" == on_off.value)
+            1: ("work" == dayType && "work" == $("#on_off").val()),
+            2: ("work" == dayType && "holiday" == $("#on_off").val()),
+            3: ("holiday" == dayType && "work" == $("#on_off").val()),
+            4: ("holiday" == dayType && "holiday" == $("#on_off").val()),
+            5: ("" == $("#on_off").val())
         }
         var mustDo = {
-            1: (seq_replace.value != "" && nameTxt.innerText != seq_replace.value && nameTxt.innerText != seq_replace.value && replace_opt.value != "" ),
-            2: (seq_holiday.value != ""),
+            1: (seq_replace.value != "" && nameTxt.text() != seq_replace.value && nameTxt.text() != seq_replace.value && $("#replace_opt").val() != "" ),
+            2: ($("#seq_holiday").val() != ""),
             3: (seq_replace.value == ""),
-            4: (nameTxt.innerText != "剪輯組" && nameTxt.innerText != "清潔公司"),
-            5: (seq_clean.value != "")
+            4: (nameTxt.text() != "剪輯組" && nameTxt.text() != "清潔公司"),
+            5: ($("#seq_clean").val() != "" && seq_replace.value == "" && $("#replace_opt").val() == "")
         }
 
-        dateSortTimeStamp = new Date(seq_calender.value).getTime();//表格日期時間戳
+        dateSortTimeStamp = new Date($("#seq_calender").val()).getTime();//表格日期時間戳
         if(modifySituation[1] && mustDo[4]){
-            nameTxt.style.removeProperty("background-color");
+            nameTxt.text("");
+            nameTxt.css("backgroundColor","");
             if(mustDo["5"]) {
-                nameTxt.innerText = seq_clean.value;
-                nameTxt.style.backgroundColor = (seq_clean.value == "剪輯組")?"#ADADAD":"#D0D0D0";
+                console.log("555");
+                nameTxt.text($("#seq_clean").val());
+                puntxt.text("");
+                replaceTxt.text("");
+                var clipBg = ($("#seq_clean").val() == "剪輯組")?"#ADADAD":"#D0D0D0";
+                nameTxt.css("backgroundColor",clipBg);
+            }else{
+                $("#seq_stateInfo").text(info_tw("WRONG FORMAT"));
             }
             for(var i = 1; i <= emp_data_size; i++){
                 if(seq_replace.value == arr_data.emp_name[i]){
                     startText = new Date(arr_data.startdate[i]); 
                     startTimeStamp = startText.setMonth(startText.getMonth() + 1);
                     if(dateSortTimeStamp > startTimeStamp && mustDo[1]){ 
-                        replaceTxt.innerText = seq_replace.value + replace_opt.value;
+                        replaceTxt.text(seq_replace.value + $("#replace_opt").val());
                         sortData(arr_data); 
                         break;
                     }else{
-                        seq_stateInfo.innerText = info_tw("WRONG FORMAT");
+                        $("#seq_stateInfo").text(info_tw("WRONG FORMAT"));
                         break;
                     }
                 }
             }
             sortData(arr_data); 
         }else if(modifySituation[2] && mustDo[2]){
-            nameTxt.innerText = seq_holiday.value;
-            nameTxt.style.backgroundColor = "#FFD9EC";
-            if(seq_holiday.value == "清潔公司")nameTxt.style.backgroundColor = "#D0D0D0";
-            replaceTxt.innerText = "";
-            puntxt.innerText = "";
+            nameTxt.text($("#seq_holiday").val());
+            nameTxt.css("backgroundColor","#FFD9EC");
+            if($("#seq_holiday").val() == "清潔公司")nameTxt.css("backgroundColor","#D0D0D0");
+            replaceTxt.text("");
+            puntxt.text("");
             sortData(arr_data);
         }else if(modifySituation[3]){
-            nameTxt.innerText = "";
-            nameTxt.style.backgroundColor = "#ACD6FF";
+            nameTxt.text("");
+            nameTxt.css("backgroundColor","#ACD6FF");
             for(var i = 1; i <= emp_data_size; i++){
                 if(seq_replace.value == arr_data.emp_name[i]){
                     startText = new Date(arr_data.startdate[i]); 
                     startTimeStamp = startText.setMonth(startText.getMonth() + 1);
                     if(dateSortTimeStamp > startTimeStamp && mustDo[1] ){ 
-                        replaceTxt.innerText = seq_replace.value + replace_opt.value;
+                        replaceTxt.text(seq_replace.value + $("#replace_opt").val());
                         break;
                     }else{
-                        seq_stateInfo.innerText = info_tw("WRONG FORMAT");
+                        $("#seq_stateInfo").text(info_tw("WRONG FORMAT"));
                     }
                 }
             }
             sortData(arr_data); 
         }else if(modifySituation[4] && mustDo[2]){
-            nameTxt.style.backgroundColor = "#FFD9EC";
-            if(satur == 6 || sun == 0) nameTxt.style.backgroundColor = "#FFCBB3";
-            nameTxt.innerText = seq_holiday.value;
-            puntxt.innerText = "";
-            replaceTxt.innerText = "";
+            nameTxt.css("backgroundColor","#FFD9EC");
+            if(satur == 6 || sun == 0) nameTxt.css("backgroundColor","#FFCBB3");
+            nameTxt.text($("#seq_holiday").val());
+            puntxt.text("");
+            replaceTxt.text("");
             sortData(arr_data);
         }else if(modifySituation[5] && mustDo[3]){
-            replaceTxt.innerText = "";
+            replaceTxt.text("");
         }else{
-            seq_stateInfo.innerText = info_tw("WRONG FORMAT");
+            $("#seq_stateInfo").text(info_tw("WRONG FORMAT"));
         }
     }else{
-        seq_stateInfo.innerText = info_tw("DATE OF THE MON");
+        $("#seq_stateInfo").text(info_tw("DATE OF THE MON"));
     }
-    setTimeout(function(){seq_stateInfo.innerText = ""}, 3000 );
+    setTimeout(function(){$("#seq_stateInfo").text("")}, 3000 );
 }
 
 var clearInput = function (){
-    on_off.value = "";
+    $("#seq_calender").val("")
+    $("#on_off").val("");
     seq_replace.value = "";
-    replace_opt.value = "";
-    seq_holiday.value = "";
+    $("#replace_opt").val("");
+    $("#seq_holiday").val("");
+    $("#seq_clean").val("");
 }
 
 var upd = function (obj){
     var upd_str = obj.parentNode.parentNode.innerText;
     var upd_td_arr = upd_str.split(/\t/);
-    var tmpDate = monList.value.substring(0, 4) + "/" + upd_td_arr[0];
+    var tmpDate = monList.val().substring(0, 4) + "/" + upd_td_arr[0];
     var dateFormat =  moment(new Date(tmpDate).getTime()).format("YYYY-MM-DD");
-    seq_calender.value = dateFormat;
+    $("#seq_calender").val(dateFormat)
 }
 
 var delSeq = function (){
-    var modalOK = document.getElementById("modalOK");
-    var modalText = document.getElementById("modalText");
-    modalText.innerText = info_tw("DELETE");
-    modalOK.addEventListener("click",function(){
-        actionDB("delete");
-    })
+    $("#modalText").text(info_tw("DELETE"));
+    $("#modalOK").click(function(){actionDB("delete")});
 }
 
 var seq_changePage = function (e){

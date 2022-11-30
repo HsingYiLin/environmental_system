@@ -263,9 +263,10 @@
 		mysqli_close($mydb_link);
 		
 	}else if($object["pload"] == "delete"){
-		$mon = $object["mon"];
-		$year = $object["year"];
 		$monVal = $object["monVal"];
+		$year = substr($monVal,0,4);
+		$mon = substr($monVal,5,2);
+
 		$table_mon = $mon.'m';
 
 		$sql_delete_sequence = "DELETE FROM sequence WHERE `calender` LIKE "."'$monVal%'";
