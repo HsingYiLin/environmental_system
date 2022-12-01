@@ -1,6 +1,8 @@
 var pun_tbody;
 var del_name;
 var del_pun_calender;
+var pun_old_date = "";
+var pun_old_txt = "";
 var pun_toSend ={};
 var pun_url = "http://localhost:8080/CleanSystem/punish.php";
 const xmlhttp =new XMLHttpRequest();
@@ -53,6 +55,8 @@ var actionDB = function(params) {
                 pun_toSend ={
                     pload: "update",
                     date: $("#pun_calender").val(),
+                    punolddate : pun_old_date,
+                    punoldtxt: pun_old_txt,
                     name: $("#pun_name").val(),
                     punishtxt: $("#pun_txt").val()
                 };   
@@ -163,6 +167,8 @@ var upd = function (obj){
     var upd_pun_calender = upd_td_arr[0];
     var upd_name = upd_td_arr[1];
     var upd_punishtxt = upd_td_arr[2];
+    pun_old_date = upd_pun_calender;
+    pun_old_txt = upd_punishtxt;
     $("#pun_calender").val(upd_pun_calender);
     $("#pun_name").val(upd_name);
     $("#pun_txt").val(upd_punishtxt);
