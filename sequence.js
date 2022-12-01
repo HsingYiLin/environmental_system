@@ -419,8 +419,6 @@ var req_val = function (){
                 nameTxt.text($("#seq_clean").val()); 
                 var clipBg = ($("#seq_clean").val() == "剪輯組")?"#ADADAD":"#D0D0D0";
                 nameTxt.css("backgroundColor",clipBg);
-            }else{
-                $("#seq_stateInfo").text(info_tw("WRONG FORMAT"));
             }
             for(var i = 1; i <= emp_data_size; i++){
                 if(seq_replace.value == arr_data.emp_name[i]){

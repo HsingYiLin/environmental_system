@@ -137,7 +137,7 @@
     	$date = $object["date"];
     	$name = $object["name"];
    	 	$punishtxt = $object["punishtxt"];
-		$sql_update = "UPDATE punish SET `punishtxt` =" ."'$punishtxt'" . "WHERE `name` =" ."'$name'"." AND `pun_del` != 'D' AND `pun_date` ="."'$date' ";
+		$sql_update = "UPDATE punish SET `punishtxt` =" ."'$punishtxt'" . " WHERE `name` =" ."'$name'"." AND `pun_del` != 'D' AND `pun_date` ="."'$date' ";
 		if(mysqli_query($mydb_link, $sql_update) && $mydb_link->affected_rows > 0){
 			$arr_res["status"] = "update success";
 		}else{

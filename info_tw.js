@@ -13,8 +13,7 @@
     array["SUCCESS"] = "成功";
     array["NO DATA"] = "無資料";
     array["DUPLICATE"] = "資料重複";
-    array["STARTDATE AND NAME BE EMPTY"] = "輸入框不得為空";
-    array["LESS THAN ONE MONTH"] = "未滿一個月";
+    array["INPUT BE EMPTY"] = "輸入框不得為空";
     array["DELETE"] = "刪除值日生表前，如果該月有代替、調用、開關設定，請先自行記錄!";
     array["EMP NO DATA"] = "請先往員工增修表新增員工";
     array["DEL SUCCESS"] = "刪除成功";

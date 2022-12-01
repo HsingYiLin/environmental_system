@@ -45,7 +45,7 @@ var actionDB = function(params) {
                 };   
                 httpReqFun(toSend);
             }else{
-                emp_stateInfo.text(info_tw("STARTDATE AND NAME BE EMPTY") + "||" + info_tw("WRONG DATE"));
+                emp_stateInfo.text(info_tw("INPUT BE EMPTY"));
             }
             break;
         case "select":
