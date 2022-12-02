@@ -18,62 +18,65 @@
     </head>
 </head>
 <body onload = pun_init() class="bg-color">
-    <div id="" class="container bg-success">
-        <nav class="navbar navbar-expand-lg bg-success">
-            <div class="container">
-              <h4 class="brand-color fw-bold">值日生系統</h4>
-              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" >
-                <span class="navbar-toggler-icon"></span>
-              </button>
-              <div class="collapse navbar-collapse p-1" id="navbarNavAltMarkup">
-                <div class="navbar-nav nav">
-                  <a class="nav-link white fw-bold" href="sequence.html" id="">值日生表</a>
-                  <a class="nav-link white fw-bold text-warning" href="punish.html" id="">懲罰項目表</a>
-                  <a class="nav-link white fw-bold" href="emp_crud.html" id="">員工增修表</a>
+    
+    <div class="scrll">
+        <div id="" class="container bg-success">
+            <nav class="navbar navbar-expand-lg bg-success">
+                <div class="container">
+                <h4 class="brand-color fw-bold">值日生系統</h4>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse p-1" id="navbarNavAltMarkup">
+                    <div class="navbar-nav nav">
+                    <a class="nav-link white fw-bold" href="sequence.html" id="">值日生表</a>
+                    <a class="nav-link white fw-bold text-warning" href="punish.html" id="">懲罰項目表</a>
+                    <a class="nav-link white fw-bold" href="emp_crud.html" id="">員工增修表</a>
+                    </div>
                 </div>
-              </div>
+                </div>
+            </nav>
+        </div>
+
+        <div class="container">
+            <div class= "row gx-3 gy-2 mt-2 d-flex justify-content-center">
+                <div class="col-sm-4">
+                    <input type="date" class="form-control fw-bold" for="pun_date" id="pun_calender" value="" min="01-01" max="12-31">
+                </div>
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <div class="input-group-text fw-bold">值日生</div>
+                        <!-- <input type="text" class="form-control fw-bold" id="pun_name" placeholder=""> -->
+                        <select name="" id="pun_name" class="form-select fw-bold"></select>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <select class="form-select fw-bold" id="pun_txt">
+                        <option value="">懲罰原因</option>
+                        <option value="值日生未打掃">值日生未打掃</option>
+                        <option value="組員離職未告知">組員離職未告知</option>
+                        <option value="公共環境整潔">公共環境整潔</option>
+                        <option value="個人座位整潔">個人座位整潔</option>
+                    </select>
+                </div>   
+                <div class="">
+                    <input type="submit" id="pun_sel_confirm" class=" btn btn-success btn-sm fw-bold mt-1" value="查詢">
+                    <input type="submit" id="pun_ad_confirm" class=" btn btn-success btn-sm fw-bold mt-1" value="新增">
+                    <input type="submit" id="pun_up_confirm" class=" btn btn-success btn-sm fw-bold mt-1" value="修改">
+                    <input type="submit" id="pun_clear" class=" btn btn-success btn-sm fw-bold mt-1" value="清空">
+                </div>
             </div>
-          </nav>
+            <div class="">
+                <span id="pun_stateInfo" class="text-success fw-bold fs-6 mt-3"></span>
+            </div>    
+        </div>
     </div>
 
     <div class="container">
-        <div class= "row gx-3 gy-2 mt-2 d-flex justify-content-center">
-            <div class="col-sm-4">
-                <input type="date" class="form-control fw-bold" for="pun_date" id="pun_calender" value="" min="01-01" max="12-31">
-            </div>
-            <div class="col-sm-4">
-                <div class="input-group">
-                    <div class="input-group-text fw-bold">值日生</div>
-                    <!-- <input type="text" class="form-control fw-bold" id="pun_name" placeholder=""> -->
-                    <select name="" id="pun_name" class="form-select fw-bold"></select>
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <select class="form-select fw-bold" id="pun_txt">
-                    <option value="">懲罰原因</option>
-                    <option value="值日生未打掃">值日生未打掃</option>
-                    <option value="組員離職未告知">組員離職未告知</option>
-                    <option value="公共環境整潔">公共環境整潔</option>
-                    <option value="個人座位整潔">個人座位整潔</option>
-                </select>
-            </div>   
-            <div class="">
-                <input type="submit" id="pun_sel_confirm" class=" btn btn-success btn-sm fw-bold mt-1" value="查詢">
-                <input type="submit" id="pun_ad_confirm" class=" btn btn-success btn-sm fw-bold mt-1" value="新增">
-                <input type="submit" id="pun_up_confirm" class=" btn btn-success btn-sm fw-bold mt-1" value="修改">
-                <input type="submit" id="pun_clear" class=" btn btn-success btn-sm fw-bold mt-1" value="清空">
-            </div>
-        
-
-        <div class="">
-            <span id="pun_stateInfo" class="text-success fw-bold fs-6 mt-3"></span>
-        </div>
-        
-        <div class="">
+        <div class="row">
             <table id="pun_tbody" class="table table-striped fw-bold col-11"></table>
         </div>
     </div>
-
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
         <div class="modal-content">

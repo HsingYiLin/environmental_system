@@ -17,64 +17,69 @@
 <script src="info_tw.js"></script>        
     </head>
 <body onload = emp_crud_init() class="bg-color">
-    <div id="" class="container bg-success">
-        <nav class="navbar navbar-expand-lg bg-success">
-            <div class="container">
-              <h4 class="brand-color fw-bold">值日生系統</h4>
-              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" >
-                <span class="navbar-toggler-icon"></span>
-              </button>
-              <div class="collapse navbar-collapse p-1" id="navbarNavAltMarkup">
-                <div class="navbar-nav nav">
-                  <a class="nav-link white fw-bold" href="sequence.html" id="">值日生表</a>
-                  <a class="nav-link white fw-bold" href="punish.html" id="">懲罰項目表</a>
-                  <a class="nav-link white fw-bold text-warning" href="emp_crud.html" id="">員工增修表</a>
+        
+    <div class="scrll">
+        <div id="" class="container bg-success">
+            <nav class="navbar navbar-expand-lg bg-success">
+                <div class="container">
+                <h4 class="brand-color fw-bold">值日生系統</h4>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse p-1" id="navbarNavAltMarkup">
+                    <div class="navbar-nav nav">
+                    <a class="nav-link white fw-bold" href="sequence.html" id="">值日生表</a>
+                    <a class="nav-link white fw-bold" href="punish.html" id="">懲罰項目表</a>
+                    <a class="nav-link white fw-bold text-warning" href="emp_crud.html" id="">員工增修表</a>
+                    </div>
                 </div>
-              </div>
-            </div>
-          </nav>
-    </div>
-    
-    <div class="container">
-        <div class= "row gx-3 gy-2 mt-2 d-flex justify-content-center">
-            <div class="col-sm-4">
-                <input type="date" class="form-control fw-bold" for="startDate" id="emp_startDate" value="" min="01-01" max="12-31">
-            </div>
-            <div class="col-sm-3">
-                <div class="input-group">
-                    <div class="input-group-text fw-bold">員工</div>
-                    <input type="text" class="form-control fw-bold" id="emp_name" placeholder="">
                 </div>
-            </div>
-            <div class="col-sm-3">
-                <select class="form-select fw-bold" id="emp_title">
-                    <option value=""></option>
-                    <option value="主管">主管</option>
-                    <option value="工程師">工程師</option>
-                    <option value="特殊">特殊</option>
-                    <option value="剪輯組">剪輯組</option>
-                    <option value="其他">其他</option>
-                </select>
-            </div>
-            <div class="col-sm-2">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="emp_status">
-                    <label class="form-check-label fw-bold" for="status">在職</label>
-                </div>
-            </div> 
-            <div class="">
-                <input type="submit" id="sel_confirm" class=" btn btn-success btn-sm fw-bold" value="查詢">
-                <input type="submit" id="add_confirm" class=" btn btn-success btn-sm fw-bold" value="新增">
-                <input type="submit" id="up_confirm" class=" btn btn-success btn-sm fw-bold" value="修改">
-                <input type="submit" id="clear_confirm" class=" btn btn-success btn-sm fw-bold" value="清空">
-            </div>
-        </div>  
-
-        <div class="">
-            <span id="emp_stateInfo" class="text-success fw-bold fs-6 mt-1"></span>
+            </nav>
         </div>
+        
+        <div class="container">
+            <div class= "row gx-3 gy-2 mt-2 d-flex justify-content-center">
+                <div class="col-sm-4">
+                    <input type="date" class="form-control fw-bold" for="startDate" id="emp_startDate" value="" min="01-01" max="12-31">
+                </div>
+                <div class="col-sm-3">
+                    <div class="input-group">
+                        <div class="input-group-text fw-bold">員工</div>
+                        <input type="text" class="form-control fw-bold" id="emp_name" placeholder="">
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <select class="form-select fw-bold" id="emp_title">
+                        <option value=""></option>
+                        <option value="主管">主管</option>
+                        <option value="工程師">工程師</option>
+                        <option value="特殊">特殊</option>
+                        <option value="剪輯組">剪輯組</option>
+                        <option value="其他">其他</option>
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="emp_status">
+                        <label class="form-check-label fw-bold" for="status">在職</label>
+                    </div>
+                </div> 
+                <div class="">
+                    <input type="submit" id="sel_confirm" class=" btn btn-success btn-sm fw-bold" value="查詢">
+                    <input type="submit" id="add_confirm" class=" btn btn-success btn-sm fw-bold" value="新增">
+                    <input type="submit" id="up_confirm" class=" btn btn-success btn-sm fw-bold" value="修改">
+                    <input type="submit" id="clear_confirm" class=" btn btn-success btn-sm fw-bold" value="清空">
+                </div>
+            </div>  
 
-        <div class="">
+            <div class="">
+                <span id="emp_stateInfo" class="text-success fw-bold fs-6 mt-1"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
             <table id="emp_tbody" class="table table-striped fw-bold col-11 mt-1"></table>
         </div>
     </div>
