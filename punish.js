@@ -66,6 +66,7 @@ var actionDB = function(params) {
             }
             break;
         case "delete":
+            console.log("delete");
             pun_toSend ={
                 pload: "delete",
                 name: del_name,
@@ -84,6 +85,7 @@ var httpReqFun = function (param){
     xmlhttp.onreadystatechange = () => {
         if(xmlhttp.readyState === 4 && xmlhttp.status == 200){
             arr_data = JSON.parse(xmlhttp.responseText);
+            console.log(arr_data);
             setTimeout(function(){
                 $("#pun_stateInfo").text("");
             },5000);
