@@ -74,6 +74,12 @@ var actionDB = function(params) {
             };   
             httpReqFun(pun_toSend);
             break;
+        case "opt":
+            pun_toSend ={
+                pload: "opt"
+            }; 
+            httpReqFun(pun_toSend);
+            break;
     }
 }
 
@@ -101,6 +107,7 @@ var httpReqFun = function (param){
             case "select success":
                 $("#pun_stateInfo").text(info_tw("SUCCESS"));
                 parseAllData(arr_data);
+                actionDB("opt")
                 break;
             case "no data":
                 $("#pun_stateInfo").text(info_tw("NO DATA"));
@@ -111,6 +118,8 @@ var httpReqFun = function (param){
                 break;
             case "update fail":
                 $("#pun_stateInfo").text(info_tw("UPDATE FAIL"));
+            case "opt success":
+                parseOptionList(arr_data);
             }  
         }
     }
@@ -142,6 +151,16 @@ var parseAllData = function (initData){
         }
     }
     pun_tbody.innerHTML += pun_tableHTML;
+}
+
+var parseOptionList = function(data){
+    var opt_len = Object.keys(data["emp_name"]).length
+    var opttxt = "<option value=></option>";
+    opttxt += "<option value=剪輯組>剪輯組</option>"
+    for (var i = 1; i <= opt_len; i++) {
+        opttxt += "<option value="+data["emp_name"][i]+">"+ data["emp_name"][i] +"</option>"
+    }
+    $("#pun_name").html(opttxt);
 }
 
 var pun_changePage = function (e) {

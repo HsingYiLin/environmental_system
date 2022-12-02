@@ -259,6 +259,21 @@
 		}
 		echo json_encode($arr_res);
 		mysqli_close($mydb_link);
-		
-    }
+	
+    }else if($object["pload"] == "opt"){
+		$sql_employee = "SELECT `emp_name` FROM employee WHERE `title` = '其他' AND `state` = '在職' AND `del` != 'D' ORDER BY `startdate` DESC";
+		$i=1;
+		$result_opt = mysqli_query($mydb_link, $sql_employee);
+		if ($result_opt->num_rows > 0) {
+			while($row=mysqli_fetch_array($result_opt)){
+				$arr_res["emp_name"][$i] = $row['emp_name'];
+				$i++;
+			}
+			$arr_res["status"] = "opt success";
+		}else{
+			$arr_res["status"] = "no data";
+		}
+		echo json_encode($arr_res);
+		mysqli_close($mydb_link);
+	}
 ?>
