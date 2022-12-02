@@ -51,6 +51,7 @@ var createTable = function(isPreEdit){
         $("#seq_modify").click(function(){req_val()});
         $("#seq_save").show().click(function(){actionDB("create")});
         $("#seq_clear").click(function(){clearInput()});
+        $("#setting2").click(function(){window.location.reload()});
     }
 }
 
@@ -132,6 +133,7 @@ var httpReqFun = function (param){
                 case "LIST EXISIT":
                     $("#seq_delete").hide();
                     $("#btnSave").hide();
+                    $("#setting1").hide();
                     parseTable(arr_data);
                     pre_confirm.remove();                    
                     break;
@@ -148,12 +150,14 @@ var httpReqFun = function (param){
                     pre_confirm.hide();
                     $("#seq_delete").show();
                     $("#btnSave").show();
+                    $("#setting1").show();
                     $("#btn_id").hide();
                     for(var i= 0; i < btn_cls.length; i++){
                         btn_cls.eq(i).hide();
                     }
                     $("#seq_delete").click(function(){delSeq()});
                     $("#btnSave").click(function(){screenshot()});
+                    $("#setting1").click(function(){window.location.reload()})
                     break;
                 case "EMP NO DATA":
                 case "UNSCHEDULED":
@@ -365,6 +369,7 @@ var parseTable = function (data){
     if(monList.val() == lastCalender){
         $("#seq_delete").show();
         $("#btnSave").show();
+        $("#setting1").show();
         $("#seq_delete").click(function(){delSeq()})
         $("#btnSave").click(function(){screenshot()})
     }
