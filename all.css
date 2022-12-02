@@ -17,3 +17,11 @@
 .brand-color{
     color: #FFFFFF;
 }
+
+.scrll{
+    /* padding: 10px; */
+    /* background: lightblue; */
+    background-color:#F0F0F0;
+    position: sticky;
+    top:0;
+}

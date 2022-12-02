@@ -20,123 +20,123 @@
     </head>
 <body onload = sequence_init() class="bg-color">
 
-    
-    <div id="" class="container bg-success">
-        <nav class="navbar navbar-expand-lg bg-success">
-            <div class="container">
-              <h4 class="brand-color fw-bold">值日生系統</h4>
-              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" >
-                <span class="navbar-toggler-icon"></span>
-              </button>
-              <div class="collapse navbar-collapse p-1" id="navbarNavAltMarkup">
-                <div class="navbar-nav nav">
-                  <a class="nav-link white fw-bold text-warning" href="sequence.html" id="">值日生表</a>
-                  <a class="nav-link white fw-bold" href="punish.html" id="">懲罰項目表</a>
-                  <a class="nav-link white fw-bold" href="emp_crud.html" id="">員工增修表</a>
+    <!-- <div class="scrll"> -->
+        <div id="" class="container bg-success">
+            <nav class="navbar navbar-expand-lg bg-success">
+                <div class="container">
+                <h4 class="brand-color fw-bold">值日生系統</h4>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse p-1" id="navbarNavAltMarkup">
+                    <div class="navbar-nav nav">
+                    <a class="nav-link white fw-bold text-warning" href="sequence.html" id="">值日生表</a>
+                    <a class="nav-link white fw-bold" href="punish.html" id="">懲罰項目表</a>
+                    <a class="nav-link white fw-bold" href="emp_crud.html" id="">員工增修表</a>
+                    </div>
                 </div>
-              </div>
-            </div>
-          </nav>
-    </div>
-    <div id="pre_edit" class="container mt-3">
-        <div class="row gx-3 gy-2 mt-2 d-flex justify-content-center">
-            <div class="">
-                <span class="fw-bold">值日生表月份:</span>
-                <input type="month" class="form-control fw-bold" for="calender" id="monList" value="" min="2022-12" max="2024-01" value="">
-            </div>
-            <div class="">
-                <span class="fw-bold">清潔公司:</span>
-                <select name="" class="form-select fw-bold" id="clean_comp">
-                    <option value=""></option>
-                    <option value="1">禮拜一</option>
-                    <option value="2">禮拜二</option>
-                    <option value="3">禮拜三</option>
-                    <option value="4">禮拜四</option>
-                    <option value="5">禮拜五</option>
-                </select>
-            </div>
-            <div>
-                <input type="submit" id="pre_confirm" class=" btn btn-success btn-sm fw-bold mt-2" value="生成">
-                <input type="submit" id="seq_delete" class=" btn btn-success btn-sm fw-bold mt-2" data-bs-toggle='modal' data-bs-target='#exampleModal' value="刪除值日生表" style="display:none;">
-                <button type="submit" id="btnSave" class="btn btn-warning btn-sm fw-bold mt-2" style="display:none;">截圖下載</button>
-            </div>
+                </div>
+            </nav>
         </div>
-    </div>
-    
-
-    <div id="seq_edit" class="container">
-        <div class="row gx-3 gy-2 mt-2 d-flex justify-content-center">
-            <div class="col-sm-6">
-                <input type="date" id="seq_calender" class="form-control fw-bold" value="" min="01-01" max="12-31">
-            </div>
-
-            <div class="col-sm-6">
-                <div class="input-group">
-                    <div class="input-group-text fw-bold =">開關</div>
-                    <select name="" id="on_off" class="form-select fw-bold">
+        <div id="pre_edit" class="container mt-3">
+            <div class="row gx-3 gy-2 mt-2 d-flex justify-content-center">
+                <div class="">
+                    <span class="fw-bold">值日生表月份:</span>
+                    <input type="month" class="form-control fw-bold" for="calender" id="monList" value="" min="2022-12" max="2024-01" value="">
+                </div>
+                <div class="">
+                    <span class="fw-bold">清潔公司:</span>
+                    <select name="" class="form-select fw-bold" id="clean_comp">
                         <option value=""></option>
-                        <option value="work">上班日</option>
-                        <option value="holiday">假日</option>
+                        <option value="1">禮拜一</option>
+                        <option value="2">禮拜二</option>
+                        <option value="3">禮拜三</option>
+                        <option value="4">禮拜四</option>
+                        <option value="5">禮拜五</option>
                     </select>
                 </div>
-            </div>            
-
-            <div class="">
-                <div id="nationHoliday" class="input-group mt-1" style="display: none;">
-                    <div class="input-group-text fw-bold">假日備註</div>     
-                    <select name="" id="seq_holiday" class="form-select fw-bold h-50">
-                        <option value=""></option>
-                        <option value="元旦連假">元旦連假</option>
-                        <option value="春節">春節</option>
-                        <option value="228連假">228連假</option>
-                        <option value="清明連假">清明連假</option>
-                        <option value="勞動節">勞動節</option>
-                        <option value="端午連假">端午連假</option>
-                        <option value="中秋連假">中秋連假</option>
-                        <option value="國慶連假">國慶連假</option>
-                        <option value="六">六</option>
-                        <option value="日">日</option>
-                        <option value="放假">放假</option>
-                    </select>
+                <div>
+                    <input type="submit" id="pre_confirm" class=" btn btn-success btn-sm fw-bold mt-2" value="生成">
+                    <input type="submit" id="seq_delete" class=" btn btn-success btn-sm fw-bold mt-2" data-bs-toggle='modal' data-bs-target='#exampleModal' value="刪除值日生表" style="display:none;">
+                    <button type="submit" id="btnSave" class="btn btn-warning btn-sm fw-bold mt-2" style="display:none;">截圖下載</button>
                 </div>
             </div>
         </div>
+        
 
-        <div id="workDateForm" class="row gx-3 gy-2 justify-content-center" style="display: none;">  
-            <div class="col-sm-4">
-                <div class="input-group">
-                    <div class="input-group-text fw-bold">候補</div>
-                    <select name="" id="seq_replace" class="form-select fw-bold"></select>
+        <div id="seq_edit" class="container">
+            <div class="row gx-3 gy-2 mt-2 d-flex justify-content-center">
+                <div class="col-sm-6">
+                    <input type="date" id="seq_calender" class="form-control fw-bold" value="" min="01-01" max="12-31">
+                </div>
+
+                <div class="col-sm-6">
+                    <div class="input-group">
+                        <div class="input-group-text fw-bold =">開關</div>
+                        <select name="" id="on_off" class="form-select fw-bold">
+                            <option value=""></option>
+                            <option value="work">上班日</option>
+                            <option value="holiday">假日</option>
+                        </select>
+                    </div>
+                </div>            
+
+                <div class="">
+                    <div id="nationHoliday" class="input-group mt-1" style="display: none;">
+                        <div class="input-group-text fw-bold">假日備註</div>     
+                        <select name="" id="seq_holiday" class="form-select fw-bold h-50">
+                            <option value=""></option>
+                            <option value="元旦連假">元旦連假</option>
+                            <option value="春節">春節</option>
+                            <option value="228連假">228連假</option>
+                            <option value="清明連假">清明連假</option>
+                            <option value="勞動節">勞動節</option>
+                            <option value="端午連假">端午連假</option>
+                            <option value="中秋連假">中秋連假</option>
+                            <option value="國慶連假">國慶連假</option>
+                            <option value="六">六</option>
+                            <option value="日">日</option>
+                            <option value="放假">放假</option>
+                        </select>
+                    </div>
                 </div>
             </div>
-            <div class="col-sm-4">
-                <div class="input-group">
-                    <div class="input-group-text fw-bold">選項</div> 
-                    <select name="" id="replace_opt" class="form-select fw-bold">
-                        <option value=""></option>
-                        <option value="代替">代替</option>
-                        <option value="調用">調用</option>
-                    </select>
+
+            <div id="workDateForm" class="row gx-3 gy-2 justify-content-center" style="display: none;">  
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <div class="input-group-text fw-bold">候補</div>
+                        <select name="" id="seq_replace" class="form-select fw-bold"></select>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <div class="input-group-text fw-bold">選項</div> 
+                        <select name="" id="replace_opt" class="form-select fw-bold">
+                            <option value=""></option>
+                            <option value="代替">代替</option>
+                            <option value="調用">調用</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <div class="input-group-text fw-bold">其他</div>
+                        <select name="" id="seq_clean" class="form-select fw-bold">
+                            <option value=""></option>
+                            <option value="剪輯組">剪輯組</option>
+                            <option value="清潔公司">清潔公司</option>
+                        </select>
+                    </div>
                 </div>
             </div>
-            <div class="col-sm-4">
-                <div class="input-group">
-                    <div class="input-group-text fw-bold">其他</div>
-                    <select name="" id="seq_clean" class="form-select fw-bold">
-                        <option value=""></option>
-                        <option value="剪輯組">剪輯組</option>
-                        <option value="清潔公司">清潔公司</option>
-                    </select>
-                </div>
+                
+            <div class="mt-2">
+                <input type="submit" id="seq_modify" class=" btn btn-success fw-bold btn-sm" value="修改">
+                <input type="submit" id="seq_save" class=" btn btn-success fw-bold btn-sm" value="儲存" style="display:none;">  
+                <input type="submit" id="seq_clear" class=" btn btn-success fw-bold btn-sm" value="清空">
             </div>
         </div>
-            
-        <div class="mt-2">
-            <input type="submit" id="seq_modify" class=" btn btn-success fw-bold btn-sm" value="修改">
-            <input type="submit" id="seq_save" class=" btn btn-success fw-bold btn-sm" value="儲存" style="display:none;">  
-            <input type="submit" id="seq_clear" class=" btn btn-success fw-bold btn-sm" value="清空">
-        </div>
-    </div>
 
         <div class="container">
             <div class="row justify-content-left">
@@ -145,6 +145,7 @@
                 </div>
             </div>
         </div>
+    <!-- </div> -->
 
         <div class="container">
             <div id="chart3" class="row">

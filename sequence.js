@@ -203,6 +203,10 @@ var sortData = function(data){
         if(emptyColumn){
             dateName.eq(i).text("");
             datePunish.eq(i).text("");
+        }else if(dateName.eq(i).text() == "剪輯組" && datePunish.eq(i).text() != ""){
+            dateName.eq(i).text("");
+            datePunish.eq(i).text("");
+            emptyColumn = true;
         }
         //處罰
         if(emptyColumn && pun_data_size > 0 && pun_data_size >= pun_data_ind ){
@@ -402,10 +406,10 @@ var req_val = function (){
             5: ("" == $("#on_off").val())
         }
         var mustDo = {
-            1: (seq_replace.value != "" && nameTxt.text() != seq_replace.value && nameTxt.text() != seq_replace.value && $("#replace_opt").val() != "" ),
+            1: (seq_replace.value != "" && nameTxt.text() != seq_replace.value && $("#replace_opt").val() != "" ),
             2: ($("#seq_holiday").val() != ""),
             3: (seq_replace.value == ""),
-            4: (nameTxt.text() != "剪輯組" && nameTxt.text() != "清潔公司"),
+            4: (nameTxt.text() != "清潔公司"),
             5: ($("#seq_clean").val() != "" && seq_replace.value == "" && $("#replace_opt").val() == "")
         }
 
@@ -424,7 +428,7 @@ var req_val = function (){
                 if(seq_replace.value == arr_data.emp_name[i]){
                     startText = new Date(arr_data.startdate[i]); 
                     startTimeStamp = startText.setMonth(startText.getMonth() + 1);
-                    if(dateSortTimeStamp > startTimeStamp && mustDo[1]){ 
+                    if((dateSortTimeStamp > startTimeStamp || nameTxt.text() == "剪輯組") && mustDo[1]){ 
                         replaceTxt.text(seq_replace.value + $("#replace_opt").val());
                         sortData(arr_data); 
                         break;
