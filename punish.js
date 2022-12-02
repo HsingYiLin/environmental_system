@@ -66,7 +66,6 @@ var actionDB = function(params) {
             }
             break;
         case "delete":
-            console.log("delete");
             pun_toSend ={
                 pload: "delete",
                 name: del_name,
@@ -91,7 +90,6 @@ var httpReqFun = function (param){
     xmlhttp.onreadystatechange = () => {
         if(xmlhttp.readyState === 4 && xmlhttp.status == 200){
             arr_data = JSON.parse(xmlhttp.responseText);
-            console.log(arr_data);
             setTimeout(function(){
                 $("#pun_stateInfo").text("");
             },5000);
@@ -147,7 +145,6 @@ var parseAllData = function (initData){
             }
             pun_tableHTML += "<td style='width:110px'><button type='button' class='btn btn-outline-success btn-sm fw-bold' onclick='upd(this)'>選取</button>"
             pun_tableHTML += "&nbsp&nbsp<button type='button' class='btn btn-outline-success btn-sm fw-bold' data-bs-toggle='modal' data-bs-target='#exampleModal' onclick='del(this)'>刪除</button></td></tr>"
-
         }
     }
     pun_tbody.innerHTML += pun_tableHTML;
@@ -179,7 +176,10 @@ var del = function (obj){
     del_pun_calender = del_td_arr[0];
     del_name = del_td_arr[1];
     $("#modalPunText").text(del_td_arr[0]+", "+del_td_arr[1]+", "+del_td_arr[2]);
-    $("#modalPunOK").click(function(){actionDB("delete")});
+    $("#modalPunOK").click(function(ev){
+        actionDB("delete");
+        $(this).off("click");
+    });
 }
 
 var upd = function (obj){

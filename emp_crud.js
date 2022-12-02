@@ -78,6 +78,7 @@ var actionDB = function(params) {
             }
             break;
         case "delete":
+            console.log("delete");
             toSend ={
                 pload: "delete",
                 emp_name: del_val,
@@ -157,7 +158,10 @@ var del = function (obj){
     var modalText = $("#modalText");
     del_val = del_td_arr[1];
     modalText.text(del_td_arr[0]+", "+del_td_arr[1]+", "+del_td_arr[2]+", "+del_td_arr[3]);
-    modalOK.click(function(){actionDB("delete")});
+    modalOK.click(function(){
+        actionDB("delete");
+        $(this).off("click");
+    });
 }
 
 var updInner = function (obj){
