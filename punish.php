@@ -150,8 +150,43 @@
 				$i++;
 			}
 		}
-		$sql_update = "UPDATE punish SET `punishtxt` = "."'$punishtxt'".", `pun_date` = "."'$date'". " WHERE `name` = "."'$name'"." AND `pun_date` = "."'$punolddate'"." AND `punishtxt` = "."'$punoldtxt'"." AND `pun_del` != 'D'";
-		$sql_update .= " AND "."'$date'". " >= DATE_ADD("."'$startdate[1]'".", INTERVAL 1 MONTH) LIMIT 1";
+		//變更前 後三個月做除法減法
+		$sql_pre_select = "SELECT * FROM punish WHERE `name` = "."'$name'"."AND `pun_del` != 'D' AND `pun_date` > "."'$punolddate'";
+		$sql_pre_select .= " AND `pun_date` < DATE_ADD("."'$punolddate'".", INTERVAL 3 MONTH)";
+		$result_pre_select = mysqli_query($mydb_link, $sql_pre_select);
+		if(!empty($result_pre_select)){
+			$i = 1;
+			while($row_select = mysqli_fetch_assoc($result_pre_select)){
+				$date_select[$i] = $row_select["pun_date"];
+				$fine_data_select[$i] = $row_select["fine"] / 2;
+				$times_select[$i]= $row_select["times"] - 1;
+				$odds_select[$i] = $row_select["odds"] / 2;
+				$sql_pre_update = "UPDATE punish SET fine = "."$fine_data_select[$i]".", times = "."$times_select[$i]".", odds = "."$odds_select[$i]";
+				$sql_pre_update .=" WHERE `name` = "."'$name'" . " AND `pun_del` != 'D' AND `pun_date` = " ."'$date_select[$i]'";
+				if(mysqli_query($mydb_link, $sql_pre_update) && $mydb_link->affected_rows > 0){
+					$arr_res["status"] = "update success";
+				}else{
+					$arr_res["status"] = "update fail";
+				}
+				$i++;
+			}
+		}
+
+		//判斷變更位子前面有幾筆 做修改
+		$init_fine = 300;
+		$cnt_data_update = 0;
+		$odds_update = 0;
+		$fine_data_update = 0;
+		$sql_cnt_update = "SELECT COUNT(`name`) as cnt FROM punish WHERE `name`= "."'$name'"." AND `pun_del` != 'D'";
+		$sql_cnt_update .= " AND `pun_date` != "."'$punolddate'"." AND `pun_date` > DATE_SUB("."'$date'".", INTERVAL 3 MONTH) AND `pun_date` < "."'$date'";
+		$result_cnt_update = mysqli_query($mydb_link, $sql_cnt_update);
+		$row_update = mysqli_fetch_assoc($result_cnt_update);
+		$cnt_data_update = $row_update["cnt"]+1;//包括此筆新增
+		$odds_update = pow(2, $cnt_data_update-1);
+		$fine_data_update = $init_fine * $odds_update;
+		$sql_update = "UPDATE punish SET `punishtxt` = "."'$punishtxt'".", `pun_date` = "."'$date'".", `fine` = "."'$fine_data_update'".", `times` = "."'$cnt_data_update'".", `odds` = "."'$odds_update'";
+		$sql_update .= " WHERE `name` = "."'$name'"." AND `pun_date` = "."'$punolddate'"." AND `punishtxt` = "."'$punoldtxt'"." AND `pun_del` != 'D'";
+		$sql_update .= " AND "."'$date'". " >= DATE_ADD("."'$startdate[1]'".", INTERVAL 1 MONTH)";
 		if(mysqli_query($mydb_link, $sql_update) && $mydb_link->affected_rows > 0){
 			$arr_res["status"] = "update success";
 		}else{
@@ -159,19 +194,18 @@
 			$arr_res["error"] = mysqli_error($mydb_link);
 		}
 
-		//計算此筆如果是途中插入，此筆後面有幾筆要更新
+		// 計算此筆如果是途中插入，此筆後面有幾筆要更新
 		$sql_cnt_update = "SELECT * FROM punish WHERE `name` = "."'$name'" . " AND `pun_del` != 'D'";
 		$sql_cnt_update .= " AND `pun_date` > "."'$date'"." AND `pun_date` < DATE_ADD("."'$date'".", INTERVAL 3 MONTH)";
-		$arr_res["sql_cnt_update"] = $sql_cnt_update;
 		$result_cnt_update = mysqli_query($mydb_link, $sql_cnt_update);
 		if(!empty($result_cnt_update)){
 			$i = 1;
 			while($row_update = mysqli_fetch_assoc($result_cnt_update)){
 				$date_update[$i] = $row_update["pun_date"];
-				$fine_data_update[$i] = $row_update["fine"] * 2;
-				$times_update[$i]= $row_update["times"] + 1;
-				$odds_update[$i] = $row_update["odds"] * 2;
-				$sql_update_add = "UPDATE punish SET fine = "."$fine_data_update[$i]".", times = "."$times_update[$i]".", odds = "."$odds_update[$i]";
+				$fine_data_update2[$i] = $row_update["fine"] * 2;
+				$times_update2[$i]= $row_update["times"] + 1;
+				$odds_update2[$i] = $row_update["odds"] * 2;
+				$sql_update_add = "UPDATE punish SET fine = "."$fine_data_update2[$i]".", times = "."$times_update2[$i]".", odds = "."$odds_update2[$i]";
 				$sql_update_add .=" WHERE `name` = "."'$name'" . " AND `pun_del` != 'D' AND `pun_date` = " ."'$date_update[$i]'";
 				if(mysqli_query($mydb_link, $sql_update_add) && $mydb_link->affected_rows > 0){
 					$arr_res["status"] = "update success";
