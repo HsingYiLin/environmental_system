@@ -29,7 +29,7 @@ var actionDB = function(params) {
                 pun_toSend ={
                     pload: "add",
                     date: $("#pun_calender").val(),
-                    name: $("#pun_name").val(),
+                    name: $("#pun_name").val().trim(),
                     punishtxt: $("#pun_txt").val()
                 };   
                 httpReqFun(pun_toSend);

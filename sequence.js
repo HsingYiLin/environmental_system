@@ -132,8 +132,10 @@ var httpReqFun = function (param){
                     break;
                 case "LIST EXISIT":
                     $("#seq_delete").hide();
-                    $("#btnSave").hide();
-                    $("#setting1").hide();
+                    $("#btnSave").show();
+                    $("#btnSave").click(function(){screenshot()});
+                    $("#setting1").show();
+                    $("#setting1").click(function(){window.location.reload()})
                     parseTable(arr_data);
                     pre_confirm.remove();                    
                     break;
