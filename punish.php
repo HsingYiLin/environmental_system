@@ -2,10 +2,10 @@
     header("Content-Type: application/json");
 	header("Access-Control-Allow-Origin: *");
 	header('Access-Control-Allow-Headers:x-requested-with,content-type'); 
-	$host = 'localhost';
-	$dbuser ='root';
-	$dbpassword = 'a12345678';
-	$dbname = 'environtal_db';
+	$host = '172.105.241.230';
+	$dbuser ='cfd_schedule_mysql';
+	$dbpassword = 'schedule_winwin12!_mysql';
+	$dbname = 'cfd_schedule_mysql';
 	$mydb_link = mysqli_connect($host,$dbuser,$dbpassword,$dbname);
     if($mydb_link->connect_error){
 		die('Connection failed: '.$mydb_link->connect_error);
@@ -70,7 +70,7 @@
 		}
 		
 		//起始罰金
-		$init_fine = 300;
+		$init_fine = 100;
 		//計算此筆員工前三個月有幾筆
 		$sql_cnt_add = "SELECT COUNT(`name`) as cnt FROM punish WHERE `name`= "."'$name'"." AND `pun_del` != 'D'";
 		$sql_cnt_add .= " AND `pun_date` > DATE_SUB("."'$date'".", INTERVAL 3 MONTH) AND `pun_date` < "."'$date'";
@@ -173,7 +173,7 @@
 		}
 
 		//判斷變更位子前面有幾筆 做修改
-		$init_fine = 300;
+		$init_fine = 100;
 		$cnt_data_update = 0;
 		$odds_update = 0;
 		$fine_data_update = 0;
@@ -236,7 +236,7 @@
 		}
 
 		//起始罰金
-		$init_fine = 300;
+		$init_fine = 100;
 		$sql_cnt_update = "SELECT `pun_date`, `fine`, `times`, `odds` FROM punish";
 		$sql_cnt_update .= "  WHERE `name` = "."'$name'"." AND `pun_del` != 'D' AND `pun_date` >" ."'$date'" . " AND `pun_date` < DATE_ADD("."'$date'".", INTERVAL 3 MONTH)";
 		$result_cnt_update = mysqli_query($mydb_link, $sql_cnt_update);

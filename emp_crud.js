@@ -6,7 +6,7 @@ var del_val;
 var emp_stateInfo;
 var emp_tbody;
 var toSend = {};
-var emp_url = "http://localhost:8080/CleanSystem/emp_crud.php";
+var emp_url = "https://schedule.cfd888.info/CleanSystem/emp_crud.php";
 var jsonString;
 const xmlhttp =new XMLHttpRequest();
 
@@ -74,7 +74,7 @@ var actionDB = function(params) {
                 };   
                 httpReqFun(toSend);
             }else{
-                emp_stateInfo.text(info_tw("NAME BE EMPTY") + "||" + info_tw("TITLE BE EMPTY") + "||" + info_tw("WRONG DATE"));
+                emp_stateInfo.text(info_tw("NAME BE EMPTY") + " | " + info_tw("TITLE BE EMPTY") + " | " + info_tw("WRONG DATE"));
             }
             break;
         case "delete":

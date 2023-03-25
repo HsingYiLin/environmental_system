@@ -4,7 +4,7 @@ var del_pun_calender;
 var pun_old_date = "";
 var pun_old_txt = "";
 var pun_toSend ={};
-var pun_url = "http://localhost:8080/CleanSystem/punish.php";
+var pun_url = "https://schedule.cfd888.info/CleanSystem/punish.php";
 const xmlhttp =new XMLHttpRequest();
 
 var pun_init = function (){
@@ -34,7 +34,7 @@ var actionDB = function(params) {
                 };   
                 httpReqFun(pun_toSend);
             }else{
-                $("#pun_stateInfo").text(info_tw("FORM BE EMPTY") + "||" + info_tw("WRONG DATE"));
+                $("#pun_stateInfo").text(info_tw("FORM BE EMPTY") + " | " + info_tw("WRONG DATE"));
             }
             break;
         case "select":

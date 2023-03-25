@@ -2,10 +2,10 @@
 	header("Content-Type: application/json");
 	header("Access-Control-Allow-Origin: *");
 	header('Access-Control-Allow-Headers:x-requested-with,content-type'); 
-	$host = 'localhost';
-	$dbuser ='root';
-	$dbpassword = 'a12345678';
-	$dbname = 'environtal_db';
+	$host = '172.105.241.230';
+	$dbuser ='cfd_schedule_mysql';
+	$dbpassword = 'schedule_winwin12!_mysql';
+	$dbname = 'cfd_schedule_mysql';
 	$mydb_link = mysqli_connect($host,$dbuser,$dbpassword,$dbname);
 
 	if($mydb_link->connect_error){

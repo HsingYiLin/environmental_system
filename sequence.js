@@ -24,7 +24,7 @@ var dateSortTimeStamp;
 var startText;
 var startTimeStamp;
 var setting_arr = ["六","日","清潔公司","剪輯組","元旦連假","春節","228連假","清明連假","勞動節","端午連假","中秋連假","國慶連假","放假",]
-const seq_Url = "http://localhost:8080/CleanSystem/sequence.php";
+const seq_Url = "https://schedule.cfd888.info/CleanSystem/sequence.php";
 const xmlhttp =new XMLHttpRequest();
 var seq_toSend = {};
 

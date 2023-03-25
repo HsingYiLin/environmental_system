@@ -2,10 +2,10 @@
 	header("Content-Type: application/json");
 	header("Access-Control-Allow-Origin: *");
 	header('Access-Control-Allow-Headers:x-requested-with,content-type'); 
-	$host = 'localhost';
-	$dbuser ='root';
-	$dbpassword = 'a12345678';
-	$dbname = 'environtal_db';
+	$host = '172.105.241.230';
+	$dbuser ='cfd_schedule_mysql';
+	$dbpassword = 'schedule_winwin12!_mysql';
+	$dbname = 'cfd_schedule_mysql';
 	$mydb_link = mysqli_connect($host,$dbuser,$dbpassword,$dbname);
 
 	if($mydb_link->connect_error){
@@ -22,7 +22,7 @@
 		$lastMon = date('Y-m', $lastMonStamp);
 		$arr_res["lastMon"] = $lastMon;
 		$isCorrect = false;
-		$isCorrect = ($monVal == "2023-03")? true : false;
+		$isCorrect = ($monVal == "2023-04")? true : false;
 		if(!$isCorrect){//如果前個月未排值日生，無法判斷這個月的第一個是誰
 			$sql_lastSequence = "SELECT * FROM sequence WHERE `calender` LIKE "."'$lastMon%'";
 			$result_lastSequence = mysqli_query($mydb_link, $sql_lastSequence);
