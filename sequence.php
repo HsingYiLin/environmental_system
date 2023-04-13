@@ -80,7 +80,7 @@
 		$sql_employee .= " AND "."'$max_date'". " >= DATE_ADD(`startdate`, INTERVAL 1 MONTH) ORDER BY `startdate` DESC";
 		$sql_emp_last = "SELECT `emp_name`, `$table_mon` from employee WHERE (`title` = '其他' OR `qualify` = 1) AND `state` = '在職' AND `del` != 'D'";
 		$sql_emp_last .= " AND "."'$max_date'". " >= DATE_ADD(`startdate`, INTERVAL 1 MONTH) ORDER BY `startdate` DESC";
-		$sql_punish = "SELECT `name`, `punishtxt`, `pun_date` FROM punish WHERE  `pun_done` = 0  AND `pun_del` != 'D' AND `pun_date` < "."'$mon"."-1' ORDER BY `pun_date` ASC";
+		$sql_punish = "SELECT `name`, `punishtxt`, `pun_date` FROM punish WHERE  `pun_done` = ''  AND `pun_del` != 'D' AND `pun_date` < "."'$mon"."-1' ORDER BY `pun_date` ASC";
 		$sql_rep = "SELECT * FROM rep WHERE `rep_done` = 0 AND "."'$mon'"." > `rep_date`";
 		$sql_incr = "SELECT * FROM incr WHERE `incr_mon` < "."'$mon'"." AND `incr_done` = 0";
 		$result_employee = mysqli_query($mydb_link, $sql_employee);
@@ -250,7 +250,7 @@
 			$mon = $object["mon"];
 			$punish_date_arr = $object["punish_date_arr"];
 			for ($j=0; $j < count($punish_date_arr); $j++) { 
-				$sql_update_punish_done[$j] = "UPDATE punish SET `pun_done` = "."'$year-$mon'"." WHERE `name` = "."'$punish_date_arr[$j]'"." AND `pun_del` != 'D' AND `pun_done` = 0 AND `pun_del` != 'D' LIMIT 1";
+				$sql_update_punish_done[$j] = "UPDATE punish SET `pun_done` = "."'$year-$mon'"." WHERE `name` = "."'$punish_date_arr[$j]'"." AND `pun_del` != 'D' AND `pun_done` = '' LIMIT 1";
 				if(mysqli_query($mydb_link, $sql_update_punish_done[$j]) == TRUE){
 					$arr_res["status"] = "SAVED";
 				}
