@@ -5,6 +5,7 @@ var pun_old_date = "";
 var pun_old_txt = "";
 var pun_toSend ={};
 var pun_url = "https://schedule.cfd888.info/CleanSystem/punish.php";
+// var pun_url = "http://localhost:8080/CleanSystem/punish.php";//測試
 const xmlhttp =new XMLHttpRequest();
 
 var pun_init = function (){

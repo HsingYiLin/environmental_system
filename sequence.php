@@ -6,6 +6,11 @@
 	$dbuser ='cfd_schedule_mysql';
 	$dbpassword = 'schedule_winwin12!_mysql';
 	$dbname = 'cfd_schedule_mysql';
+	//測試
+	// $host = 'localhost';
+	// $dbuser ='root';
+	// $dbpassword = 'a12345678';
+	// $dbname = 'environtal_db';
 	$mydb_link = mysqli_connect($host,$dbuser,$dbpassword,$dbname);
 
 	if($mydb_link->connect_error){
@@ -71,9 +76,9 @@
 		$year_str = substr($mon, 0, 4);
 		$month_days  = cal_days_in_month(CAL_GREGORIAN, date($mon_str), date($year_str));
 		$max_date = $year_str . $mon_str . $month_days;
-		$sql_employee = "SELECT * FROM employee WHERE `title` = '其他' AND `state` = '在職' AND `del` != 'D'";
+		$sql_employee = "SELECT * FROM employee WHERE (`title` = '其他' OR `qualify` = 1) AND `state` = '在職' AND `del` != 'D'";
 		$sql_employee .= " AND "."'$max_date'". " >= DATE_ADD(`startdate`, INTERVAL 1 MONTH) ORDER BY `startdate` DESC";
-		$sql_emp_last = "SELECT `emp_name`, `$table_mon` from employee WHERE `title` = '其他' AND `state` = '在職' AND `del` != 'D'";
+		$sql_emp_last = "SELECT `emp_name`, `$table_mon` from employee WHERE (`title` = '其他' OR `qualify` = 1) AND `state` = '在職' AND `del` != 'D'";
 		$sql_emp_last .= " AND "."'$max_date'". " >= DATE_ADD(`startdate`, INTERVAL 1 MONTH) ORDER BY `startdate` DESC";
 		$sql_punish = "SELECT `name`, `punishtxt`, `pun_date` FROM punish WHERE  `pun_done` = 0  AND `pun_del` != 'D' AND `pun_date` < "."'$mon"."-1' ORDER BY `pun_date` ASC";
 		$sql_rep = "SELECT * FROM rep WHERE `rep_done` = 0 AND "."'$mon'"." > `rep_date`";

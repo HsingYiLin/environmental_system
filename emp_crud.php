@@ -6,6 +6,11 @@
 	$dbuser ='cfd_schedule_mysql';
 	$dbpassword = 'schedule_winwin12!_mysql';
 	$dbname = 'cfd_schedule_mysql';
+	//測試
+	// $host = 'localhost';
+	// $dbuser ='root';
+	// $dbpassword = 'a12345678';
+	// $dbname = 'environtal_db';
 	$mydb_link = mysqli_connect($host,$dbuser,$dbpassword,$dbname);
 
 	if($mydb_link->connect_error){
@@ -26,6 +31,7 @@
 				$arr_res["title"][$i]=$row['title'];
 				$arr_res["state"][$i]=$row['state'];
 				$arr_res["startdate"][$i]=$row['startdate'];
+				$arr_res["qualify"][$i]=$row['qualify'];
 				$i++;
 			}
 			$arr_res["status"] = "success!";
@@ -40,6 +46,8 @@
     	$emp_name = $object["emp_name"];
     	$title = $object["title"];
    	 	$state = $object["state"];
+		$qualify = $object["qualify"];
+		if($title == '其他') $qualify = 1;
 		$sql_pre_add = "SELECT `emp_name` FROM employee WHERE `emp_name` =" ."'$emp_name'"." AND `del` != 'D'";
 		$result_add = mysqli_query($mydb_link, $sql_pre_add);
 		if (mysqli_num_rows($result_add) > 0) {
@@ -49,7 +57,7 @@
 			mysqli_close($mydb_link);
 		} 
 
-		$sql_add = "INSERT INTO employee (`emp_name`, `title`, `state`, `startDate`) VALUES (" ."'$emp_name'". "," ."'$title'". "," ."'$state'". "," ."'$startDate'".")";
+		$sql_add = "INSERT INTO employee (`emp_name`, `title`, `state`, `startDate`, `qualify`) VALUES (" ."'$emp_name'". "," ."'$title'". "," ."'$state'". "," ."'$startDate'" . "," ."$qualify" . ")";
 		if($mydb_link->query($sql_add) === TRUE){
 			$arr_res["status"] = "add success";
 		} else {
@@ -71,7 +79,8 @@
 				$arr_res["emp_name"][$i]=$row['emp_name'];
 				$arr_res["title"][$i]=$row['title'];
 				$arr_res["state"][$i]=$row['state'];
-				$arr_res["startdate"][$i]=$row['startdate'];	
+				$arr_res["startdate"][$i]=$row['startdate'];
+				$arr_res["qualify"][$i]=$row['qualify'];	
 				$i++;		
 			}
 			$arr_res["status"] = "success!";
@@ -86,9 +95,12 @@
     	$emp_name = $object["emp_name"];
     	$title = $object["title"];
    	 	$state = $object["state"];
-		$sql_update = "UPDATE employee SET `title` =" ."'$title'"." ,`state` =" ."'$state'" . " ,`startDate` =" . "'$startDate'";
-		$sql_update .= "WHERE `emp_name` =" ."'$emp_name'"." AND `del` != 'D'";
-		if(mysqli_query($mydb_link, $sql_update) && $mydb_link->affected_rows > 0){
+		$qualify = $object["qualify"];
+		$del = "";
+		if($state == "離職") $del = "D";
+		$sql_update = "UPDATE employee SET `title` =" ."'$title'"." ,`state` =" ."'$state'" . " ,`startDate` =" . "'$startDate'".", `qualify`="."$qualify".", `del`="."'$del'";
+		$sql_update .= "WHERE `emp_name` =" ."'$emp_name'";
+		if(mysqli_query($mydb_link, $sql_update)){
 			$arr_res["status"] = "update success";
 		}else{
 			$arr_res["status"] = "update fail";

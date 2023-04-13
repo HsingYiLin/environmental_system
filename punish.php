@@ -6,6 +6,11 @@
 	$dbuser ='cfd_schedule_mysql';
 	$dbpassword = 'schedule_winwin12!_mysql';
 	$dbname = 'cfd_schedule_mysql';
+	//測試
+	// $host = 'localhost';
+	// $dbuser ='root';
+	// $dbpassword = 'a12345678';
+	// $dbname = 'environtal_db';
 	$mydb_link = mysqli_connect($host,$dbuser,$dbpassword,$dbname);
     if($mydb_link->connect_error){
 		die('Connection failed: '.$mydb_link->connect_error);
@@ -47,7 +52,7 @@
 		}else{
 			//是否符合值日生資格
 			$sql_pre_add = "SELECT * FROM employee ";
-			$sql_pre_add .= " WHERE `emp_name` =" ."'$name'" . " AND `state` = '在職' AND `title` = '其他'";
+			$sql_pre_add .= " WHERE `emp_name` =" ."'$name'" . " AND `state` = '在職' AND (`title` = '其他' OR `qualify` = 1)";
 			$sql_pre_add .= " AND "."'$date'"." >= DATE_ADD(`startdate`, INTERVAL 1 MONTH)";
 			$result_add = mysqli_query($mydb_link, $sql_pre_add);
 			if (mysqli_num_rows($result_add) == 0) {
@@ -261,7 +266,7 @@
 		mysqli_close($mydb_link);
 	
     }else if($object["pload"] == "opt"){
-		$sql_employee = "SELECT `emp_name` FROM employee WHERE `title` = '其他' AND `state` = '在職' AND `del` != 'D' ORDER BY `startdate` DESC";
+		$sql_employee = "SELECT `emp_name` FROM employee WHERE (`title` = '其他' OR `qualify`=1) AND `state` = '在職' AND `del` != 'D' ORDER BY `startdate` DESC";
 		$i=1;
 		$result_opt = mysqli_query($mydb_link, $sql_employee);
 		if ($result_opt->num_rows > 0) {
