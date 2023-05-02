@@ -2,7 +2,7 @@
 	header("Content-Type: application/json");
 	header("Access-Control-Allow-Origin: *");
 	header('Access-Control-Allow-Headers:x-requested-with,content-type'); 
-	$host = '172.105.241.230';
+	$host = 'localhost';
 	$dbuser ='cfd_schedule_mysql';
 	$dbpassword = 'schedule_winwin12!_mysql';
 	$dbname = 'cfd_schedule_mysql';
@@ -16,7 +16,6 @@
 	if($mydb_link->connect_error){
 		die('Connection failed: '.$mydb_link->connect_error);
 	}
-
 	$requestPayload = file_get_contents("php://input");
 	$object = json_decode($requestPayload, true);
   	$arr_res =Array();
