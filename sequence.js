@@ -323,7 +323,7 @@ var dynamicTable = function (year, mon){
                 dateName.eq(i).text("清潔公司").css("backgroundColor","#D0D0D0");
                 break;
         }
-        if(mon % 2 !=0 && dateJudgeDate.getDay() == 1 && cnt == 1){
+        if(mon % 3 ==0 && dateJudgeDate.getDay() == 1 && cnt == 1){
             for(var j =i; j < i+6; j++){
                 if(dateName.eq(j).text() == "") dateName.eq(j).text("剪輯組").css("backgroundColor","#ADADAD");      
             }
